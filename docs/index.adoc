@@ -1,27 +1,39 @@
 = Modelica Language Specification version
 :sectnums:
-:sectnumlevels: 5
-:sectlinks:
+// :sectnumlevels: 5
+// :sectlinks:
 :toc: left
-:toclevels: 5
-:xrefstyle: short
-:docinfodir: docs
-:stem: latexmath
-:source-highlighter: highlightjs
-:nofooter:
-:favicon: images/favicon.ico
-:icons: font
+// :toclevels: 5
+// :xrefstyle: short
+// :docinfodir: docs
+// :stem: latexmath
+// :source-highlighter: highlightjs
+// :nofooter:
+// :favicon: images/favicon.ico
+// :icons: font
+
+
 
 include::docs/0___preamble.adoc[]
+
 include::docs/0___preface.adoc[]
 
-//include::docs/1___introduction.adoc[]
-//include::docs/2___lexicalstructure.adoc[]
-// include::docs/3___operatorsandexpressions.adoc[]
-// include::docs/4___classes.adoc[]
-// include::docs/5___scoping.adoc[]
+include::docs/1___introduction.adoc[]
+
+include::docs/2___lexicalstructure.adoc[]
+
+include::docs/3___operatorsandexpressions.adoc[]
+
+include::docs/4___classes.adoc[]
+
+include::docs/5___scoping.adoc[]
+
 // include::docs/6___interface.adoc[]
+
 // include::docs/7___inheritance.adoc[]
+
 // include::docs/8___equations.adoc[]
+
 // include::docs/9___connectors.adoc[]
+
 // include::docs/10__arrays.adoc[]
