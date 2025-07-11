@@ -78,7 +78,7 @@ The statement that `r` has the type (or interface) `R` means that the value of `
 
 The type `R2` is a subtype of `R` since its instances fulfill the additional property of having the component `Real y;` in all its values.
 
-image::subtype.png[]
+image::media/subtype.svg[]
 
 The type `R` can be defined as the set of record values containing `x` and `b`.
 The subtype `R2` is the subset of values that all contain `x`, `b`, and `y`.

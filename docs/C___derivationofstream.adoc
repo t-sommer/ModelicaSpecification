@@ -50,7 +50,7 @@ While these equations are suitable for device-oriented modeling, the straightfor
 This is the reason why the actual mixing enthalpy is not modelled directly in the model equations.
 The stream connectors provide a suitable alternative.
 
-image::fluidmix.png[caption="Exemplary connection set with three connected components and a common mixing enthalpy."]
+image::media/fluidmix.svg[caption="Exemplary connection set with three connected components and a common mixing enthalpy."]
 
 === Rationale for inStream
 :id: rationale-for-instream
@@ -164,7 +164,7 @@ For the present example of three components in a connection set, this means the 
 \end{align*}
 ++++
 
-image::fluidmix3.png[caption="Exemplary connection set with three connected components."]
+image::media/fluidmix3.svg[caption="Exemplary connection set with three connected components."]
 
 In the general case of a connection set with _n_ components, similar considerations lead to the following:
 
@@ -219,7 +219,7 @@ h_{\mathrm{outflow},1} & \text{if } \tilde{m}_1 < 0 \text{ and } \tilde{m}_3 = 0
 \end{align*}
 ++++
 
-image::fluidmix4.png[caption="Example series connection of multiple models with stream connectors."]
+image::media/fluidmix4.svg[caption="Example series connection of multiple models with stream connectors."]
 
 For the two components with finite mass flow rates (not the sensor), the properties discussed for two connected components still hold.
 The connection set equations reflect that the sensor does not have any influence by discarding the flow rate of the latter.
