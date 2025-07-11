@@ -56,7 +56,7 @@ include::docs/18__annotations.adoc[]
 
 include::docs/19__unitexpressions.adoc[]
 
-// include::docs/20__library.adoc[]
+include::docs/20__library.adoc[]
 
 // include::docs/A___syntax.adoc[]
 
