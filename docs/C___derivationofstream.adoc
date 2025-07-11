@@ -1,9 +1,9 @@
-= Derivation of Stream Equations
+== Derivation of Stream Equations
 :id: derivation-of-stream-equations
 
 This appendix contains a derivation of the equation for stream connectors from <<stream-connectors>>.
 
-== Mixing Enthalpy
+=== Mixing Enthalpy
 :id: mixing-enthalpy
 
 Consider a connection set with _n_ connectors, and denote the mass flow rates `m_flow` by $\tilde{m}$.
@@ -51,7 +51,7 @@ The stream connectors provide a suitable alternative.
 
 image::fluidmix.png[caption="Exemplary connection set with three connected components and a common mixing enthalpy."]
 
-== Rationale for inStream
+=== Rationale for inStream
 :id: rationale-for-instream
 
 For simplicity, the derivation of `inStream` is shown for 3 model components that are connected together.
@@ -172,16 +172,16 @@ In the general case of a connection set with _n_ components, similar considerati
 \text{inStream}(h_{\mathrm{outflow},i}) = \frac{\sum_{j=1,\dotsc,n; j \neq i} \operatorname{max}(-\tilde{m}_j,0) h_{\mathrm{outflow},j}}{\sum_{j=1,\dotsc,n; j \neq i} \operatorname{max}(-\tilde{m}_j,0)}
 ++++
 
-== Special Cases Covered by inStream Definition
+=== Special Cases Covered by inStream Definition
 :id: special-cases-covered-by-the-instream-operator-definition
 
-=== Unconnected Stream Connector -- 1 Stream Connector
+==== Unconnected Stream Connector -- 1 Stream Connector
 :id: unconnected-stream-connector-1-stream-connector
 
 For this case, the return value of `inStream` is arbitrary.
 Therefore, it is set to the outflow value.
 
-=== One to One Connections -- Connection of 2 Stream Connectors
+==== One to One Connections -- Connection of 2 Stream Connectors
 :id: one-to-one-connections-connection-of-2-stream-connectors
 
 [latexmath]
@@ -195,7 +195,7 @@ Therefore, it is set to the outflow value.
 In this case, `inStream` is continuous (contrary to $h_{\mathrm{mix}}$) and does not depend on flow rates.
 The latter result means that this transformation may remove nonlinear systems of equations, which requires that either simplifications of the form $a * b / a = b$ must be provided, or that this case is treated directly.
 
-=== Zero Mass Flow Rate -- Connection of 3 Stream Connectors
+==== Zero Mass Flow Rate -- Connection of 3 Stream Connectors
 :id: zero-mass-flow-rate-connection-of-3-stream-connectors
 
 The case where $N=3$ and $\tilde{m}_3=0$ occurs when a one-port sensor (like a temperature sensor) is connected to two other components.
@@ -227,7 +227,7 @@ However, `inStream` results in a discontinuous equation for the sensor, which is
 The discontinuous equation is uncritical, if the sensor variable is not used in a feedback loop with direct feedthrough, since the discontinuous equation is then not part of an algebraic loop.
 Otherwise, it is advisable to regularize or filter the sensor signal.
 
-=== Ideal Splitting Junction for Uni-Directional Flow - Connection of 3 Stream Connectors where Two Mass Flow Rates are Positive
+==== Ideal Splitting Junction for Uni-Directional Flow - Connection of 3 Stream Connectors where Two Mass Flow Rates are Positive
 :id: ideal-splitting-junction-for-uni-directional-flow-connection-of-3-stream-connectors-where-two-mass-flow-rates-are-positive
 
 If uni-directional flow is present and an ideal splitter is modelled, the required flow direction should be defined in the connector instance with the `min` attribute (the `max` attribute could be also defined, however it does not lead to simplifications):
