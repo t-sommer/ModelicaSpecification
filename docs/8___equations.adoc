@@ -1,4 +1,4 @@
-= Equations
+== Equations
 :id: equations
 
 An _equation_ is part of a class definition.
@@ -6,7 +6,7 @@ A scalar equation relates scalar variables, i.e., constrains the values that the
 When $n$-1 variables of an equation containing $n$ variables are known, the value of the $n$th variable can be inferred (solved for).
 In contrast to an algorithm section, there is no order between the equations in an equation section and they can be solved separately.
 
-== Equation Categories
+=== Equation Categories
 
 Equations in Modelica can be classified into different categories depending on the syntactic context in which they occur:
 
@@ -16,13 +16,13 @@ Equations in Modelica can be classified into different categories depending on t
 * _Binding equations_, which include both declaration equations and element modification for the value of the variable itself. These are considered equations when appearing outside functions, and then a component with a binding equation has its value bound to some expression. (Binding equations can also appear in functions, see <<initialization-and-binding-equations-of-components-in-functions>>.)
 * _Initial equations_, which are used to express equations for solving initialization problems (see <<initialization-initial-equation-and-initial-algorithm>>).
 
-== Flattening and Lookup in Equations
+=== Flattening and Lookup in Equations
 
 A flattened equation is identical to the corresponding nonflattened equation.
 
 Names in an equation shall be found by looking up in the partially flattened enclosing class of the equation.
 
-== Equations in Equation Sections
+=== Equations in Equation Sections
 
 An equation section is comprised of the keyword `equation` followed by a sequence of equations.
 
@@ -51,7 +51,7 @@ some-equation :
 
 No statements are allowed in equation sections, including the assignment statement using the := operator.
 
-=== Simple Equality Equations
+==== Simple Equality Equations
 
 Simple equality equations are the traditional kinds of equations known from mathematics that express an equality relation between two expressions.
 There are two syntactic forms of such equations in Modelica.
@@ -75,7 +75,7 @@ Three examples:
 According to the grammar the if-then-else expression in the second example needs to be enclosed in parentheses to avoid parsing ambiguities.
 Also compare with <<assignments-from-called-functions-with-multiple-results>> about calling functions with several results in assignment statements.
 
-=== For-Equations -- Repetitive Equation Structures
+==== For-Equations -- Repetitive Equation Structures
 
 .Syntax
 [source,grammar]
@@ -104,7 +104,7 @@ The following is one example of a prefix of a `for`-equation:
 for IDENT in expression loop
 ----
 
-==== Explicit Iteration Ranges of For-Equations
+===== Explicit Iteration Ranges of For-Equations
 
 The `expression` of a `for`-equation shall be a vector expression, where more general array expressions are treated as vector of vectors or vector of matrices.
 It is evaluated once for each `for`-equation, and is evaluated in the scope immediately enclosing the `for`-equation.
@@ -136,7 +136,7 @@ equation
   end for;
 ----
 
-==== Implicit Iteration Ranges of For-Equations
+===== Implicit Iteration Ranges of For-Equations
 
 The iteration range of a loop-variable may sometimes be inferred from its use as an array index.
 See <<implicit-iteration-ranges>> for more information.
@@ -151,7 +151,7 @@ equation
   end for;
 ----
 
-=== Connect-Equations
+==== Connect-Equations
 
 .Syntax
 [source,grammar]
@@ -165,7 +165,7 @@ The `for`-equations/`if`-equations are expanded.
 
 The same restrictions apply to `Connections.branch`, `Connections.root`, and `Connections.potentialRoot`; which after expansion are handled according to <<equation-operators-for-overconstrained-connection-based-equation-systems1>>.
 
-=== If-Equations
+==== If-Equations
 
 .Syntax
 [source,grammar]
@@ -193,7 +193,7 @@ The `if`-equations in equation sections which do not have exclusively parameter 
 [NOTE]
 If this condition is violated, the single assignment rule would not hold, because the number of equations may change during simulation although the number of unknowns remains the same.
 
-=== When-Equations
+==== When-Equations
 
 .Syntax
 [source,grammar]
@@ -222,7 +222,7 @@ equation
   y2 = sin(y1);
 ----
 
-==== Defining When-Equations by If-Expressions in Equality Equations
+===== Defining When-Equations by If-Expressions in Equality Equations
 
 A `when`-equation:
 [source,modelica]
@@ -268,7 +268,7 @@ However, `pre(u)` is legal within the `when`-clause, since the body of the `when
 The start values of the introduced `Boolean` variables are defined by the taking the start value of the when-condition, as above where `b` is a parameter variable.
 The start value of the special functions `initial`, `terminal`, and `sample` is `false`.
 
-==== Where a When-Equation May Occur
+===== Where a When-Equation May Occur
 
 * `when`-equations shall not occur inside initial equations.
 * `when`-equations cannot be nested.
@@ -285,7 +285,7 @@ when x > 2 then
 end when;
 ----
 
-==== Equations within When-Equations
+===== Equations within When-Equations
 
 The equations within the `when`-equation must have one of the following forms:
 
@@ -372,7 +372,7 @@ equation
   end if;
 ----
 
-==== Single Assignment Rule Applied to When-Equations
+===== Single Assignment Rule Applied to When-Equations
 
 The Modelica single-assignment rule (see <<synchronous-data-flow-principle-and-single-assignment-rule>>) has implications for `when`-equations:
 
@@ -442,7 +442,7 @@ algorithm
 end WhenPriorityAlg;
 ----
 
-=== reinit
+==== reinit
 
 `reinit` can only be used in the body of a `when`-equation.
 
@@ -478,7 +478,7 @@ when h < 0 then
 end when
 ----
 
-=== assert
+==== assert
 
 An equation or statement of one of the following forms is an assertion:
 
@@ -529,7 +529,7 @@ assert(T > 200 and T < 500, "Medium model outside feasible region");
 It is recommended that asserts have a simple message as above, formulated with the recommended tool behavior in mind.
 Writing `assert(T<500, "Temperature = "+String(T)+" was above 500")` is thus not recommended, and is likely to lead to duplicated information.
 
-=== terminate
+==== terminate
 
 The `terminate`-equation or statement (using function syntax) successfully terminates the analysis which was carried out, see also <<assert>>.
 The termination is not immediate at the place where it is defined since not all variable results might be available that are necessary for a successful stop.
@@ -555,11 +555,11 @@ algorithm
 end ThrowingBall;
 ----
 
-=== Equation Operators for Overconstrained Connection-Based Equation Systems
+==== Equation Operators for Overconstrained Connection-Based Equation Systems
 
 See <<equation-operators-for-overconstrained-connection-based-equation-systems1>> for a description of this topic.
 
-== Synchronous Data-Flow Principle and Single Assignment Rule
+=== Synchronous Data-Flow Principle and Single Assignment Rule
 
 Modelica is based on the synchronous data flow principle and the single assignment rule, which are defined in the following way:
 
@@ -570,7 +570,7 @@ Modelica is based on the synchronous data flow principle and the single assignme
   If computation or communication time has to be simulated, this property has to be explicitly modeled.
 . There must exist a perfect matching of variables to equations after flattening, where a variable can only be matched to equations that can contribute to solving for the variable (_perfect matching rule_ -- previously called _single assignment rule_; see also globally balanced <<balanced-models>>).
 
-== Events and Synchronization
+=== Events and Synchronization
 
 An _event_ is something that occurs instantaneously at a specific time or when a specific condition occurs.
 Events are for example defined by the condition occurring in a `when`-clause, `if`-equation, or `if`-expression.
@@ -712,7 +712,7 @@ The `slowSample` `when`-clause is evaluated at every 5th occurrence of the `fast
 [NOTE]
 The single assignment rule and the requirement to explicitly program the synchronization of events allow a certain degree of model verification already at compile time.
 
-== Initialization, initial equation, and initial algorithm
+=== Initialization, initial equation, and initial algorithm
 
 Before any operation is carried out with a Modelica model (e.g., simulation or linearization), initialization takes place to assign consistent values for all variables present in the model.
 During this phase, called the _initialization problem_, also the derivatives (`der`), and the pre-variables (`pre`), are interpreted as unknown algebraic variables.
@@ -909,7 +909,7 @@ During initialization this gives the following equations
 
 if `steadyState` had not been a parameter-expression both of those equations would have been illegal according to the restrictions in <<if-equations>>.
 
-=== Equations Needed for Initialization
+==== Equations Needed for Initialization
 
 [NOTE]
 In general, for the case of a pure (first order) ordinary differential equation (ODE) system with $n$ state variables and $m$ output variables, we will have $n+m$ unknowns during transient analysis.
@@ -934,7 +934,7 @@ Regarding DAEs, only that at most $n$ additional equations are needed to arrive 
 The reason is that in a higher index DAE problem the number of dynamic continuous-time state variables might be less than the number of state variables $n$.
 As noted in <<initialization-initial-equation-and-initial-algorithm>> a tool may add/remove initial equations to fulfill this requirement, if appropriate diagnostics are given.
 
-=== Start Value Recommended Priority
+==== Start Value Recommended Priority
 
 In general many variables have `start`-attributes that are not fixed and selecting a subset of these can give a consistent set of start values close to the user-expectations.
 The following gives a non-normative procedure for finding such a subset.
