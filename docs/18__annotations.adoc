@@ -1,4 +1,4 @@
-= Annotations
+== Annotations
 :id: annotations
 
 Annotations are intended for storing extra information about a model, such as graphics, documentation, versioning, etc.
@@ -10,7 +10,7 @@ The structure of the annotation content is the same as a class modification.
 (For replaceable class declarations with a constraining-clause also refer to <<constraining-clause-annotations>>.)
 The specification in this document defines the semantic meaning if a tool implements any of these annotations.
 
-== Notation for Annotation Definitions
+=== Notation for Annotation Definitions
 
 Annotations are defined using the syntactic forms of Modelica component declarations and record definitions, with the following special semantics.
 If the annotation is described by a component declaration, the annotation is used in the form of a value modifier for the same name.
@@ -37,7 +37,7 @@ annotation(Dialog());
 Since the semantics of an annotation comes from the interpretation as a modification, empty annotations have no impact at all.
 An annotation such as `annotation(Dialog)` is also meaningless, but deprecated according to <<semantic-restrictions-of-annotation-syntax>>.
 
-== Semantic Restrictions of Annotation Syntax
+=== Semantic Restrictions of Annotation Syntax
 
 Except where explicitly stated, the following constructs shall not be used in annotations:
 
@@ -57,11 +57,11 @@ annotation(
 ----
 The effect of `colorSelector` is not the same as `colorSelector = true`, even though the latter is the only meaningful use of `colorSelector`.
 
-== Expression Evaluation Inside Annotations
+=== Expression Evaluation Inside Annotations
 
 This section describes some differences to the evaluation of expressions inside of annotations compared to normal evaluation rules outside of annotations.
 
-=== Enumerations for Use in Annotations
+==== Enumerations for Use in Annotations
 
 Several annotations make use of dedicated enumeration types.
 These enumeration types do not have the full status of being built-in types as, e.g., `StateSelect`.
@@ -94,7 +94,7 @@ end M_annotation;
 ----
 where `AnnotationEnumerations` is a hidden package containing all enumeration types used in annotations, and `T` is the expected type of the expression.
 
-== Vendor-Specific Annotations
+=== Vendor-Specific Annotations
 
 A vendor may -- anywhere inside an annotation -- add specific, possibly undocumented, annotations which are not intended to be interpreted by other tools.
 The semantic restrictions in <<semantic-restrictions-of-annotation-syntax>> are not enforced in vendor-specific annotations, giving vendors the full freedom of using the most general form of annotations.
@@ -120,7 +120,7 @@ annotation(
 ----
 This introduces a new attribute `__NameOfVendor_shadow` for the `Rectangle` primitive using the simple variant of vendor-specific annotations.
 
-== Documentation
+=== Documentation
 
 The `Documentation` annotation has the following contents:
 
@@ -138,7 +138,7 @@ The `styleSheets` may also be given as a single string.
 
 How the tool interprets the information in `Documentation` is unspecified.
 
-=== Class Description and Revision History
+==== Class Description and Revision History
 
 Inside the `Documentation` annotation, the `info` annotation gives a textual description of the class, and the `revisions` annotation gives a revision history.
 
@@ -159,7 +159,7 @@ Example:
 <a href="modelica:/MultiBody.Joints.Revolute#info">Revolute</a>
 ----
 
-==== Style Sheets
+===== Style Sheets
 
 Inside the `Documentation` annotation, each element of the `styleSheets` annotation array specifies a cascading style sheet.
 The style sheets are used when displaying the `info` and `revisions` annotations found in the `Documentation` annotations of the package.
@@ -175,7 +175,7 @@ Vendors should use a `$NameOfVendor$-` prefix to style vendor generated HTML con
 If tools want to give users (of that tool) the possibility to override the tool-specific CSS they can document that.
 The prefix is used to avoid this happening by accident.
 
-=== Figures
+==== Figures
 
 Inside the `Documentation` annotation, each element of the `figures` annotation array has the following content:
 
@@ -238,7 +238,7 @@ For example, a tool might choose to automatically show all preferred figures whe
 
 The `caption` attribute of `Figure` can use the restricted form of text markup described in <<text-markup-in-captions>> as well as the variable replacements described in <<variable-replacements>>.
 
-==== Axis Properties
+===== Axis Properties
 
 Properties may be defined for each `Plot` axis:
 
@@ -318,7 +318,7 @@ Axis(
 )
 ----
 
-==== Plot Curves
+===== Plot Curves
 
 The actual data to plot is specified in the `curves` of a `Plot`:
 
@@ -351,7 +351,7 @@ The order of presentation within the plot legend corresponds to order of appeara
 The `zOrder` gives control over drawing order, with higher values corresponding to closer to front.
 Ties are resolved using order of appearance in the `curves` of a `Plot`, with later appearance corresponding to closer to front.
 
-==== Escape Sequences
+===== Escape Sequences
 
 In an attribute inside a figure where the variable replacements or the text markup can be used, the following use of text markup escape sequences applies.
 These escape sequences are applied after the application of other markup, and are not applied at all inside some of the other markup, see details for the respective markup.
@@ -368,7 +368,7 @@ The following are all the recognized escape sequences:
 [NOTE]
 With the percent character being encoded as `%%`, the behavior of `%` appearing in any other way than the escape sequences above, for variable replacement, or for the text markup is undefined, and thus possible to define in the future without breaking backward compatibility.
 
-==== Vendor-Specific Markup
+===== Vendor-Specific Markup
 
 Vendor-specific markup takes the form `__$nameOfVendor_1(data_1)...__$nameOfVendor_n(data_n)`, where n ≥ 1.
 It is only allowed as part of constructs described in <<variable-replacements>> and <<text-markup-in-captions>>, where it will be denoted by `vendorSpecificMarkup`.
@@ -376,7 +376,7 @@ The `nameOfVendor` consists of only digits and letters, and shall only convey th
 Text markup escape sequences don't apply inside the `data`, implying that it cannot contain the closing parenthesis, `)`.
 A tool which does not understand any of the vendor-specific meanings will always be able to safely ignore all vendor-specific markup.
 
-==== Variable Replacements
+===== Variable Replacements
 
 In the places listed in <<attributes-with-variable-replacements>> where text for display is defined, the final value of a result variable can be embedded by referring to the variable as `%{inertia1.w}`.
 This is similar to the `Text` graphical primitive.
@@ -413,7 +413,7 @@ For example, the replaced variable may have an automatically inferred unit, but 
 The tool vendor AVendor could then describe a selection of display unit with `%__AVendor(?displayUnit=mm){integrator1.y}`.
 Later, if this would become supported by standard variable replacement, it might take the form of something like `%{integrator1.y?displayUnit=mm}` instead.
 
-==== Text Markup in Captions
+===== Text Markup in Captions
 
 In addition to variable replacements, a very restricted form of text markup is used for the `caption`.
 Note that the text markup escape sequences described above generally apply inside `caption`, with one exception given below for links.
@@ -461,7 +461,7 @@ During the development, this could be represented as the vendor-specific markup 
 When AVendor renders this, it ignores the text `10 s` and just displays the actual duration instead.
 Later, if this would become supported by standard markup, it might take the form of something like `%{experiment:duration}` instead.
 
-== Symbolic Processing
+=== Symbolic Processing
 
 The annotation listed below, in addition to annotations described in <<derivatives-and-inverses-of-functions>> and <<function-inlining-and-event-generation>>, can influence the symbolic processing.
 
@@ -476,7 +476,7 @@ The annotation listed below, in addition to annotations described in <<derivativ
 parameter Boolean b = false annotation(Evaluate = true);
 ----
 
-== Simulations
+=== Simulations
 
 The annotations listed below define how models can be checked, translated, and simulated.
 
@@ -498,7 +498,7 @@ record experiment
 end experiment;
 ----
 
-== Usage Restrictions
+=== Usage Restrictions
 
 The annotations listed below are used to restrict the ways in which classes and instances of classes may be used.
 
@@ -509,7 +509,7 @@ The annotations listed below are used to restrict the ways in which classes and 
 |`mayOnlyConnectOnce` |Connector may at most be connected once |<<modelica:mayOnlyConnectOnce>>
 |===
 
-== Graphical Objects
+=== Graphical Objects
 
 A graphical representation of a class consists of two abstraction layers, icon layer and diagram layer showing graphical objects, component icons, connectors and connection lines.
 The icon representation typically visualizes the component by hiding hierarchical details.
@@ -546,7 +546,7 @@ Base class contents are drawn behind the graphical primitives of the current cla
 These `Icon`, `Diagram`, and `Documentation` annotations are only allowed directly in classes (e.g., not on components or connections).
 The allowed annotations for a short class definition is the union of the allowed annotations in classes and on `extends`-clauses.
 
-=== Common Definitions
+==== Common Definitions
 
 [source,modelica]
 ----
@@ -574,7 +574,7 @@ All geometric information is given relative the `origin` attribute, which by def
 
 The `rotation` attribute specifies the rotation of the graphical item counter-clockwise around the point defined by the `origin` attribute.
 
-=== Coordinate Systems
+==== Coordinate Systems
 
 Each of the layers has its own coordinate system.
 
@@ -609,7 +609,7 @@ record Diagram "Representation of the diagram layer"
 end Diagram;
 ----
 
-=== Graphical Properties
+==== Graphical Properties
 
 Properties of graphical objects and connection lines are described using the following attribute types.
 
@@ -642,7 +642,7 @@ record FilledShape "Style attributes for filled shapes"
 end FilledShape;
 ----
 
-=== Component Instance
+==== Component Instance
 
 A component instance can be placed within a diagram or icon layer.
 It has an annotation with a `Placement` modifier to describe the placement.
@@ -665,11 +665,11 @@ record Placement
 end Placement;
 ----
 
-=== Default Outline for Missing Graphics
+==== Default Outline for Missing Graphics
 
 If the icon of a component placed in a diagram layer does not contain any graphical primitives (including inherited ones, and regardless of `visible`-attributes; but excluding connectors), tools shall show a tool-dependent rudimentary outline of the component's transformed `extent`.
 
-=== Extends-Clause
+==== Extends-Clause
 
 Each `extends`-clause (and short class definition) may have layer specific annotations which describe the rendering of the base class' icon and diagram layers in the derived class.
 
@@ -686,7 +686,7 @@ record DiagramMap
 end DiagramMap;
 ----
 
-=== Connections
+==== Connections
 
 A connection is specified with an annotation containing a `Line` primitive and optionally a `Text` primitive.
 
@@ -715,9 +715,9 @@ record Text
 end Text;
 ----
 
-=== Graphical Primitives
+==== Graphical Primitives
 
-==== Line
+===== Line
 
 [source,modelica]
 ----
@@ -733,7 +733,7 @@ record Line
 end Line;
 ----
 
-==== Polygon
+===== Polygon
 
 [source,modelica]
 ----
@@ -745,7 +745,7 @@ record Polygon
 end Polygon;
 ----
 
-==== Rectangle
+===== Rectangle
 
 [source,modelica]
 ----
@@ -758,7 +758,7 @@ record Rectangle
 end Rectangle;
 ----
 
-==== Ellipse
+===== Ellipse
 
 [source,modelica]
 ----
@@ -772,7 +772,7 @@ record Ellipse
 end Ellipse;
 ----
 
-==== Text
+===== Text
 
 [source,modelica]
 ----
@@ -788,7 +788,7 @@ record Text
 end Text;
 ----
 
-==== Bitmap
+===== Bitmap
 
 [source,modelica]
 ----
@@ -800,7 +800,7 @@ record Bitmap
 end Bitmap;
 ----
 
-=== Variable Graphics and Schematic Animation
+==== Variable Graphics and Schematic Animation
 
 Any value in graphical annotations can be dependent on evaluable parameters except when restricted otherwise in their respective definitions.
 
@@ -820,14 +820,14 @@ annotation(Icon(graphics = {
   )}));
 ----
 
-=== User Input
+==== User Input
 
 It is possible to interactively modify variables during a simulation.
 The variables may either be parameters, discrete-time variables or states.
 New numeric values can be given, a mouse click can change a `Boolean` variable or a mouse movement can change a `Real` variable.
 Input fields may be associated with a `GraphicItem` or a component as an array named `interaction`.
 
-==== Mouse Input
+===== Mouse Input
 
 [source,modelica]
 ----
@@ -837,7 +837,7 @@ record OnMouseDownSetBoolean
 end OnMouseDownSetBoolean;
 ----
 
-==== Edit Input
+===== Edit Input
 
 [source,modelica]
 ----
@@ -854,7 +854,7 @@ record OnMouseDownEditString
 end OnMouseDownEditString;
 ----
 
-== Graphical User Interface
+=== Graphical User Interface
 
 The annotations listed below define properties for use in graphical user interfaces.
 
@@ -872,28 +872,28 @@ The annotations listed below define properties for use in graphical user interfa
 |`Dialog` |Setup for modifications |<<modelica:Dialog>>
 |===
 
-== Connector Sizing
+=== Connector Sizing
 
 This section describes the `connectorSizing` annotation inside a `Dialog` annotation.
 
-== Versions
+=== Versions
 
 A top-level package or model can specify the version of top-level classes it uses, its own version number, and if possible how to convert from previous versions.
 This can be used by a tool to guarantee that consistent versions are used, and if possible to upgrade usage from an earlier version to a current one.
 
-== Access Control to Protect Intellectual Property
+=== Access Control to Protect Intellectual Property
 
 This section presents annotations to define the protection and the licensing of packages.
 The goal is to unify basic mechanisms to control the access to a package in order to protect the intellectual property contained in it.
 
-== License Texts
+=== License Texts
 
 For a top-level class the `annotation(License="modelica:/TopPackage/Resources/Licenses/MyLicense.txt")` gives a license text file for the class.
 
-== Functions
+=== Functions
 
 See <<derivatives-and-inverses-of-functions>>, <<function-inlining-and-event-generation>>, and <<annotations-for-external-libraries-and-include-files>>.
 
-== Choices for Modifications and Redeclarations
+=== Choices for Modifications and Redeclarations
 
 See <<annotation-choices-for-suggested-redeclarations-and-modifications>>.
