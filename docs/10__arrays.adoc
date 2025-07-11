@@ -1,4 +1,4 @@
-= Arrays
+== Arrays
 :id: arrays
 
 An array of the specialized classes `type`, `record`, and `connector` can be regarded as a collection of type compatible values (see <<type-compatible-expressions>>).
@@ -25,7 +25,7 @@ The non-fixed sizes of array dimensions on the other hand, allow fairly generic 
 An array is allocated by declaring an array variable or calling an array constructor.
 Elements of an array can be indexed by `Integer`, `Boolean`, or `enumeration` values.
 
-== Array Declarations
+=== Array Declarations
 
 The Modelica type system includes scalar number, vector, matrix (number of dimensions, ndim=2), and arrays of more than two dimensions.
 
@@ -122,7 +122,7 @@ Let `A` be a declared array and `i` be an index accessing an index of the di-dim
 Then for every such index-access an assert statement `assert(1 <= i and i <= size(A, di), ...)` is generated, provided this assertion cannot be checked at compile time.
 For efficiency reasons, these implicit `assert`-statements may be optionally suppressed.
 
-=== Lower and Upper Index Bounds
+==== Lower and Upper Index Bounds
 
 The lower and upper index bounds for a dimension of an array indexed by `Integer`, `Boolean`, or `enumeration` values are as follows:
 
@@ -130,11 +130,11 @@ The lower and upper index bounds for a dimension of an array indexed by `Integer
 * An array dimension indexed by `Boolean` values has the lower bound `false` and the upper bound `true`.
 * An array dimension indexed by `enumeration` values of the type `E = enumeration(e1, e2, ..., en)` has the lower bound `E.e1` and the upper bound `E.en`.
 
-== Flexible Array Sizes
+=== Flexible Array Sizes
 
 Regarding flexible array sizes and resizing of arrays in functions, see <<flexible-array-sizes-and-resizing-of-arrays-in-functions>>.
 
-== Built-in Array Operators and Functions
+=== Built-in Array Operators and Functions
 
 Modelica provides a number of built-in functions that are applicable to arrays.
 
@@ -174,7 +174,7 @@ Real[3] v2 = vector(m);
 Boolean check[3, 4] = fill(true, 3, 4);
 ----
 
-=== Dimension and Size Functions
+==== Dimension and Size Functions
 
 [cols="1,2,2",options="header"]
 |===
@@ -212,7 +212,7 @@ Returns a vector of length ndims(A) containing the dimension sizes of A.
 
 If A refers to a component of an expandable connector, then the component must be a declared component of the expandable connector, and it must not use colon (`:`) to specify the size of any array dimension.
 
-=== Dimensionality Conversion Functions
+==== Dimensionality Conversion Functions
 
 [cols="1,2,2",options="header"]
 |===
@@ -248,7 +248,7 @@ matrix(A)
 Returns promote(A, 2) if A is a scalar or vector, and otherwise returns the elements of the first two dimensions as a matrix.
 size(A, i) = 1 is required for 2 < i <= ndims(A).
 
-=== Specialized Array Constructor Functions
+==== Specialized Array Constructor Functions
 
 [cols="1,2,2",options="header"]
 |===
@@ -334,7 +334,7 @@ Real[3] v2 = vector(m);
 Boolean check[3, 4] = fill(true, 3, 4);
 ----
 
-=== Reduction Functions and Operators
+==== Reduction Functions and Operators
 
 The reduction functions listed below "reduce" an array (or several scalars) to one value (normally a scalar, but the `sum` reduction function may give an array as result and also be applied to an operator record).
 Note that none of these operators (particularly `min` and `max`) generate events themselves (but arguments could generate events).
@@ -449,7 +449,7 @@ For non-Integer indexing this uses all valid indices instead of 1..end.
 
 The type of product(e(i, ..., j) for i in u, ..., j in v) is the same as the type of e(i, ..., j).
 
-==== Reduction Expressions
+===== Reduction Expressions
 
 An expression:
 [source,modelica]
@@ -494,7 +494,7 @@ sum(i^2 for i in {1,3,7,6}) // Gives sum_{i in {1, 3, 7, 6}}i^2 = 1 + 9 + 49 + 3
 max(i^2 for i in {3,7,6}) // Gives 49
 ----
 
-=== Matrix and Vector Algebra Functions
+==== Matrix and Vector Algebra Functions
 
 Functions for matrix and vector algebra are listed below.
 The function `transpose` can be applied to any matrix.
@@ -563,7 +563,7 @@ Equivalently, skew(x) is given by:
   x[3], 0,   -x[1] ;
  -x[2], x[1], 0    ]
 
-== Vector, Matrix and Array Constructors
+=== Vector, Matrix and Array Constructors
 
 The _array constructor_ function `array(A, B, C, ...)` constructs an array from its arguments according to the following rules:
 
@@ -592,7 +592,7 @@ parameter Angle alpha = 2.0; // type of alpha is Real.
 Angle[3] a = {1.0, alpha, 4}; // type of a is Real[3].
 ----
 
-=== Constructor with Iterators
+==== Constructor with Iterators
 
 An expression:
 [source,modelica]
@@ -620,7 +620,7 @@ The loop-variable has the same type as the type of the elements of array_express
 The loop-variable will have the same type for the entire loop -- i.e., for an array_expression `{1, 3.2}` the iterator will have the type of the type-compatible expression (`Real`) for all iterations.
 For deduction of ranges, see <<implicit-iteration-ranges>>; and for using types as range see <<types-as-iteration-ranges>>.
 
-==== Constructor with One Iterator
+===== Constructor with One Iterator
 
 If only one iterator is used, the result is a vector constructed by evaluating expression for each value of the loop-variable and forming an array of the result.
 
@@ -637,7 +637,7 @@ array(i for i in 1:10)
 // Gives the vector {1, 9, 49, 36}
 ----
 
-==== Constructor with Several Iterators
+===== Constructor with Several Iterators
 
 The notation with several iterators is a shorthand notation for nested array constructors.
 The notation can be expanded into the usual form by replacing each ',' by '} for!' and prepending the array constructor with a '{'.
@@ -649,7 +649,7 @@ Real toeplitz[:,:] = {i-j for i in 1:n, j in 1:n};
 Real toeplitz2[:,:] = {{i-j for i in 1:n} for j in 1:n};
 ----
 
-=== Concatenation
+==== Concatenation
 
 The function `cat(k, A, B, C, ...)` concatenates arrays A, B, C, ... along dimension k according to the following rules:
 
@@ -683,7 +683,7 @@ R[i1, ..., ik, ..., in] = C[i1, ..., ik - size(A,k) - size(B,k), ..., in] for si
 
 where 1 <= ij <= size(R,j) for 1 <= j <= n.
 
-==== Concatenation along First and Second Dimensions
+===== Concatenation along First and Second Dimensions
 
 For convenience, a special syntax is supported for the concatenation along the first and second dimensions:
 
@@ -721,7 +721,7 @@ Real[1,3] m4 = [1, 2, 3];
 Real[3,1] m5 = [1; 2; 3];
 ----
 
-== Vector Construction
+=== Vector Construction
 
 Vectors can be constructed with the general array constructor, e.g.,
 [source,modelica]
@@ -752,7 +752,7 @@ Colors = enumeration (red,blue,green);
 Colors ec[3] = Colors.red : Colors.green;
 ----
 
-== Indexing
+=== Indexing
 
 The array indexing operator `name[...]` is used to access array elements for retrieval of their values or for updating these values.
 An indexing operation is subject to upper and lower array dimension index bounds (see <<array-dimension-lower-and-upper-index-bounds>>).
@@ -810,7 +810,7 @@ If x is a vector, x[1] is a scalar, but the slice x[1:5] is a vector
 |`x[vector([1]), :]`           |2 |1 x m "row" matrix
 |===
 
-=== Boolean or Enumeration Indices
+==== Boolean or Enumeration Indices
 
 Arrays can be indexed using values of enumeration types or the `Boolean` type, not only by `Integer`.
 The type of the index should correspond to the type used for declaring the dimension of the array.
@@ -828,7 +828,7 @@ algorithm
   w[1] := 3; // Error, w was declared with ShirtSizes dimension
 ----
 
-=== Indexing with end
+==== Indexing with end
 
 The expression `end` may only appear inside array subscripts, and if used in the i-th subscript of an array expression A it is equivalent to the upper bound of the i-th dimension of A.
 If used inside nested array subscripts it refers to the most closely nested array.
@@ -846,14 +846,14 @@ Real B[Boolean];
 B[end] // is B[true]
 ----
 
-== Scalar, Vector, Matrix, and Array Operator Functions
+=== Scalar, Vector, Matrix, and Array Operator Functions
 
 The mathematical operations defined on scalars, vectors, and matrices are the subject of linear algebra.
 
 The term numeric or numeric class is used below for a subtype of the `Real` or `Integer` type classes.
 The standard type coercion defined in <<standard-type-coercion>> applies.
 
-=== Equality and Assignment
+==== Equality and Assignment
 
 Equality `a = b` and assignment `a := b` of scalars, vectors, matrices, and arrays is defined element-wise and require both objects to have the same number of dimensions and corresponding dimension sizes.
 See <<array-indexing>> regarding assignments to array variables with vector of subscripts.
@@ -871,7 +871,7 @@ This is legal for the simple types and all types satisfying the requirements for
 |n x m x ... |n x m x ... |n x m x ... |`a[j, k, ...] = b[j, k, ...]`
 |===
 
-=== Addition, Subtraction, and String Concatenation
+==== Addition, Subtraction, and String Concatenation
 
 Addition `a + b` and subtraction `a - b` of numeric scalars, vectors, matrices, and arrays is defined element-wise and require size(a) = size(b) and a numeric type for a and b.
 Unary plus and minus are defined element-wise.
@@ -908,7 +908,7 @@ Element-wise addition `a .+ b` of string scalars, vectors, matrices, and arrays 
 |n x m x ... |n x m x ... |`c[j, k, ...] := ± a[j, k, ...]`
 |===
 
-=== Element-wise Multiplication
+==== Element-wise Multiplication
 
 Scalar multiplication `s * a` or `a * s` with numeric scalar s and numeric scalar, vector, matrix or array a is defined element-wise:
 
@@ -934,7 +934,7 @@ Element-wise multiplication `a .* b` of numeric scalars, vectors, matrices or ar
 |n x m x ... |n x m x ... |n x m x ... |`c[j, k, ...] := a[j, k, ...] * b[j, k, ...]`
 |===
 
-=== Multiplication of Matrices and Vectors
+==== Multiplication of Matrices and Vectors
 
 Multiplication `a * b` of numeric vectors and matrices is defined only for the following combinations:
 
@@ -959,7 +959,7 @@ v * A * v // scalar
 transpose([v]) * A * v // vector with one element
 ----
 
-=== Division by Numeric Scalars
+==== Division by Numeric Scalars
 
 Division `a / s` of numeric scalars, vectors, matrices, or arrays a and numeric scalars s is defined element-wise.
 The result is always of Real type.
@@ -975,7 +975,7 @@ In order to get integer division with truncation, use the function `div`.
 |n x m x ... |Scalar |n x m x ... |`c[j, k, ...] := a[j, k, ...] / s`
 |===
 
-=== Element-wise Division
+==== Element-wise Division
 
 Element-wise division `a ./ b` of numeric scalars, vectors, matrices or arrays a and b requires a numeric type class for a and b and either size(a) = size(b) or scalar a or scalar b.
 The result is always of Real type.
@@ -1001,7 +1001,7 @@ Element-wise division by scalar (`./`) and division by scalar (`/`) are identica
 This is a consequence of the parsing rules, since `2.` is a lexical unit.
 Using a space after the literal solves the problem.
 
-=== Element-wise Exponentiation
+==== Element-wise Exponentiation
 
 Exponentiation `a ^ b` always returns a Real scalar value, and it is required that a and b are scalar Real or Integer expressions.
 The result should correspond to mathematical exponentiation with the following special cases:
@@ -1038,7 +1038,7 @@ Element-wise exponentiation `a .^ b` of numeric scalars, vectors, matrices, or a
 ----
 This is a consequence of the parsing rules, i.e., since `2.` could be a lexical unit it seen as a lexical unit; using a space after literals solves the problem.
 
-=== Scalar Exponentiation of Matrices
+==== Scalar Exponentiation of Matrices
 
 Exponentiation `a ^ s` is defined if a is a square numeric matrix and s is a scalar as a subtype of Integer with s >= 0.
 The exponentiation is done by repeated multiplication, e.g.:
@@ -1053,7 +1053,7 @@ a^1 = a;
 [NOTE]
 Non-Integer exponents are forbidden, because this would require computing the eigenvalues and eigenvectors of a and this is no longer an elementary operation.
 
-=== Slice Operation
+==== Slice Operation
 
 The following holds for slice operations:
 
@@ -1097,22 +1097,22 @@ Member access slicing:
   Real x2[2] = ({Complex(1, 2), Complex(2, 3)} * Complex(1, 1)).im;
 ----
 
-=== Relational Operators
+==== Relational Operators
 
 Relational operators `<`, `<=`, `>`, `>=`, `==`, `<>`, are only defined for scalar operands of simple types, not for arrays (see <<equality-relational-and-logical-operators>>).
 
-=== Boolean Operators
+==== Boolean Operators
 
 The operators `and` and `or` take expressions of Boolean type, which are either scalars or arrays of matching dimensions.
 The operator `not` takes an expression of Boolean type, which is either scalar or an array.
 The result is the element-wise logical operation.
 For short-circuit evaluation of `and` and `or`, see <<evaluation-order>>.
 
-=== Vectorized Calls of Functions
+==== Vectorized Calls of Functions
 
 See <<scalar-functions-applied-to-array-arguments>>.
 
-=== Standard Type Coercion
+==== Standard Type Coercion
 
 In all contexts that require an expression which is a subtype of Real, an expression which is a subtype of Integer can also be used;
 the Integer expression is automatically converted to Real.
@@ -1135,7 +1135,7 @@ RealR r1 = IntegerR(a, a); // Ok, record is automatically coerced
 RealR r2 = RealR(a, a);    // Ok, a is automatically coerced to Real
 ----
 
-== Empty Arrays
+=== Empty Arrays
 
 Arrays may have dimension sizes of 0.
 For example:
