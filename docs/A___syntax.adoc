@@ -1,3 +1,4 @@
+[appendix]
 == Modelica Concrete Syntax
 :id: modelica-concrete-syntax
 

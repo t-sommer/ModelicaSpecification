@@ -1,4 +1,5 @@
-= Modelica DAE Representation
+[appendix]
+== Modelica DAE Representation
 :id: modelica-dae-representation
 
 In this appendix, the mapping of a Modelica model into an appropriate mathematical description form is discussed.
