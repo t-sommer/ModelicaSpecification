@@ -1,4 +1,4 @@
-= Packages
+== Packages
 :id: packages
 
 Packages in Modelica may contain definitions of constants and classes including all kinds of specialized classes, functions, and subpackages.
@@ -14,11 +14,11 @@ Packages are useful for a number of reasons:
 * Information hiding and encapsulation can be supported to some extent by declaring `protected` classes, types, and other definitions that are available only inside the package and therefore inaccessible to outside code.
 * Modelica defines a method for locating a package by providing a standard mapping of package names to storage places, typically file or directory locations in the file system.
 
-== Package as Specialized Class
+=== Package as Specialized Class
 
 The package concept is a specialized class (see <<specialized-classes>>), using the keyword `package`.
 
-== Importing Definitions from a Package
+=== Importing Definitions from a Package
 
 The `import` clause makes public classes and other public definitions declared in some package available for use by shorter names in a class or a package.
 It is the only way of referring to definitions declared in some other package for use inside an encapsulated package or class.
@@ -44,7 +44,7 @@ import shortname = packagename.definitionname; // renaming import
 Here `packagename` is the fully qualified name of the imported package including possible dot notation and `definitionname` is the name of an element in a package.
 The multiple definition import is equivalent to multiple single definition imports with corresponding `packagename` and definition names.
 
-=== Lookup of Imported Names
+==== Lookup of Imported Names
 
 This section only defines how the imported name is looked up in the `import` clause.
 For lookup in general -- including how `import` clauses are used -- see <<static-name-lookup>>.
@@ -75,7 +75,7 @@ import Modelica.Math.ComplexNumbers.*;       // Accessed by Add
 import Co = Modelica.Math.ComplexNumbers;    // Accessed by Co.Add
 ----
 
-=== Rules for Import Clauses
+==== Rules for Import Clauses
 
 The following rules apply to `import` clauses:
 
@@ -86,7 +86,7 @@ The following rules apply to `import` clauses:
 * An imported package or definition should always be referred to by its fully qualified name in the `import` clause.
 * Multiple qualified `import` clauses shall not have the same import name (see <<simple-name-lookup>>).
 
-== The Modelica Library Path -- MODELICAPATH
+=== The Modelica Library Path -- MODELICAPATH
 
 The top-level scope implicitly contains a number of classes stored externally.
 If a top-level name is not found at global scope, a Modelica translator shall look up additional classes in an ordered list of library roots, called `MODELICAPATH`.
@@ -126,7 +126,7 @@ This subdirectory must have a file `package.mo` containing a definition of the p
 The subpackage `Pack2` is stored in its own subdirectory or file in the subdirectory `MyLib`.
 In this case the search succeeds and the package `MyLib.Pack2` is loaded into the environment.
 
-== File System Mapping of Package/Class
+=== File System Mapping of Package/Class
 
 A package/class hierarchy may be represented in the hierarchical structure of the operating system (the file system).
 For classes with version information see also <<mapping-of-versions-to-file-system>>.
@@ -142,7 +142,7 @@ Since the use of BOM is deprecated, tools can ignore any BOM when reading, and i
 [NOTE]
 Tools may also store classes in data-base systems, but that is not standardized.
 
-=== Directory Hierarchy Mapping
+==== Directory Hierarchy Mapping
 
 A directory shall contain a node, the file `package.mo`.
 The node shall contain a `stored-definition` that defines a class `A` with a name matching the name of the structured entity.
@@ -164,13 +164,13 @@ In order to preserve the order of sub-entities it is advisable to create a file 
 If a `package.order` is present when reading a structured entity the classes and constants are added in this order; if the contents does not exactly match the classes and constants in the package, the resulting order is tool specific and a warning may be given.
 Classes and constants that are stored in `package.mo` are also present in `package.order` but their relative order should be identical to the one in `package.mo` (this ensures that the relative order between classes and constants stored in different ways is preserved).
 
-=== Single File Mapping
+==== Single File Mapping
 
 When mapping a package or class hierarchy to a file (e.g., the file `A.mo`), the file content shall match `stored-definition` in the grammar.
 In this case, the `stored-definition` shall only define a single class whose name (here, `A`) matches the name of the nonstructured entity.
 The filename shall have the extension `.mo`.
 
-=== The within Clause
+==== The within Clause
 
 A `within` clause has the following syntax:
 
@@ -196,12 +196,12 @@ package Rotational // Modelica.Mechanics.Rotational
 end Rotational;
 ----
 
-== Stored Definitions Containing Multiple Class Definitions
+=== Stored Definitions Containing Multiple Class Definitions
 
 The `stored-definition` in the grammar allows for zero or more class definitions, but a `stored-definition` not containing exactly one class definition can only be used to define top-level classes, cannot be used for file system mapping of packages or class-hierarchies (see <<file-system-mapping-of-package-class>>), and shall be ignored when searching the `MODELICAPATH` (see <<the-modelica-library-path-modelicapath>>).
 It follows that any `within` clause (see <<the-within-clause>>) in such a `stored-definition` shall not contain a `packageprefixname`.
 
-== External Resources
+=== External Resources
 
 Examples of references to external resources include links and images in HTML documentation, and images in the `Bitmap` annotation (see <<bitmap>>).
 Absolute URIs should be used, for example `file:///` and the URI scheme `modelica:/` which can be used to retrieve resources associated with a package.
@@ -244,7 +244,7 @@ In case the name of the class contains quoted identifiers, the single-quote `'` 
 Consider a top-level package `Modelica` and a class `Mechanics` inside it, a reference such as `modelica:/Modelica.Mechanics/C.jpg` is legal, while `modelica:/Modelica/Mechanics/C.jpg` is illegal.
 The references `modelica:/Modelica.Mechanics/C.jpg` and `modelica:/Modelica/C.jpg` must also refer to two distinct resources.
 
-== Multilingual Descriptions
+=== Multilingual Descriptions
 
 [NOTE]
 Descriptive texts in a model or library are usually formulated in English.
