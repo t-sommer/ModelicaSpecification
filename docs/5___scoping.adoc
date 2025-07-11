@@ -1,13 +1,13 @@
-= Scoping, Name Lookup, and Flattening
+== Scoping, Name Lookup, and Flattening
 :id: scoping-name-lookup-and-flattening
 
 This chapter describes the scope rules, and most of the name lookup and flattening of Modelica.
 
-== Flattening Context
+=== Flattening Context
 
 Flattening is made in a context which consists of a modification environment (see <<modification-environment>>) and an ordered set of enclosing classes.
 
-== Enclosing Classes
+=== Enclosing Classes
 
 The classes lexically enclosing an element form an ordered set of enclosing classes.
 A class defined inside another class definition (the enclosing class) precedes its enclosing class definition in this set.
@@ -38,7 +38,7 @@ The unnamed enclosing class of class definition `C3` contains `C1`, `C2`, and `C
 When flattening class definition `C3`, the set of enclosing classes of the declaration of `x` is the partially flattened class `C3` followed by the unnamed enclosing class with `C1`, `C2`, and `C3`.
 The set of enclosing classes of `z` is `C4`, `C3` and the unnamed enclosing class in that order.
 
-== Static Name Lookup
+=== Static Name Lookup
 
 Names are looked up at class flattening to find names of base classes, component types, etc.
 Implicitly defined names of record constructor functions and enumeration type conversion functions are ignored during type name lookup.
@@ -47,7 +47,7 @@ Names of record classes and enumeration types are ignored during function name l
 [NOTE]
 The reason to ignore the implicitly defined names is that a record and the implicitly created record constructor function, see <<record-constructor-functions>>, and an enumeration type and the implicitly created conversion function (<<type-conversion-of-integer-to-enumeration-values>>), have the same name.
 
-=== Simple Name Lookup
+==== Simple Name Lookup
 
 A class declared with the keyword `encapsulated` is called an encapsulated class.
 By restricting name lookup inside a restricted class in ways defined in this chapter, the meaning of the class is made independent of where it is placed in a package hierarchy.
@@ -71,7 +71,7 @@ This lookup in each instance scope is performed as follows:
 
 The import-clauses defined in inherited classes are ignored for the lookup, i.e., import-clauses are not inherited.
 
-=== Composite Name Lookup
+==== Composite Name Lookup
 
 For a composite name of the form `A.B` or `A.B.C`, etc. lookup is performed as follows:
 
@@ -115,7 +115,7 @@ An `operator` class may only contain declarations of functions and thus fulfills
 In practice, the non-deprecated rules imply that we can call `Complex.'-'.negate` and `Complex.'+'` for the example in <<example-of-overloading-for-complex-numbers>>.
 This requires that `operator '-'` and `operator function '+'` are declared as `encapsulated` as in the example.
 
-=== Global Name Lookup
+==== Global Name Lookup
 
 For a name starting with dot, e.g., `.A` (or `.A.B`, `.A.B.C` etc.) lookup is performed as follows:
 
@@ -131,11 +131,11 @@ For a name starting with dot, e.g., `.A` (or `.A.B`, `.A.B.C` etc.) lookup is pe
 [NOTE]
 The package-restriction ensures that global name lookup of component references can only find global constants.
 
-=== Lookup of Imported Names
+==== Lookup of Imported Names
 
 See <<lookup-of-imported-names>>.
 
-== Inner Declarations - Instance Hierarchy Name Lookup
+=== Inner Declarations - Instance Hierarchy Name Lookup
 
 An element declared with the prefix `outer` references an element instance with the same name but using the prefix `inner` which is nearest in the enclosing instance hierarchy of the `outer` element declaration.
 
@@ -235,7 +235,7 @@ class A
 end A;
 ----
 
-=== Field Functions Using Inner/Outer
+==== Field Functions Using Inner/Outer
 
 [NOTE]
 Inner declarations can be used to define field functions, such as position dependent gravity fields, e.g.:
@@ -265,7 +265,7 @@ class C
 end C;
 ----
 
-== Simultaneous Inner/Outer Declarations
+=== Simultaneous Inner/Outer Declarations
 
 An element declared with both the prefixes `inner` and `outer` conceptually introduces two declarations with the same name: one that follows the above rules for `inner` and another that follows the rules for `outer`.
 
@@ -309,7 +309,7 @@ model System
 end System;
 ----
 
-== Flattening Process
+=== Flattening Process
 
 In order to guarantee that elements can be used before they are declared and that elements do not depend on the order of their declaration (see <<declaration-order-and-usage-before-declaration>>) in the enclosing class, the flattening proceeds in the following two major steps:
 
@@ -322,7 +322,7 @@ Modifications of constants, parameters and variables are included in the form of
 The constants, parameters and variables are defined by globally unique identifiers and all references are resolved to the identifier of the referenced variable.
 No other transformations are performed.
 
-=== Instantiation
+==== Instantiation
 
 The instantiation is performed in two steps.
 First a class tree is created and then from that an instance tree for a particular model is built up.
@@ -332,7 +332,7 @@ An implementation may delay and/or omit building parts of these trees, which mea
 If an error occurs in a part of the tree that is not used for the model to be instantiated the corresponding diagnostics can be omitted (or be given).
 However, errors that should only be reported in a simulation model must be omitted there, since they are not part of the simulation model.
 
-==== The Class Tree
+===== The Class Tree
 
 All necessary libraries including the model which is to be instantiated are loaded (e.g., from a file system) and form a so called class tree.
 This tree represents the syntactic information from the class definitions.
@@ -344,7 +344,7 @@ The class tree is built up directly during parsing of the Modelica texts.
 For each class a local tree is created which is then merged into the one big tree, according to the location of the class in the class hierarchy.
 This tree can be seen as the abstract syntax tree (AST) of the loaded libraries.
 
-==== The Instance Tree
+===== The Instance Tree
 
 The output of the instantiation process is an instance tree.
 The instance tree consists of nodes representing the elements of a class definition from the class tree.
@@ -373,7 +373,7 @@ If the name is not found the lookup is continued in the instance scope correspon
 `extends`-clauses are treated as unnamed nodes in the instance tree -- when searching for an element in an instance scope the search also recursively examines the elements of the `extends`-clauses.
 Except that inherited import-clauses are ignored.
 
-==== The Instantiation Procedure
+===== The Instantiation Procedure
 
 The instantiation is a recursive procedure with the following inputs:
 
@@ -386,9 +386,9 @@ The instantiation starts with the class to be instantiated, an empty modificatio
 During instantiation all lookup is performed using the instance tree, starting from the instance scope of the current element.
 References in modifications and equations are resolved later (during generation of flat equation system) using the same lookup.
 
-==== Steps of Instantiation
+===== Steps of Instantiation
 
-===== The element itself
+====== The element itself
 
 A partially instantiated class or component is an element that is ready to be instantiated; a partially instantiated element (i.e., class or component) is comprised of a reference to the original element (from the class tree) and the modifiers for that element (including a possible redeclaration).
 
@@ -396,7 +396,7 @@ The possible redeclaration of the element itself takes effect.
 
 The class of a partially instantiated component is found in the instance tree (using the redeclaration if any), modifiers merged to that class forming a new partially instantiated class that is instantiated as below.
 
-===== The local contents of the element
+====== The local contents of the element
 
 For local classes and components in the current class, instance nodes are created and inserted into the current instance.
 Modifiers (including class redeclarations) are merged and associated with the instance and the element is partially instantiated.
@@ -411,7 +411,7 @@ The annotations can be relevant for simulations, e.g., annotations for symbolic 
 
 The `extends`-clauses are not looked up, but empty `extends`-clause nodes are created and inserted into the current instance (to be able to preserve the declaration order of components).
 
-===== The inherited contents of the element
+====== The inherited contents of the element
 
 Classes of `extends`-clauses of the current class are looked up in the instance tree, modifiers (including redeclarations) are merged, the contents of these classes are partially instantiated using the new modification environment, and are inserted into an `extends`-clause node, which is an unnamed node in the current instance that only contains the inherited contents from that base class.
 
@@ -423,7 +423,7 @@ It is an error if they are not identical.
 [NOTE]
 Only keeping the first among the children with the same name is important for function arguments where the order matters.
 
-===== Recursive instantiation of components
+====== Recursive instantiation of components
 
 Components (local and inherited) are recursively instantiated.
 
@@ -483,7 +483,7 @@ An implementation can use different heuristics to be more efficient by re-using 
 
 Note that if `D` was consistently replaced by `A` in the example above the result would be identical (but harder to read due to two different classes called `A`).
 
-=== Generation of the Flat Equation System
+==== Generation of the Flat Equation System
 
 During this process, all references by name in conditional declarations, modifications, dimension definitions, annotations, equations and algorithms are resolved to the real instance to which they are referring to, and the names are replaced by the global unique identifier of the instance.
 
