@@ -1,4 +1,4 @@
-= Modelica Language Specification version
+= Modelica Language Specification
 :sectnums:
 // :sectnumlevels: 5
 // :sectlinks:
@@ -6,13 +6,11 @@
 // :toclevels: 5
 // :xrefstyle: short
 // :docinfodir: docs
-// :stem: latexmath
-// :source-highlighter: highlightjs
+:stem: latexmath
+:source-highlighter: highlightjs
 // :nofooter:
 // :favicon: images/favicon.ico
 // :icons: font
-
-
 
 include::docs/0___preamble.adoc[]
 
