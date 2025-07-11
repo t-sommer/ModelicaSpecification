@@ -60,7 +60,7 @@ include::docs/20__library.adoc[]
 
 include::docs/A___syntax.adoc[]
 
-// include::docs/B___dae.adoc[]
+include::docs/B___dae.adoc[]
 
 // include::docs/C___derivationofstream.adoc[]
 
