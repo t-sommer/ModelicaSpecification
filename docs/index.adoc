@@ -54,7 +54,7 @@ include::docs/17__statemachines.adoc[]
 
 include::docs/18__annotations.adoc[]
 
-// include::docs/19__unitexpressions.adoc[]
+include::docs/19__unitexpressions.adoc[]
 
 // include::docs/20__library.adoc[]
 
