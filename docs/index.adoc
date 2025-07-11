@@ -30,7 +30,7 @@ include::docs/5___scoping.adoc[]
 
 include::docs/6___interface.adoc[]
 
-// include::docs/7___inheritance.adoc[]
+include::docs/7___inheritance.adoc[]
 
 // include::docs/8___equations.adoc[]
 
