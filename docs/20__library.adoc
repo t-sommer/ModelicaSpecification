@@ -1,4 +1,4 @@
-= The Modelica Standard Library
+== The Modelica Standard Library
 :id: the-modelica-standard-library
 
 In order that a modeler can quickly build up system models, it is important that libraries of the most commonly used components are available, ready to use, and sharable between applications.
