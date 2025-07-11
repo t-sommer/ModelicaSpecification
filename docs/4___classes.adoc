@@ -1044,12 +1044,13 @@ The following restrictions hold:
   Note that this also applies to components inherited from a partial base-class provided the current class is non-partial.
 * A component declared with the `inner` or `outer` prefix shall not be of a class having top-level public connectors containing inputs.
 * In a declaration of a component of a record, connector, or simple type, modifiers can be applied to any element, and these are also considered for the equation count.
-+
+
 .Example
 [source,modelica]
 ----
 Flange support(phi=phi, tau=torque1+torque2) if use_support;
 ----
+
 If `use_support=true`, there are two additional equations for `support.phi` and `support.tau` via the modifier.
 * In a declarations of a component of a `model` or `block` class, modifiers shall only contain redeclarations of replaceable elements and binding equations.
   The binding equations in modifiers for components may in these cases only be for parameters, constants, inputs and variables having a default binding equation.
