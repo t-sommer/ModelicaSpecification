@@ -48,7 +48,7 @@ include::docs/14__overloaded.adoc[]
 
 include::docs/15__stream.adoc[]
 
-// include::docs/16__synchronous.adoc[]
+include::docs/16__synchronous.adoc[]
 
 // include::docs/17__statemachines.adoc[]
 
