@@ -1,9 +1,9 @@
-= Functions
+== Functions
 :id: functions
 
 This chapter describes the Modelica function construct.
 
-== Function Declaration
+=== Function Declaration
 
 A Modelica _function_ is a specialized class (see <<function-as-a-specialized-class>>) using the keyword `function`.
 The body of a Modelica function is an algorithm section that contains procedural algorithmic code to be executed when the function is called, or alternatively an external function specifier (see <<external-function-interface>>).
@@ -43,7 +43,7 @@ function functionname
 end functionname;
 ----
 
-=== Ordering of Formal Parameters
+==== Ordering of Formal Parameters
 
 The relative ordering between input formal parameter declarations is significant since that determines the matching between actual arguments and formal parameters at function calls with positional parameter passing.
 Likewise, the relative ordering between the declarations of the outputs is significant since that determines the matching with receiving variables at function calls of functions with multiple results.
@@ -66,7 +66,7 @@ function functionname
 end functionname;
 ----
 
-=== Function Return-Statements
+==== Function Return-Statements
 
 The `return` statement terminates the current function call (see <<function-call>>).
 It can only be used in an algorithm section of a function.
@@ -95,7 +95,7 @@ algorithm
 end findValue;
 ----
 
-=== Inheritance of Functions
+==== Inheritance of Functions
 
 It is allowed for a function to inherit and/or modify another function following the usual rules for inheritance of classes (see <<inheritance-modification-and-redeclaration>>).
 
@@ -124,7 +124,7 @@ model M
 end M;
 ----
 
-== Function as a Specialized Class
+=== Function as a Specialized Class
 
 The function concept in Modelica is a specialized class (see <<specialized-classes>>).
 
@@ -166,7 +166,7 @@ Modelica functions have the following enhancements compared to a general Modelic
 * A function allows dimension sizes declared with colon (`:`) to be resized for non-input array variables (see <<flexible-array-sizes-and-resizing-of-arrays-in-functions>>).
 * A function may be defined in a short function definition to be a function partial derivative.
 
-== Pure Modelica Functions
+=== Pure Modelica Functions
 
 Modelica functions are normally _pure_ which makes it easy for humans to reason about the code since they behave as mathematical functions, and possible for compilers to optimize.
 
@@ -291,11 +291,11 @@ algorithm
   // and it might be possible to recover from this error.
 ----
 
-== Function Call
+=== Function Call
 
 Function classes and record constructors (see <<record-constructor-functions>>) and enumeration type conversions (see <<type-conversion-of-integer-to-enumeration-values>>) can be called as described in this section.
 
-=== Positional or Named Input Arguments
+==== Positional or Named Input Arguments
 
 A function call has optional positional arguments followed by zero, one or more named arguments, such as
 
@@ -363,7 +363,7 @@ RealToString(2.0, length=0);
 RealToString(2.0, 6, precision=6); // error: slot is used twice
 ----
 
-=== Functional Input Arguments
+==== Functional Input Arguments
 
 A functional input argument to a function is an argument of function type.
 The declared type of such an input formal parameter in a function can be the type-specifier of a partial function that has no replaceable elements.
@@ -425,7 +425,7 @@ algorithm
 end quadrature2;
 ----
 
-==== Function Partial Application
+===== Function Partial Application
 
 A function partial application is similar to a function call with certain formal parameters bound to expressions, the specific rules are specified in this section and are not identical to the ones for function call in <<positional-or-named-input-arguments-of-functions>>.
 A function partial application returns a partially evaluated function that is also a function, with the remaining not bound formal parameters still present in the same order as in the original function declaration.
@@ -528,7 +528,7 @@ algorithm
 end surfaceQuadrature;
 ----
 
-=== Output Formal Parameters
+==== Output Formal Parameters
 
 A function may have more than one output component, corresponding to multiple return values.
 The only way to use more than the first return value of such a function is to make the function call the right hand side of an equation or assignment.
@@ -587,7 +587,7 @@ The following are illegal:
 (x, y, z) + (u, v, w) // Not LHS of suitable eqn/assignment.
 ----
 
-=== Initialization and Binding Equations
+==== Initialization and Binding Equations
 
 Components in a function can be divided into three groups:
 
@@ -612,7 +612,7 @@ It is recommended to check for use of uninitialized variables statically -- if t
 [NOTE]
 The properties of components in functions described in this section are also briefly described in <<function-as-a-specialized-class>>.
 
-=== Flexible Array Sizes and Resizing of Arrays
+==== Flexible Array Sizes and Resizing of Arrays
 
 [NOTE]
 Flexible setting of array dimension sizes of arrays in functions is also briefly described in <<function-as-a-specialized-class>>.
@@ -653,7 +653,7 @@ algorithm
 end collectPositive;
 ----
 
-=== Automatic Vectorization
+==== Automatic Vectorization
 
 Functions with one scalar return value can be applied to arrays element-wise, e.g., if `A` is a vector of reals, then `sin(A)` is a vector where each element is the result of applying the function `sin` to the corresponding element in `A`.
 Only `function` classes that are transitively non-replaceable (see <<transitively-non-replaceable>> and <<restrictions-on-base-classes-and-constraining-types-to-be-transitively-non-replaceable>>) may be called vectorized.
@@ -709,7 +709,7 @@ end add;
 `add(1, [1,2,3])` adds one to each of the elements of the second argument giving the result `[2,3,4]`.
 For built-in operators one can do this with `1 .+ [1,2,3]` but not with `1 + [1,2,3]`, because the rules for the built-in operators are more restrictive.
 
-=== Empty Function Calls
+==== Empty Function Calls
 
 An _empty_ function call is a call that does not return any results.
 
@@ -728,7 +728,7 @@ algorithm
   Modelica.Math.Matrices.eigen(A); // Empty function call as a statement
 ----
 
-== Built-in Functions
+=== Built-in Functions
 
 There are basically four groups of built-in functions in Modelica:
 
@@ -739,7 +739,7 @@ There are basically four groups of built-in functions in Modelica:
 
 Note that when the specification references a function having the name of a built-in function it references the built-in function, not a user-defined function having the same name.
 
-== Record Constructor Functions
+=== Record Constructor Functions
 
 Whenever a record is defined, a record constructor function with the same name and in the same scope as the record class is implicitly defined according to the following rules:
 
@@ -891,7 +891,7 @@ parameter Demo.Record2 r3 =
 
 The above example is only used to show the different variants appearing with prefixes, but it is not very meaningful, because it is simpler to just use a direct modifier.
 
-== Casting to Record
+=== Casting to Record
 
 A constructor of a record `R` can be used to cast an instance m of a `model`, `block`, `connector` class `M` to a value of type `R`, provided that for each component defined in `R` (that do not have a default value) there is also a public component defined in `M` with identical name and type.
 A nested record component of `R` is handled as follows, if the corresponding component of `M` is a `model`/`block`/`connector` a nested record constructor is called -- otherwise the component is used directly; and the resulting call/component is used as argument to the record constructor `R`.
@@ -970,7 +970,7 @@ model ModelExpanded
 end ModelExpanded;
 ----
 
-== Derivatives and Inverses of Functions
+=== Derivatives and Inverses of Functions
 
 The annotations listed below are related to differentiation and closed-form inverses of functions.
 A function declaration can have `derivative` annotations specifying derivative functions or preferably, for a function written in Modelica, use the `smoothOrder` annotation to indicate that the tool can construct the derivative function automatically.
@@ -986,6 +986,6 @@ Partial derivatives are not provided via annotations, but using a certain type o
 
 See the original document for full details on the annotation syntax and semantics.
 
-== External Function Interface
+=== External Function Interface
 
 See the original document for details on external function interface, argument type mapping, return type mapping, annotations for external libraries and include files, utility functions, and external objects.
