@@ -2,6 +2,7 @@
 :sectnums:
 // :sectnumlevels: 5
 // :sectlinks:
+:toc-title: Contents
 :toc: left
 // :toclevels: 5
 // :xrefstyle: short
@@ -11,6 +12,13 @@
 // :nofooter:
 // :favicon: images/favicon.ico
 // :icons: font
+
+++++
+<div style="text-align: center">
+    <img src="media/Modelica_Language.svg" alt="Modelica Language" style="width: 20em; margin: 4em;"/>
+    <p style="font-size: 1.5em;">Modelica - A Unified Object-Oriented Language for Systems Modeling</p>
+</div>
+++++
 
 include::docs/0___preamble.adoc[]
 
