@@ -1,4 +1,4 @@
-= Unit Expressions
+== Unit Expressions
 :id: unit-expressions
 
 Unless otherwise stated, the syntax and semantics of unit expressions in Modelica (for example, see <<real-type>> or <<axis-properties>>) conform with the international standards _International System of Units (SI)_ by BIPM superseding parts of ISO 31/0-1992 _General principles concerning quantities, units and symbols_ and ISO 1000-1992 _SI units and recommendations for the use of their multiples and of certain other units_.
@@ -9,7 +9,7 @@ Note that this document uses the American spelling _meter_, whereas the SI speci
 
 Examples for the syntax of unit expressions used in Modelica: `"N.m"`, `"kg.m/s2"`, `"kg.m.s-2"`, `"1/rad"`, `"mm/s"`.
 
-== The Syntax of Unit Expressions
+=== The Syntax of Unit Expressions
 
 The Modelica unit string syntax allows neither comments nor white-space, and a unit string shall match the `unit-expression` rule:
 
