@@ -671,15 +671,19 @@ Formally, the concatenation R = cat(k, A, B, C, ...) is defined as follows.
 Let n = ndims(A) = ndims(B) = ndims(C) ...
 Then the size of R is given by
 
+----
 size(R,k) = size(A,k) + size(B,k) + size(C,k) + ...
 size(R,j) = size(A,j) = size(B,j) = size(C,j) = ... for 1 <= j <= n and j != k
+----
 
 and the array elements of R are given by
 
+----
 R[i1, ..., ik, ..., in] = A[i1, ..., ik, ..., in] for 0 < ik <= size(A,k)
 R[i1, ..., ik, ..., in] = B[i1, ..., ik - size(A,k), ..., in] for size(A,k) < ik <= size(A,k) + size(B,k)
 R[i1, ..., ik, ..., in] = C[i1, ..., ik - size(A,k) - size(B,k), ..., in] for size(A,k) + size(B,k) < ik <= size(A,k) + size(B,k) + size(C,k)
 ...
+----
 
 where 1 <= ij <= size(R,j) for 1 <= j <= n.
 
