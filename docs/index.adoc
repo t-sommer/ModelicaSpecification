@@ -37,3 +37,31 @@ include::docs/8___equations.adoc[]
 include::docs/9___connectors.adoc[]
 
 include::docs/10__arrays.adoc[]
+
+include::docs/11__statements.adoc[]
+
+// include::docs/12__functions.adoc[]
+
+// include::docs/13__packages.adoc[]
+
+// include::docs/14__overloaded.adoc[]
+
+// include::docs/15__stream.adoc[]
+
+// include::docs/16__synchronous.adoc[]
+
+// include::docs/17__statemachines.adoc[]
+
+// include::docs/18__annotations.adoc[]
+
+// include::docs/19__unitexpressions.adoc[]
+
+// include::docs/20__library.adoc[]
+
+// include::docs/A___syntax.adoc[]
+
+// include::docs/B___dae.adoc[]
+
+// include::docs/C___derivationofstream.adoc[]
+
+// include::docs/D___revisions.adoc[]
