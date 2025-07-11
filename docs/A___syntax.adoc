@@ -1,7 +1,7 @@
-= Modelica Concrete Syntax
+== Modelica Concrete Syntax
 :id: modelica-concrete-syntax
 
-== Lexical conventions
+=== Lexical conventions
 
 The following syntactic metasymbols are used (extended BNF):
 
@@ -51,9 +51,9 @@ Note:
 
 If a description-string starts with the tag `<html>` or `<HTML>`, the entire string is HTML encoded (assumed to end with `</html>` or `</HTML>`, but to be rendered as HTML even if the end-tag is missing). Otherwise, the entire string is rendered as is. HTML encoded content may contain links in the same way as class documentation, see <<documentation>>.
 
-== Grammar
+=== Grammar
 
-=== Stored Definition -- Within
+==== Stored Definition -- Within
 
 [source,grammar]
 ----
@@ -62,7 +62,7 @@ stored-definition :
    { [ final ] class-definition ";" }
 ----
 
-=== Class Definition
+==== Class Definition
 
 [source,grammar]
 ----
@@ -152,7 +152,7 @@ import-list :
    IDENT { "," IDENT }
 ----
 
-=== Extends
+==== Extends
 
 [source,grammar]
 ----
@@ -172,7 +172,7 @@ inheritance-modification :
     break ( connect-equation | IDENT )
 ----
 
-=== Component Clause
+==== Component Clause
 
 [source,grammar]
 ----
@@ -197,7 +197,7 @@ declaration :
    IDENT [ array-subscripts ] [ modification ]
 ----
 
-=== Modification
+==== Modification
 
 [source,grammar]
 ----
@@ -243,7 +243,7 @@ short-class-definition :
    class-prefixes short-class-specifier
 ----
 
-=== Equations
+==== Equations
 
 [source,grammar]
 ----
@@ -339,7 +339,7 @@ connect-equation :
    connect "(" component-reference "," component-reference ")"
 ----
 
-=== Expressions
+==== Expressions
 
 [source,grammar]
 ----
