@@ -1,3 +1,4 @@
+[appendix]
 == Derivation of Stream Equations
 :id: derivation-of-stream-equations
 
