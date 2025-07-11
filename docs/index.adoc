@@ -50,7 +50,7 @@ include::docs/15__stream.adoc[]
 
 include::docs/16__synchronous.adoc[]
 
-// include::docs/17__statemachines.adoc[]
+include::docs/17__statemachines.adoc[]
 
 // include::docs/18__annotations.adoc[]
 
