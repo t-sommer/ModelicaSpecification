@@ -1,4 +1,4 @@
-= Stream Connectors
+== Stream Connectors
 :id: stream-connectors
 
 The two basic variable types in a connector -- _potential_ (or _across_) variable and _flow_ (or _through_) variable -- are not sufficient to describe in a numerically sound way the bi-directional flow of matter with convective transport of specific quantities, such as specific enthalpy and chemical composition.
@@ -15,7 +15,7 @@ In other words, it is the value the carried quantity would have if the fluid was
 
 The rationale of the definition and typical use cases are described in <<derivation-of-stream-equations>>.
 
-== Definition of Stream Connectors
+=== Definition of Stream Connectors
 
 If at least one variable in a connector has the `stream` prefix, the connector is called a _stream connector_ and the corresponding variable is called a _stream variable_.
 The following definitions hold:
@@ -50,7 +50,7 @@ The stream variables `h_outflow` and `X_outflow` are the stream properties insid
 The stream properties for the other flow direction can be inquired with the built-in `inStream`.
 The value of the stream variable corresponding to the actual flow direction can be inquired through the built-in `actualStream`, see <<stream-operator-actualstream>>.
 
-== inStream and Connection Equations
+=== inStream and Connection Equations
 :id: stream-operator-instream-and-connection-equations
 
 In combination with the stream variables of a connector, `inStream` is designed to describe in a numerically reliable way the bi-directional transport of specific quantities carried by a flow of matter.
@@ -277,7 +277,7 @@ The value of `relativeTolerance` should be larger than the relative tolerance of
 As a final remark, further symbolic simplifications could be carried out by taking into account equations that affect the flows in the connection set (i.e., equivalent to `m_j.c.m_flow = 0`, which then implies `m_j.c.m_flow.min ≥ 0`).
 This is interesting, e.g., in the case of a valve when the stem position is set identically to closed by its controller.
 
-== actualStream
+=== actualStream
 :id: stream-operator-actualstream
 
 `actualStream` is provided for convenience, in order to return the actual value of the stream variable, depending on the actual flow direction.
