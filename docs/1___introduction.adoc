@@ -1,7 +1,5 @@
 == Introduction
 
-xxxx
-
 === Overview of Modelica
 
 Modelica is a language for modeling of cyber-physical systems, supporting acausal connection of components governed by mathematical equations to facilitate modeling from first principles.
