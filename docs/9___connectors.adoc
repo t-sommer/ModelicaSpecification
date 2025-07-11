@@ -1,0 +1,815 @@
+= Connectors and Connections
+:id: connectors-and-connections
+
+This chapter covers connectors, `connect`-equations, and connections.
+
+Connectors and `connect`-equations are designed so that different components can be connected graphically with well-defined semantics.
+However, the graphical part is optional and found in <<annotations>>.
+
+== Connect-Equations and Connectors
+
+Connections between objects are introduced by `connect`-equations in the equation part of a class.
+A `connect`-equation has the following syntax:
+
+.Syntax
+[source,grammar]
+----
+connect "(" component-reference "," component-reference ")" ";"
+----
+
+A _connector_ is an instance of a `connector` class.
+
+The `connect`-equation construct takes two references to connectors, each of which is either of the following forms:
+
+* `c1.c2....cn`, where `c1` is a connector of the class, `n >= 1` and `c_{i+1}` is a connector element of `c_i` for `i = 1, ..., (n - 1)`.
+* `m.c`, where `m` is a non-connector element in the class and `c` is a connector element of `m`.
+
+There may optionally be array subscripts on any of the components; the array subscripts shall be evaluable expressions or the special operator `:`.
+If the connect construct references arrays of connectors, the array dimensions must match, and each corresponding pair of elements from the arrays is connected as a pair of scalar connectors.
+
+.Example
+Array usage:
+[source,modelica]
+----
+connector InPort = input Real;
+connector OutPort = output Real;
+block MatrixGain
+  input InPort u[size(A, 2)];
+  output OutPort y[size(A, 1)];
+  parameter Real A[:, :] = [1];
+equation
+  y = A * u;
+end MatrixGain;
+
+Modelica.Blocks.Sources.Sine sinSource[5];
+MatrixGain gain (A = 5 * identity(5));
+MatrixGain gain2(A = ones(2, 5));
+OutPort x[2];
+equation
+  connect(sinSource.y, gain.u); // Legal
+  connect(gain.y, gain2.u); // Legal
+  connect(gain2.y, x); // Legal
+----
+
+The three main tasks are to:
+
+* Elaborate expandable connectors.
+* Build connection sets from `connect`-equations.
+* Generate equations for the complete model (connection equations).
+
+=== Connection Sets
+
+A connection set is a set of variables connected by means of `connect`-equations.
+A connection set shall contain either only flow variables or only non-flow variables.
+
+=== Inside and Outside Connectors
+
+In an element instance `M`, each connector element of `M` is called an _outside connector_ with respect to `M`.
+Any other connector element that is hierarchically inside `M`, but not in one of the outside connectors of `M`, is called an _inside connector_ with respect to `M`.
+This is done before resolving `outer` elements to corresponding `inner` ones.
+
+.Example
+[source,modelica]
+----
+// In model for component m0:
+connect(m1.c, m3.c); // m1.c and m3.c are inside connectors
+connect(m2.c, m3.c); // m2.c and m3.c are inside connectors
+
+// In model for component m3:
+connect(c, m4.c);   // c is an outside connector, m4.c is an inside connector
+connect(c.x, m5.c); // c.x is an outside connector, m5.c is an inside connector
+connect(c, d);      // c is an outside connector, d is an outside connector
+
+// In model for component m6:
+connect(d, m7.c);   // d is an outside connector, m7.c is an inside connector
+----
+
+=== Expandable Connectors
+
+If the `expandable` qualifier is present on a connector definition, all instances of that connector are referred to as _expandable connectors_.
+Instances of connectors that do not possess this qualifier are _non-expandable connectors_.
+
+Before generating connection equations, non-parameter scalar variables and non-parameter array elements declared in expandable connectors are marked as only being potentially present.
+A non-parameter array element may be declared with array dimensions `:` indicating that the size is unknown (note that the size of such a dimension cannot be determined using `size`, see <<array-dimension-and-size-functions>>).
+This applies to both variables of simple types, and variables of structured types.
+
+Then connections containing expandable connectors are elaborated:
+
+. If a `connect`-equation references a potentially present component as part of the argument it will be marked as being present, which will allow a connection to an undeclared connector inside it.
+. After that at least one connector in the `connect`-equation must reference a declared component.
+. If the other connector is undeclared it must be in a declared component and is handled as follows:
+  * The expandable connector instance is automatically augmented with a new component having the used name and corresponding type.
+  * If the undeclared component is subscripted, an array variable is created, and a connection to the specific array element is performed.
+    Introducing elements in an array gives an array with at least the specified elements, other elements are either not created or have a default value.
+  * If the variable on the other side of the `connect`-equation is `input` or `output` the new component will be either `input` or `output` to satisfy the restrictions in <<restrictions-of-connections-and-connectors>> for a non-expandable connector.
+    For an array the `input`/`output` property can be deduced separately for each array element.
+
+Additionally:
+
+* When two expandable connectors are connected, each is augmented with the variables that are only declared in the other expandable connector (the new variables are neither `input` nor `output`). This is repeated until all connected expandable connector instances have matching variables.
+* The variables introduced in the elaboration follow additional rules for generating connection sets (given in <<generation-of-connection-equations>>).
+* If a variable appears as an `input` in one expandable connector, it should appear as a non-`input` in at least one other expandable connector instance in the same augmentation set.
+
+.Example
+[source,modelica]
+----
+expandable connector EngineBus
+end EngineBus;
+
+partial block Sensor
+  RealOutput speed; // Output, i.e., non-input
+end Sensor;
+partial block Actuator
+  RealInput speed; // Input
+end Actuator;
+
+model SensorWBus
+  EngineBus bus;
+  replaceable Sensor sensor;
+equation
+  connect(bus.speed, sensor.speed); // Provides 'speed'
+end SensorWBus;
+model ActuatorWBus
+  EngineBus bus;
+  replaceable Actuator actuator;
+equation
+  connect(bus.speed, actuator.speed); // Uses 'speed'
+end ActuatorWBus;
+
+model Engine
+  ActuatorWBus actuator;
+  SensorWBus sensor;
+  EngineBus bus;
+equation
+  connect(bus, actuator.bus);
+  connect(bus, sensor.bus);
+end Engine;
+----
+
+This small example shows how expandable connectors are normally used:
+
+* There are a number of bus-instances all connected together.
+* There is one source of the signal: `sensor.sensor.speed`.
+* There are zero or more uses of the signal:  `actuator.actuator.speed`.
+
+* All components in an expandable connector are seen as connector instances even if they are not declared as such.
+
+.Example
+[source,modelica]
+----
+expandable connector EngineBus // has predefined signals
+  import Modelica.Units.SI;
+  SI.AngularVelocity speed;
+  SI.Temperature T;
+end EngineBus;
+
+partial block Sensor
+  RealOutput speed;
+end Sensor;
+
+model Engine
+  EngineBus bus;
+  replaceable Sensor sensor;
+equation
+  connect(bus.speed, sensor.speed);
+  // connection to non-connector speed is possible
+  // in expandable connectors
+end Engine;
+----
+
+* An expandable connector shall not contain a component declared with the prefix `flow`, but may contain non-expandable connector components with `flow` components.
+
+.Example
+[source,modelica]
+----
+import Interfaces=Modelica.Electrical.Analog.Interfaces;
+expandable connector ElectricalBus
+  Interfaces.PositivePin p12, n12; // OK
+  flow Modelica.Units.SI.Current i; // Error
+end ElectricalBus;
+
+model Battery
+  Interfaces.PositivePin p42, n42;
+  ElectricalBus bus;
+equation
+  connect(p42, bus.p42); // Adds new electrical pin
+  connect(n42, bus.n42); // Adds another pin
+end Battery;
+----
+
+* Expandable connectors can only be connected to other expandable connectors.
+
+If a `connect`-equation references a potentially present variable, or variable element, in an expandable connector the variable or variable element is marked as being present, and due to the paragraphs above it is possible to deduce whether the bus variable shall be treated as input, or shall be treated as output in the `connect`-equation.
+That `input` or `output` prefix is added if no `input`/`output` prefix is present on the declaration.
+
+.Example
+[source,modelica]
+----
+expandable connector EmptyBus
+end EmptyBus;
+
+model Controller
+  EmptyBus bus1;
+  EmptyBus bus2;
+  RealInput speed;
+equation
+  connect(speed, bus1.speed); // OK; only one undeclared and not subscripted.
+  connect(bus1.pressure, bus2.pressure); // Error; both undeclared.
+  connect(speed, bus2.speed[2]); // Introduces speed array (with element [2]).
+end Controller;
+----
+
+An expandable connector array component for which `size` is not defined is referred to as a _sizeless array component_.
+Such a component shall not be used without subscripts, and the subscripts must slice the array so that the sizeless dimensions are removed.
+
+.Example
+Valid and invalid uses of sizeless array components:
+[source,modelica]
+----
+expandable connector EngineBus
+end EngineBus;
+
+partial block Sensor
+  RealOutput speed;
+end Sensor;
+
+model Engine
+  parameter Integer n = 1;
+  EngineBus bus;
+  replaceable Sensor sensor;
+  RealOutput sensorSpeeds[:];
+equation
+  connect(bus.speed[n], sensor.speed) ; // OK; subscript to scalar component.
+  connect(bus.speed, sensorSpeeds); // Error; missing subscripts.
+public
+  Real a[:] = bus.speed; // Error; missing subscripts.
+  Real b[2] = bus.speed[{1, 3}]; // OK; subscript selects fixed size sub-array.
+end Engine;
+----
+
+After this elaboration the expandable connectors are treated as normal connector instances, and the connections as normal connections, and all potentially present variables and array elements that are not actually present are undefined.
+It is an error if there are expressions referring to potentially present variables or array elements that are not actually present or non-declared variables.
+This elaboration implies that expandable connectors can be connected even if they do not contain the same components.
+
+.Engine system with sensors, controllers, actuator and plant that exchange information via a bus (i.e., via expandable connectors):
+[source,modelica]
+----
+import Modelica.Units.SI;
+import Modelica.Blocks.Interfaces.RealInput;
+// Plant Side
+model SparkPlug
+  RealInput spark_advance;
+  ...
+end SparkPlug;
+
+expandable connector EngineBus
+  // No minimal set
+end EngineBus;
+
+expandable connector CylinderBus
+  Real spark_advance;
+end CylinderBus;
+
+model Cylinder
+  CylinderBus cylinder_bus;
+  SparkPlug spark_plug;
+  ...
+equation
+  connect(spark_plug.spark_advance,
+  cylinder_bus.spark_advance);
+end Cylinder;
+
+model I4
+  EngineBus engine_bus;
+  Modelica.Mechanics.Rotational.Sensors.SpeedSensor speed_sensor;
+  Modelica.Thermal.HeatTransfer.Sensors.TemperatureSensor temp_sensor;
+  parameter Integer nCylinder = 4 "Number of cylinders";
+  Cylinder cylinder[nCylinder];
+equation
+  // adds engine_speed (as output)
+  connect(speed_sensor.w, engine_bus.engine_speed);
+  // adds engine_temp (as output)
+  connect(temp_sensor.T, engine_bus.engine_temp);
+  // adds cylinder_bus1 (a nested bus)
+  for i in 1:nCylinder loop
+    connect(cylinder[i].cylinder_bus,
+    engine_bus.cylinder_bus[i]);
+  end for;
+end I4;
+----
+
+Due to the above connection, conceptually a connector consisting of the union of all connectors is introduced.
+
+The `engine_bus` contains the following variable declarations:
+[source,modelica]
+----
+RealOutput engine_speed;
+RealOutput engine_temp;
+CylinderBus cylinder_bus[1];
+CylinderBus cylinder_bus[2];
+CylinderBus cylinder_bus[3];
+CylinderBus cylinder_bus[4];
+----
+
+== Generation of Connection Equations
+
+When generating _connection equations_, `outer` elements are resolved to the corresponding `inner` elements in the instance hierarchy (see instance hierarchy name lookup <<instance-hierarchy-name-lookup-of-inner-declarations>>).
+The arguments to each `connect`-equation are resolved to two connector elements.
+
+For every use of the `connect`-equation
+[source,modelica]
+----
+connect(a, b);
+----
+a connection set is generated for each pair of corresponding primitive components of `a` and `b` together with an indication of whether they are from an inside or an outside connector.
+
+[definition]
+.Primitive elements
+The primitive elements are of simple types or of types defined as `operator record` (i.e., a component of an `operator record` type is not split into sub-components).
+
+The elements of the connection sets are tuples of primitive variables together with an indication of inside or outside; if the same tuple belongs to two connection sets those two sets are merged, until every tuple is only present in one set.
+Composite connector types are broken down into primitive components.
+The `outer` components are handled by mapping the objects to the corresponding `inner` components, and the inside indication is not influenced.
+The outer connectors are handled by mapping the objects to the corresponding inner connectors, and they are always treated as outside connectors.
+
+The following connection sets with just one member are also present (and merged):
+
+* Each primitive flow variable as inside connector.
+* Each flow variable added during augmentation of expandable connectors, both as inside and as outside.
+
+Each connection set is used to generate equations for potential and flow (zero-sum) variables of the form
+
+* `a1 = a2 = ... = an` (neither flow nor stream variables)
+* `z1 + z2 + (-z3) + ... + zn = 0` (flow variables)
+
+For an `operator record` type this uses the operator `'0'` -- which must be defined in the operator record -- and all of the flow variables for the `operator record` must be of the same `operator record` type.
+This implies that in order to have flow variables of an `operator record` type the `operator record` must define addition, negation, and `'0'`; and these operations should define an additive group.
+
+In order to generate equations for flow variables (using the `flow` prefix), the sign used for the connector variable `zi` above is +1 for inside connectors and -1 for outside connectors (`z3` in the example above).
+
+.Example
+Simple example:
+[source,modelica]
+----
+model Circuit
+  Ground ground;
+  Load load;
+  Resistor resistor;
+equation
+  connect(load.p , ground.p);
+  connect(resistor.p, ground.p);
+end Circuit;
+
+model Load
+  extends TwoPin;
+  Resistor resistor;
+equation
+  connect(p, resistor.p);
+  connect(resistor.n, n);
+end Load;
+----
+
+The connection sets are before merging (note that one part of the load and resistor is not connected):
+
+```
+{<load.p.i, inside>}
+{<load.n.i, inside>}
+{<ground.p.i, inside>}
+{<load.resistor.p.i, inside>}
+{<load.resistor.n.i, inside>}
+{<resistor.p.i, inside>}
+{<resistor.n.i, inside>}
+{<resistor.p.i, inside>, <ground.p.i, inside>}
+{<resistor.p.v, inside>, <ground.p.v, inside>}
+{<load.p.i, inside>, <ground.p.i, inside>}
+{<load.p.v, inside>, <ground.p.v, inside>}
+{<load.p.i, outside>, <load.resistor.p.i, inside>}
+{<load.p.v, outside>, <load.resistor.p.v, inside>}
+{<load.n.i, outside>, <load.resistor.n.i, inside>}
+{<load.n.v, outside>, <load.resistor.n.v, inside>}
+```
+
+After merging this gives:
+
+```
+{<load.p.i, outside>, <load.resistor.p.i, inside>}
+{<load.p.v, outside>, <load.resistor.p.v, inside>}
+{<load.n.i, outside>, <load.resistor.n.i, inside>}
+{<load.n.v, outside>, <load.resistor.n.v, inside>}
+{<load.p.i, inside>, <ground.p.i, inside>, <resistor.p.i, inside>}
+{<load.p.v, inside>, <ground.p.v, inside>, <resistor.p.v, inside>}
+{<load.n.i, inside>}
+{<resistor.n.i, inside>}
+```
+
+And thus the equations:
+[source,modelica]
+----
+load.p.v = load.resistor.p.v;
+load.n.v = load.resistor.n.v;
+load.p.v = ground.p.v;
+load.p.v = resistor.p.v;
+0 = (-load.p.i) + load.resistor.p.i;
+0 = (-load.n.i) + load.resistor.n.i;
+0 = load.p.i + ground.p.i + resistor.p.i;
+0 = load.n.i;
+0 = resistor.n.i;
+----
+
+.Example
+Outer component example:
+[source,modelica]
+----
+model Circuit
+  Ground ground;
+  Load load;
+  inner Resistor resistor;
+equation
+  connect(load.p, ground.p);
+end Circuit;
+
+model Load
+  extends TwoPin;
+  outer Resistor resistor;
+equation
+  connect(p, resistor.p);
+  connect(resistor.n, n);
+end Load;
+----
+
+The connection sets are before merging:
+
+```
+{<load.p.i, inside>}
+{<load.n.i, inside>}
+{<ground.p.i, inside>}
+{<resistor.p.i, inside>}
+{<resistor.n.i, inside>}
+{<load.p.i, inside>, <ground.p.i, inside>}
+{<load.p.v, inside>, <ground.p.v, inside>}
+{<load.p.i, outside>, <resistor.p.i, inside>}
+{<load.p.v, outside>, <resistor.p.v, inside>}
+{<load.n.i, outside>, <resistor.n.i, inside>}
+{<load.n.v, outside>, <resistor.n.v, inside>}
+```
+
+After merging this gives:
+
+```
+{<load.p.i, outside>, <resistor.p.i, inside>}
+{<load.p.v, outside>, <resistor.p.v, inside>}
+{<load.n.i, outside>, <resistor.n.i, inside>}
+{<load.n.v, outside>, <resistor.n.v, inside>}
+{<load.p.i, inside>, <ground.p.i, inside>}
+{<load.p.v, inside>, <ground.p.v, inside>}
+{<load.n.i, inside>}
+```
+
+And thus the equations:
+[source,modelica]
+----
+load.p.v = resistor.p.v;
+load.n.v = resistor.n.v;
+load.p.v = ground.p.v;
+0 = (-load.p.i) + resistor.p.i;
+0 = (-load.n.i) + resistor.n.i;
+0 = load.p.i + ground.p.i;
+0 = load.n.i;
+----
+
+This corresponds to a direct connection of the resistor.
+
+== Restrictions of Connections and Connectors
+
+* The `connect`-equations (and some special functions for overdetermined connectors) can only be used in normal equations and in some `if`-equations and `for`-equations.
+* A connector component shall not be declared with the prefix `parameter` or `constant`.
+  In the `connect`-equation the primitive components may only connect parameter variables to parameter variables and constant variables to constant variables.
+* The `connect`-equation construct only accepts forms of connector references as specified in <<connect-equations-and-connectors>>.
+* In a `connect`-equation the two connectors must have the same named component elements with the same dimensions; recursively down to the primitive components.
+  The primitive components with the same name are matched and belong to the same connection set.
+* The matched primitive components of the two connectors must have the same primitive types, and flow variables may only connect to other flow variables, stream variables only to other stream variables, and causal variables (`input`/`output`) only to causal variables (`input`/`output`).
+* A connection set of causal variables (`input`/`output`) may at most contain variables from one inside `output` connector (for state-machines extended as specified in <<merging-connections-to-multiple-outputs>>) or one public outside `input` connector.
+* At least one of the following must hold for a connection set containing causal variables generated for a non-partial model or block:
+  . the connection set includes variables from an outside public expandable connector,
+  . the set contains variables from protected outside connectors,
+  . it contains variables from one inside `output` connector, or
+  . from one public outside `input` connector, or
+  . the set is comprised solely of one variable from one inside `input` connector that is not part of an expandable connector.
+* Variables from a protected outside connector must be part of a connection set containing at least one inside connector or one declared public outside connector (i.e., it shall not be an implicitly defined part of an expandable connector).
+* In a connection set, all variables having non-empty `quantity`-attribute must have the same `quantity`-attribute.
+* A `connect`-equation shall not (directly or indirectly) connect two connectors of `outer` elements.
+* Subscripts in a connector reference shall be evaluable expressions or the special operator `:`.
+* Constants or parameters in connected components yield the appropriate `assert`-statements to check that they have the same value; connections are not generated.
+* For conditional connectors, see <<conditional-component-declaration>>.
+
+=== Balancing Restriction and Size of Connectors
+
+For each non-partial non-simple non-expandable connector class the number of flow variables shall be equal to the number of variables that are neither `parameter`, `constant`, `input`, `output`, `stream` nor `flow`.
+The _number of variables_ is the number of all elements in the connector class after expanding all records and arrays to a set of scalars of primitive types.
+The number of variables of an overdetermined type or record class is the size of the output argument of the corresponding `equalityConstraint()` function.
+A simple connector class is not expandable, has some time-varying variables, and has neither `input`, `output`, `stream` nor `flow` variables.
+
+A component of a simple connector class must be declared as `input`, `output`, or `protected`.
+
+.Example
+[source,modelica]
+----
+connector Pin // A physical connector of Modelica.Electrical.Analog
+  Real v;
+  flow Real i;
+end Pin;
+
+connector Plug // A hierarchical connector of Modelica.Electrical.MultiPhase
+  parameter Integer m = 3;
+  Pin p[m];
+end Plug;
+
+connector InputReal = input Real; // A causal input connector
+connector OutputReal = output Real; // A causal output connector
+
+connector Frame_Illegal
+  Modelica.Units.SI.Position r0[3] "Position vector of frame origin";
+  Real S[3, 3] "Rotation matrix of frame";
+  Modelica.Units.SI.Velocity v[3] "Abs. velocity of frame origin";
+  Modelica.Units.SI.AngularVelocity w[3] "Abs. angular velocity of frame";
+  Modelica.Units.SI.Acceleration a[3] "Abs. acc. of frame origin";
+  Modelica.Units.SI.AngularAcceleration z[3] "Abs. angular acc. of frame";
+  flow Modelica.Units.SI.Force f[3] "Cut force";
+  flow Modelica.Units.SI.Torque t[3] "Cut torque";
+end Frame_Illegal;
+----
+
+The `Frame_Illegal` connector (intended to be used in a simple multi-body package without over-determined connectors) is illegal since the number of flow and non-flow variables do not match.
+The solution is to create two connector classes, where two 3-vectors (e.g., `a` and `z`) are acausal `Real` and the other variables are matching pairs of `input` and `output`.
+This ensures that the models can only be connected in a tree-structure or require a "loop-breaker" joint for every closed kinematic loop:
+
+[source,modelica]
+----
+connector Frame_a "correct connector"
+  input Modelica.Units.SI.Position r0[3];
+  input Real S[3, 3];
+  input Modelica.Units.SI.Velocity v[3];
+  input Modelica.Units.SI.AngularVelocity w[3];
+  Modelica.Units.SI.Acceleration a[3];
+  Modelica.Units.SI.AngularAcceleration z[3];
+  flow Modelica.Units.SI.Force f[3];
+  flow Modelica.Units.SI.Torque t[3];
+end Frame_a;
+
+connector Frame_b "correct connector"
+  output Modelica.Units.SI.Position r0[3];
+  output Real S[3, 3];
+  output Modelica.Units.SI.Velocity v[3];
+  output Modelica.Units.SI.AngularVelocity w[3];
+  Modelica.Units.SI.Acceleration a[3];
+  Modelica.Units.SI.AngularAcceleration z[3];
+  flow Modelica.Units.SI.Force f[3];
+  flow Modelica.Units.SI.Torque t[3];
+end Frame_b;
+----
+
+The subsequent connectors `Plug_Expanded` and `Plug_Expanded2` are correct, but `Plug_Expanded_Illegal` is illegal since the number of non-flow and flow variables is different if `n` and `m` are different.
+
+[source,modelica]
+----
+connector Plug_Expanded "correct connector"
+  parameter Integer m=3;
+  Real v[m];
+  flow Real i[m];
+end Plug_Expanded;
+
+connector Plug_Expanded2 "correct connector"
+  parameter Integer m=3;
+  final parameter Integer n=m;
+  Real v[m];
+  flow Real i[n];
+end Plug_Expanded2;
+
+connector Plug_Expanded_Illegal "connector is illegal"
+  parameter Integer m=3;
+  parameter Integer n=m;
+  Real v[m];
+  flow Real i[n];
+end Plug_Expanded_Illegal;
+----
+
+=== Overconstrained Connections
+
+There is a special problem regarding equation systems resulting from _loops_ in connection graphs where the connectors contain _non-flow_ (i.e., potential) variables _dependent_ on each other.
+When a loop structure occurs in such a graph, the resulting equation system will be _overconstrained_, i.e., have more equations than variables, since there are implicit constraints between certain non-flow variables in the connector in addition to the connection equations around the loop.
+At the current state-of-the-art, it is not possible to automatically eliminate the unneeded equations from the resulting equation system without additional information from the model designer.
+
+This section describes a set of equation operators for such overconstrained connection-based equation systems, that makes it possible for the model designer to specify enough information in the model to allow a Modelica environment to automatically remove the superfluous equations.
+
+==== Connection Graphs and Their Operators
+
+A type or record declaration may have an optional definition of function `equalityConstraint` that shall have the following prototype:
+
+[source,modelica]
+----
+type Type // overdetermined type
+  extends <base type>;
+  function equalityConstraint // non-redundant equality
+    input Type T1;
+    input Type T2;
+    output Real residue[n];
+  algorithm
+    residue := ...;
+  end equalityConstraint;
+end Type;
+
+record Record
+  <declaration of record fields>;
+  function equalityConstraint // non-redundant equality
+    input Record R1;
+    input Record R2;
+    output Real residue[n];
+  algorithm
+    residue := ...;
+  end equalityConstraint;
+end Record;
+----
+
+The array dimension `n` of `residue` shall be a constant `Integer` expression that can be evaluated during translation, with `n >= 0`.
+The `equalityConstraint` expresses the equality between the two type instances `T1` and `T2` or the record instances `R1` and `R2`, respectively, as the `n` non-redundant equation residuals returned in `residue`.
+That is, the set of `n` non-redundant equations stating that `R1 = R2` is given by the equation:
+
+[source,modelica]
+----
+Record R1, R2;
+equation
+  0 = Record.equalityConstraint(R1, R2);
+----
+
+A type class with an `equalityConstraint` function declaration is called _overdetermined type_.
+A record class with an `equalityConstraint` function definition is called _overdetermined record_.
+A connector that contains instances of overdetermined type and/or record classes is called _overdetermined connector_.
+An overdetermined type or record may neither have flow components nor may be used as a type of flow components.
+
+Every instance of an overdetermined type or record in an overdetermined connector is a node in a virtual connection graph that is used to determine when the standard equation `R1 = R2` or when the equation `0 = equalityConstraint(R1, R2)` has to be used for the generation of `connect`-equations.
+The edges of the virtual connection graph are implicitly defined by `connect` and explicitly by `Connections.branch`.
+Additionally, corresponding nodes of the virtual connection graph have to be defined as roots or as potential roots with functions `Connections.root` and `Connections.potentialRoot`, respectively.
+
+The overconstrained equation operators for connection graphs are listed below.
+Here, `a` and `b` are connector instances that may be hierarchically structured, e.g., `a` may be an abbreviation for `enginePort.frame_a`.
+
+| Expression | Description | Details |
+|------------|-------------|---------|
+| `connect(a, b)` | Optional spanning-tree edge | See below |
+| `Connections.branch(a.R, b.R)` | Required spanning-tree edge | See below |
+| `Connections.root(a.R)` | Definite root node | See below |
+| `Connections.potentialRoot(a.R, ...)` | Potential root node | See below |
+| `Connections.isRoot(a.R)` | Predicate for being selected as root | See below |
+| `Connections.rooted(a.R)` | Predicate for being closer to root | See below |
+
+- `connect(a, b)`: Defines an optional spanning-tree edge from the overdetermined type or record instances in connector `a` to the corresponding overdetermined type or record instances in connector `b` for a virtual connection graph.
+- `Connections.branch(a.R, b.R)`: Defines a required spanning-tree edge from the overdetermined type or record instance `R` in connector instance `a` to the corresponding overdetermined type or record instance `R` in connector instance `b` for a virtual connection graph.
+- `Connections.root(a.R)`: The overdetermined type or record instance `R` in connector instance `a` is a definite root node in a virtual connection graph.
+- `Connections.potentialRoot(a.R, priority=p)`: The overdetermined type or record instance `R` in connector instance `a` is a potential root node in a virtual connection graph with priority `p` (`p >= 0`). If no second argument is provided, the priority is zero.
+- `Connections.isRoot(a.R)`: Returns true, if the overdetermined type or record instance `R` in connector instance `a` is selected as a root in the virtual connection graph.
+- `Connections.rooted(a.R)`: Returns true, if `a.R` is closer to the root of the spanning tree than `b.R`; otherwise false is returned.
+
+Note, that `Connections.branch`, `Connections.root`, `Connections.potentialRoot` do not generate equations. They only generate nodes and edges in the virtual graph for analysis purposes.
+
+==== Generation of Connection Graph Equations
+
+When generating connection graph equations, only the overdetermined components of a connector are considered.
+The connection graph equations replace the equality-equations for variables that are neither flow nor stream in <<generation-of-connection-equations>>.
+
+In order to eliminate any redundant `connect`-equation the following preparation is needed:
+
+. The connection sets are built similarly to the normal way, but keeping the overdetermined components as primitives.
+. Instead of generating the equality-equation for an overdetermined component, an optional spanning-tree edge in the virtual connection graph is constructed.
+
+The selected optional spanning tree edges, together with all required spanning tree edges generated from `Connections.branch`, and nodes corresponding to definite and potential roots form the virtual connection graph.
+
+Before connection equations are generated, the virtual connection graph is transformed into a set of spanning trees by removing optional spanning tree edges from the graph.
+
+After this analysis, the _connection graph equations_ are generated in the following way:
+
+. For every remaining optional spanning-tree edge in any of the spanning trees, the connection equations are generated according to <<generation-of-connection-equations>>. For `connect(a, b)` with overdetermined connector `R`, this corresponds to the optional spanning-tree edge between `a.R` and `b.R` generating the equation `a.R = b.R`.
+. For every remaining optional spanning-tree edge not in any of the spanning trees, the connection equations are generated according to <<generation-of-connection-equations>>, except for overdetermined type or record instances `R`. Here the equations `0 = R.equalityConstraint(a.R, b.R)` are generated instead of `a.R = b.R`.
+
+==== Examples of Overconstrained Connectors
+
+===== A Power Systems Overdetermined Connector
+
+An overdetermined connector for power systems based on the transformation theory of Park may be defined as:
+
+[source,modelica]
+----
+type AC_Angle "Angle of source, e.g., rotor of generator"
+  extends Modelica.Units.SI.Angle; // AC_Angle is a Real number
+  // with unit = "rad"
+  function equalityConstraint // non-redundant equality
+    input AC_Angle theta1;
+    input AC_Angle theta2;
+    output Real residue[0] "No constraints";
+  algorithm
+    assert(abs(theta1 - theta2) < 1.e-10, "Consistent angles");
+  end equalityConstraint;
+end AC_Angle;
+
+connector AC_Plug "3-phase alternating current connector"
+  import Modelica.Units.SI;
+  AC_Angle theta;
+  SI.Voltage v[3] "Voltages resolved in AC_Angle frame";
+  flow SI.Current i[3] "Currents resolved in AC_Angle frame";
+end AC_Plug;
+----
+
+The currents and voltages in the connector are defined relatively to the harmonic, high-frequency signal of a power source that is essentially described by angle theta of the rotor of the source.
+This allows much faster simulations, since the basic high frequency signal of the power source is not part of the differential equations.
+For example, when the source and the rest of the line operates with constant frequency (= nominal case), then `AC_Plug.v` and `AC_Plug.i` are constant.
+
+An element, such as a 3-phase inductor, may be implemented as:
+
+[source,modelica]
+----
+model AC_Inductor
+  parameter Real X[3,3], Y[3,3]; // component constants
+  AC_Plug p;
+  AC_Plug n;
+  Real omega;
+equation
+  Connections.branch(p.theta,n.theta); //edge in virtual graph
+  // since n.theta = p.theta
+  n.theta = p.theta; // pass angle theta between plugs
+  omega = der(p.theta); // frequency of source
+  zeros(3) = p.i + n.i;
+  X*der(p.i) + omega*Y*p.i = p.v - n.v;
+end AC_Inductor
+----
+
+At the place where the source frequency, i.e., essentially variable theta, is defined, a `Connections.root` must be present:
+
+[source,modelica]
+----
+AC_Plug p;
+equation
+  Connections.root(p.theta);
+  p.theta = 2*Modelica.Constants.pi*50*time; // 50 Hz
+----
+
+The graph analysis performed with the virtual connection graph identifies the connectors, where the `AC_Angle` needs not to be passed between components, in order to avoid redundant equations.
+
+===== A 3-Dimensional Mechanical Systems Overdetermined Connector
+
+An overdetermined connector for 3-dimensional mechanical systems may be defined as:
+
+[source,modelica]
+----
+type TransformationMatrix = Real[3,3];
+type Orientation "Orientation from frame 1 to frame 2"
+  extends TransformationMatrix;
+  function equalityConstraint
+    input Orientation R1 "Rotation from inertial frame to frame 1";
+    input Orientation R2 "Rotation from inertial frame to frame 2";
+    output Real residue[3];
+    protected
+    Orientation R_rel "Relative Rotation from frame 1 to frame 2";
+  algorithm
+    R_rel := R2*transpose(R1);
+    residue := { Modelica.Math.atan2(R_rel[2, 3], R_rel[1, 1]),
+    Modelica.Math.atan2(R_rel[3, 1], R_rel[2, 2]),
+    Modelica.Math.atan2(R_rel[1, 2], R_rel[3, 3])};
+  end equalityConstraint;
+end Orientation;
+
+connector Frame "3-dimensional mechanical connector"
+  import Modelica.Units.SI;
+  SI.Position r[3] "Vector from inertial frame to Frame";
+  Orientation R "Orientation from inertial frame to Frame";
+  flow SI.Force f[3] "Cut-force resolved in Frame";
+  flow SI.Torque t[3] "Cut-torque resolved in Frame";
+end Frame;
+----
+
+A fixed translation from a frame `a` to a frame `b` may be defined as:
+
+[source,modelica]
+----
+model FixedTranslation
+  parameter Modelica.Units.SI.Position r[3];
+  Frame frame_a, frame_b;
+equation
+  Connections.branch(frame_a.R, frame_b.R);
+  frame_b.r = frame_a.r + transpose(frame_a.R)*r;
+  frame_b.R = frame_a.R;
+  zeros(3) = frame_a.f + frame_b.f;
+  zeros(3) = frame_a.t + frame_b.t + cross(r, frame_b.f);
+end FixedTranslation;
+----
+
+At the inertial system, the orientation is consistently initialized and therefore the orientation in the inertial system connector has to be defined as root:
+
+[source,modelica]
+----
+model InertialSystem
+  Frame frame_b;
+equation
+  Connections.root(frame_b.R);
+  frame_b.r = zeros(3);
+  frame_b.R = identity(3);
+end InertialSystem;
+----

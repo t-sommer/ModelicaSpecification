@@ -34,6 +34,6 @@ include::docs/7___inheritance.adoc[]
 
 include::docs/8___equations.adoc[]
 
-// include::docs/9___connectors.adoc[]
+include::docs/9___connectors.adoc[]
 
 // include::docs/10__arrays.adoc[]
