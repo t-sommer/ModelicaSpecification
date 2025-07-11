@@ -1,4 +1,4 @@
-= Interface or Type Relationships
+== Interface or Type Relationships
 :id: interface-or-type-relationships
 
 A class or component, e.g., denoted `A`, can in some cases be used at a location designed for another class or component, e.g., denoted `B`.
@@ -7,7 +7,7 @@ Replaceable classes are the primary mechanism to create very flexible models.
 In this chapter, the precise rules are defined when `A` can be used at a location designed for `B`.
 The restrictions are defined in terms of compatibility rules (<<interface-compatibility-or-subtyping>> and <<plug-compatibility-or-restricted-subtyping>>) between "interfaces" (<<the-concepts-of-type-interface-and-subtype>>); this can also be viewed as sub-typing (<<the-concepts-of-type-interface-and-subtype>>).
 
-== Interface Terminology
+=== Interface Terminology
 In this chapter, two kinds of terminology are used for identical concepts to get better understanding (e.g., by both engineers and computer scientists).
 A short summary of the terms is given in the following table.
 The details are defined in the rest of this chapter.
@@ -46,7 +46,7 @@ In such a case the stricter _plug compatible_ is required for a redeclaration.
 [NOTE]
 E.g., an additional argument must have a default value.
 
-== The Concepts of Type, Interface and Subtype
+=== The Concepts of Type, Interface and Subtype
 A _type_ can conceptually be viewed as a _set of values_.
 When we say that the variable `x` has the type `Real`, we mean that the value of `x` belongs to the set of values represented by the type `Real`, i.e., roughly the set of floating point numbers representable by `Real`, for the moment ignoring the fact that `Real` is also viewed as a class with certain attributes.
 Analogously, the variable `b` having `Boolean` type means that the value of `b` belongs to the set of values {`false`, `true`}.
@@ -83,7 +83,7 @@ image::subtype.png[]
 The type `R` can be defined as the set of record values containing `x` and `b`.
 The subtype `R2` is the subset of values that all contain `x`, `b`, and `y`.
 
-== Interface or Type
+=== Interface or Type
 Based on a flattened class or component we can construct an interface for that flattened class or component.
 The _interface_ or _type_ (the terms _interface_ and _type_ are equivalent and can be used interchangeably, and are different from _inheritance interface_ and _class type_) is defined as the following information about the flattened element itself:
 
@@ -121,7 +121,7 @@ The public interface does not contain all of the information about the class or 
 When using a class as a base class we also need protected elements, and for internal type-checking we need, e.g., import-elements.
 However, the information is sufficient for checking compatibility and for using the class to flatten components.
 
-=== Transitively Non-Replaceable
+==== Transitively Non-Replaceable
 [NOTE]
 In several cases it is important that no new elements can be added to the interface of a class, especially considering short class definitions.
 Such classes are defined as _transitively non-replaceable_.
@@ -134,7 +134,7 @@ A class reference is _transitively non-replaceable_ iff (i.e., if and only if) a
 [NOTE]
 According to <<restrictions-on-base-classes-and-constraining-types-to-be-transitively-non-replaceable>>, for a hierarchical name all parts of the name must be transitively non-replaceable, i.e., in `extends A.B.C` this implies that `A.B.C` must be transitively non-replaceable, as well as `A` and `A.B`, with the exception of the _class extends redeclaration mechanism_ see <<the-class-extends-redeclaration-mechanism>>.
 
-=== Inheritance Interface or Class Type
+==== Inheritance Interface or Class Type
 For inheritance, the interface also must include protected elements; this is the only change compared to above.
 
 Based on a flattened class we can construct an _inheritance interface_ or _class type_ for that flattened class.
@@ -164,7 +164,7 @@ This might have been modified by modifiers and is thus not necessarily identical
 ** Whether it is a built-in type and the built-in type (`RealType`, `IntegerType`, `StringType` or `BooleanType`).
 ** Visibility (`public` or `protected`).
 
-== Interface Compatibility or Subtyping
+=== Interface Compatibility or Subtyping
 An interface of a class or component `A` is compatible with an interface of a class or component `B` (or the constraining interface of `B`), or equivalently that the type of `A` is a subtype of the type of `B`, iff:
 
 * `A` is a class if and only if `B` is a class (and thus: `A` is a component if and only if `B` is a component).
@@ -222,7 +222,7 @@ For a modifier the following must apply:
 If the original constraining flat class is legal (no references to unknown elements and no illegal use of class/component), and modifiers legal as above, then the resulting flat class will be legal
 (no references to unknown elements and no illegal use of class/component and compatible with original constraining class) and references refer to similar entities.
 
-== Plug-Compatibility or Restricted Subtyping
+=== Plug-Compatibility or Restricted Subtyping
 [NOTE]
 If a sub-component is redeclared, see <<redeclaration>>, it is impossible to connect to any new connector.
 A connector with `input` prefix must be connected to, and since one cannot connect across hierarchies, one should not be allowed to introduce such a connector at a level where a connection is not possible.
@@ -305,7 +305,7 @@ That fails for inputs (and expandable connectors may contain inputs).
 For parameters and non-connector inputs it would be possible to provide bindings in a derived class, but that would require hierarchical modifiers and it would be bad modeling practice that a hierarchical modifier must be used in order to make a model valid.
 A replaceable class might be used as the class for a sub-component, therefore plug-compatibility is required not only for replaceable sub-components, but also for replaceable classes.
 
-== Function-Compatibility or Function-Subtyping for Functions
+=== Function-Compatibility or Function-Subtyping for Functions
 [NOTE]
 Functions may be called with either named or positional arguments, and thus both the name and order is significant.
 If a function is redeclared, see <<redeclaration>>, any new arguments must have defaults (and be at the end) in order to preserve the meaning of existing calls.
@@ -368,7 +368,7 @@ Note: `PointMassGravity` is not function-compatible with `GravityInterface` (no 
 The constant `failed` in `planet1`, will violate variability constraints, whereas it will work in `planet2`.
 The call `gravity(frame_a.r0)` will work in both of them.
 
-== Type Compatible Expressions
+=== Type Compatible Expressions
 Certain expressions consist of an operator applied to two or more subexpressions (`A` and `B`).
 This includes:
 

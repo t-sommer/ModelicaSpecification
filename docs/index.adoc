@@ -28,7 +28,7 @@ include::docs/4___classes.adoc[]
 
 include::docs/5___scoping.adoc[]
 
-// include::docs/6___interface.adoc[]
+include::docs/6___interface.adoc[]
 
 // include::docs/7___inheritance.adoc[]
 
