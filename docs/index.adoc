@@ -44,7 +44,7 @@ include::docs/12__functions.adoc[]
 
 include::docs/13__packages.adoc[]
 
-// include::docs/14__overloaded.adoc[]
+include::docs/14__overloaded.adoc[]
 
 // include::docs/15__stream.adoc[]
 
