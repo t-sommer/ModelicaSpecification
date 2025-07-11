@@ -1,4 +1,4 @@
-= Connectors and Connections
+== Connectors and Connections
 :id: connectors-and-connections
 
 This chapter covers connectors, `connect`-equations, and connections.
@@ -6,7 +6,7 @@ This chapter covers connectors, `connect`-equations, and connections.
 Connectors and `connect`-equations are designed so that different components can be connected graphically with well-defined semantics.
 However, the graphical part is optional and found in <<annotations>>.
 
-== Connect-Equations and Connectors
+=== Connect-Equations and Connectors
 
 Connections between objects are introduced by `connect`-equations in the equation part of a class.
 A `connect`-equation has the following syntax:
@@ -57,12 +57,12 @@ The three main tasks are to:
 * Build connection sets from `connect`-equations.
 * Generate equations for the complete model (connection equations).
 
-=== Connection Sets
+==== Connection Sets
 
 A connection set is a set of variables connected by means of `connect`-equations.
 A connection set shall contain either only flow variables or only non-flow variables.
 
-=== Inside and Outside Connectors
+==== Inside and Outside Connectors
 
 In an element instance `M`, each connector element of `M` is called an _outside connector_ with respect to `M`.
 Any other connector element that is hierarchically inside `M`, but not in one of the outside connectors of `M`, is called an _inside connector_ with respect to `M`.
@@ -84,7 +84,7 @@ connect(c, d);      // c is an outside connector, d is an outside connector
 connect(d, m7.c);   // d is an outside connector, m7.c is an inside connector
 ----
 
-=== Expandable Connectors
+==== Expandable Connectors
 
 If the `expandable` qualifier is present on a connector definition, all instances of that connector are referred to as _expandable connectors_.
 Instances of connectors that do not possess this qualifier are _non-expandable connectors_.
@@ -311,7 +311,7 @@ CylinderBus cylinder_bus[3];
 CylinderBus cylinder_bus[4];
 ----
 
-== Generation of Connection Equations
+=== Generation of Connection Equations
 
 When generating _connection equations_, `outer` elements are resolved to the corresponding `inner` elements in the instance hierarchy (see instance hierarchy name lookup <<instance-hierarchy-name-lookup-of-inner-declarations>>).
 The arguments to each `connect`-equation are resolved to two connector elements.
@@ -479,7 +479,7 @@ load.p.v = ground.p.v;
 
 This corresponds to a direct connection of the resistor.
 
-== Restrictions of Connections and Connectors
+=== Restrictions of Connections and Connectors
 
 * The `connect`-equations (and some special functions for overdetermined connectors) can only be used in normal equations and in some `if`-equations and `for`-equations.
 * A connector component shall not be declared with the prefix `parameter` or `constant`.
@@ -502,7 +502,7 @@ This corresponds to a direct connection of the resistor.
 * Constants or parameters in connected components yield the appropriate `assert`-statements to check that they have the same value; connections are not generated.
 * For conditional connectors, see <<conditional-component-declaration>>.
 
-=== Balancing Restriction and Size of Connectors
+==== Balancing Restriction and Size of Connectors
 
 For each non-partial non-simple non-expandable connector class the number of flow variables shall be equal to the number of variables that are neither `parameter`, `constant`, `input`, `output`, `stream` nor `flow`.
 The _number of variables_ is the number of all elements in the connector class after expanding all records and arrays to a set of scalars of primitive types.
@@ -593,7 +593,7 @@ connector Plug_Expanded_Illegal "connector is illegal"
 end Plug_Expanded_Illegal;
 ----
 
-=== Overconstrained Connections
+==== Overconstrained Connections
 
 There is a special problem regarding equation systems resulting from _loops_ in connection graphs where the connectors contain _non-flow_ (i.e., potential) variables _dependent_ on each other.
 When a loop structure occurs in such a graph, the resulting equation system will be _overconstrained_, i.e., have more equations than variables, since there are implicit constraints between certain non-flow variables in the connector in addition to the connection equations around the loop.
@@ -601,7 +601,7 @@ At the current state-of-the-art, it is not possible to automatically eliminate t
 
 This section describes a set of equation operators for such overconstrained connection-based equation systems, that makes it possible for the model designer to specify enough information in the model to allow a Modelica environment to automatically remove the superfluous equations.
 
-==== Connection Graphs and Their Operators
+===== Connection Graphs and Their Operators
 
 A type or record declaration may have an optional definition of function `equalityConstraint` that shall have the following prototype:
 
@@ -671,7 +671,7 @@ Here, `a` and `b` are connector instances that may be hierarchically structured,
 
 Note, that `Connections.branch`, `Connections.root`, `Connections.potentialRoot` do not generate equations. They only generate nodes and edges in the virtual graph for analysis purposes.
 
-==== Generation of Connection Graph Equations
+===== Generation of Connection Graph Equations
 
 When generating connection graph equations, only the overdetermined components of a connector are considered.
 The connection graph equations replace the equality-equations for variables that are neither flow nor stream in <<generation-of-connection-equations>>.
@@ -690,9 +690,9 @@ After this analysis, the _connection graph equations_ are generated in the follo
 . For every remaining optional spanning-tree edge in any of the spanning trees, the connection equations are generated according to <<generation-of-connection-equations>>. For `connect(a, b)` with overdetermined connector `R`, this corresponds to the optional spanning-tree edge between `a.R` and `b.R` generating the equation `a.R = b.R`.
 . For every remaining optional spanning-tree edge not in any of the spanning trees, the connection equations are generated according to <<generation-of-connection-equations>>, except for overdetermined type or record instances `R`. Here the equations `0 = R.equalityConstraint(a.R, b.R)` are generated instead of `a.R = b.R`.
 
-==== Examples of Overconstrained Connectors
+===== Examples of Overconstrained Connectors
 
-===== A Power Systems Overdetermined Connector
+====== A Power Systems Overdetermined Connector
 
 An overdetermined connector for power systems based on the transformation theory of Park may be defined as:
 
@@ -753,7 +753,7 @@ equation
 
 The graph analysis performed with the virtual connection graph identifies the connectors, where the `AC_Angle` needs not to be passed between components, in order to avoid redundant equations.
 
-===== A 3-Dimensional Mechanical Systems Overdetermined Connector
+====== A 3-Dimensional Mechanical Systems Overdetermined Connector
 
 An overdetermined connector for 3-dimensional mechanical systems may be defined as:
 
