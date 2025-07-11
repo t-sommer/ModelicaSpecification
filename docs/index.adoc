@@ -62,6 +62,6 @@ include::docs/A___syntax.adoc[]
 
 include::docs/B___dae.adoc[]
 
-// include::docs/C___derivationofstream.adoc[]
+include::docs/C___derivationofstream.adoc[]
 
 // include::docs/D___revisions.adoc[]
