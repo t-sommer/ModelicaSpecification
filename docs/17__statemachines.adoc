@@ -1,4 +1,4 @@
-= State Machines
+== State Machines
 :id: state-machines
 
 This chapter defines language elements to define clocked state machines.
@@ -23,7 +23,7 @@ The following properties are different to Lucid Synchrone 3.0:
   They might contain clocked equations.
   If the equations are discretized, they are integrated between the previous and the current clock tick, if the corresponding state is active.
 
-== Transitions
+=== Transitions
 
 Any Modelica block instance without continuous-time equations or continuous-time algorithms can potentially be a state of a state machine.
 A cluster of instances which are coupled by `transition` statements makes a state machine.
@@ -52,9 +52,9 @@ The operators listed below are used to query the status of the state machine.
 |`timeInState()` |Time since activation |<<modelica:timeInState>>
 |===
 
-=== Operator Definitions
+==== Operator Definitions
 
-==== transition
+===== transition
 
 [source,modelica]
 ----
@@ -76,7 +76,7 @@ If `reset = true`, the states of the target state are reinitialized, i.e., state
 If `synch = true`, any transition is disabled until all state machines of the from-state have reached final states, i.e., states without outgoing transitions.
 For the precise details about firing a transition, see <<state-machine-semantics>>.
 
-==== initialState
+===== initialState
 
 [source,modelica]
 ----
@@ -86,7 +86,7 @@ initialState(state)
 Argument `state` is the block instance that is defined to be the initial state of a state machine.
 At the first clock tick of the state machine, this state becomes active.
 
-==== activeState
+===== activeState
 
 [source,modelica]
 ----
@@ -99,7 +99,7 @@ If it is not active, the operator returns `false`.
 
 It is an error if the instance is not a state of a state machine.
 
-==== ticksInState
+===== ticksInState
 
 [source,modelica]
 ----
@@ -111,7 +111,7 @@ In the case of a self-transition to the currently active state or to an active e
 
 This function can only be used in state machines.
 
-==== timeInState
+===== timeInState
 
 [source,modelica]
 ----
@@ -139,7 +139,7 @@ equation
   transition(A1, A2, ticksInState() >= 5, immediate = false);
 ----
 
-== State Machine Graphics
+=== State Machine Graphics
 
 [NOTE]
 See <<fig-state-machine-layout>> for the recommended layout of a state machine.
@@ -188,7 +188,7 @@ The value of the `priority` attribute is prefixing the condition text followed b
 
 The `initialState` line has a filled arrow head and a bullet at the opposite end of the initial state (as shown above).
 
-== State Machine Semantics
+=== State Machine Semantics
 
 For the purpose of defining the semantics of state machines, assume that the data of all transitions are stored in an array of records:
 
@@ -214,7 +214,7 @@ For sub-state machines, active is true only when the parent state is active.
 For a top-level state machine, reset is true at the first activation only.
 For sub-state machine, reset is propagated from the state machines higher up.
 
-=== State Activation
+==== State Activation
 
 The state update starts from `nextState`, i.e., what has been determined to be the next state at the previous time.
 `selectedState` takes into account if a reset of the state machine is to be done.
@@ -294,7 +294,7 @@ Boolean stateMachineInFinalState = finalStates[activeState];
 To enable a synchronize transition, all the `stateMachineInFinalState` conditions of all state machines within the meta state must be true.
 An example is given below in the semantic example model.
 
-=== Reset Handling
+==== Reset Handling
 
 A state can be reset for two reasons:
 
@@ -327,7 +327,7 @@ Boolean nextResetStates[nStates] =
 The second reset mechanism is implemented with the `selectedReset` and `nextReset` variables.
 If no reset transition is fired, the `nextReset` is set to false for the next cycle.
 
-=== Activation Handling
+==== Activation Handling
 
 When a state is suspended, its equations should not be executed, and its variables keep their values -- including state-variables in discretized equations.
 
@@ -335,7 +335,7 @@ The execution of a sub-state machine has to be suspended when its enclosing stat
 This activation flag is given as a `Boolean` input `active`.
 When this flag is true, the sub-state machine maintains its previous state, by guarding the equations of the state variables `nextState`, `nextReset` and `nextResetStates`.
 
-=== Semantics Summary
+==== Semantics Summary
 
 The entire semantics model is given below:
 
@@ -381,7 +381,7 @@ model StateMachineSemantics "Semantics of state machines"
 end StateMachineSemantics;
 ----
 
-=== Merging Variable Definitions
+==== Merging Variable Definitions
 
 [NOTE]
 When a state class uses an `outer output` declaration, the equations have access to the corresponding variable declared `inner`.
@@ -407,7 +407,7 @@ A start value must be given to the variable if not assigned in the initial state
 
 A new assignment equation is formed which might be merged on higher levels in nested state machines.
 
-=== Merging Connections to Outputs
+==== Merging Connections to Outputs
 
 [NOTE]
 The causal connection semantics of Modelica for non-state machines are generalized to states of state machines, using the fact that only one state is active at a time.
@@ -437,7 +437,7 @@ u2 = v
 ...
 ----
 
-== Example
+=== Example
 
 image::hierarchical-statemachine.png[caption="Example of a hierarchical state machine."]
 
