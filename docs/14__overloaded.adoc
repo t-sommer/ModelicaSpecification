@@ -1,4 +1,4 @@
-= Overloaded Operators
+== Overloaded Operators
 :id: overloaded-operators
 
 A Modelica `operator record` can overload the behavior for operations such as constructing, adding, multiplying etc.
@@ -7,7 +7,7 @@ The overloading is defined in such a way that ambiguities are not allowed and gi
 Furthermore, it is sufficient to define overloading for scalars.
 Some overloaded array operations are automatically deduced from the overloaded scalar operations (see <<overloaded-binary-arrays>> and <<overloaded-unary-array>>), and others can be defined independently of the corresponding scalar operations.
 
-== Overview of Overloaded Operators
+=== Overview of Overloaded Operators
 
 In an `operator record` the definition of operations are done using the specialized class `operator` (a specialized class similar to `package`, see <<specialized-classes>>) followed by the name of the operation.
 Each `operator` class is comprised of functions implementing different variants of the operation for the `operator record` class in which the definition resides.
@@ -35,7 +35,7 @@ The precedence and associativity of the overloaded operators is identical to the
 [NOTE]
 Operator overloading as defined in this section is only a short hand notation for function calls.
 
-== Matching Function
+=== Matching Function
 
 All functions defined inside the `operator` class must return one output, and may include functions with optional arguments, i.e., functions of the form:
 
@@ -62,7 +62,7 @@ A call `f(a1, a2, ..., ak, b1=w1, ..., bp=wp)` with distinct names `bj` is a val
 [NOTE]
 This corresponds to the normal treatment of function calls with named arguments, requiring that all inputs have some value given by a positional argument, named argument, or a default value (and that positional and named arguments do not overlap).
 
-== Overloaded Constructors
+=== Overloaded Constructors
 
 Let `C` denote an operator record class and consider an expression `C(a1, a2, ..., ak, b1=w1, ..., bp=wp)`.
 
@@ -83,7 +83,7 @@ Additionally there is an operator `'0'` defining the zero-value which can also b
 The operator `'0'` for an operator record `C` can contain only one function, having zero inputs and one output of type `C`.
 It should return the identity element of addition, and is used for generating flow-equations for `connect`-equations and zero elements for matrix multiplication.
 
-== Overloaded String Conversions
+=== Overloaded String Conversions
 
 Consider an expression `String(a1, a2, ..., ak, b1=w1, ..., bp=wp)`, `k ≥ 1` where `a1` is an element of class `A`.
 
@@ -96,7 +96,7 @@ Restrictions:
 * The operator `A.'String'` shall only contain functions that declare one output component, which shall be of the `String` type, and the first input argument shall be of the operator record class `A`.
 * For an operator record class there shall not exist any call that leads to multiple matches.
 
-== Overloaded Binary Operations
+=== Overloaded Binary Operations
 
 Let `op` denote a binary operator and consider an expression `a op b` where `a` is an instance or array of instances of class `A` and `b` is an instance or array of instances of class `B`.
 
@@ -113,7 +113,7 @@ Restrictions:
 * A function is allowed for a binary operator if and only if it has at least two inputs; at least one of which is of the operator record class, and the first two inputs shall not have default values, and all inputs after the first two must have default values.
 * For an operator record class there shall not exist any (potential) call that leads to multiple matches.
 
-== Overloaded Unary Operations
+=== Overloaded Unary Operations
 
 Let `op` denote a unary operator and consider an expression `op a` where `a` is an instance or array of instances of class `A`.
 
@@ -128,7 +128,7 @@ Restrictions:
 * For an operator record class there shall not exist any (potential) call that leads to multiple matches.
 * A binary and/or unary operator-class may only contain functions that are allowed for this binary and/or unary operator-class; and in case of `'-'` it is the union of these sets, since it may define both a unary (negation) and binary (subtraction) operator.
 
-== Example of Overloading for Complex Numbers
+=== Example of Overloading for Complex Numbers
 
 The following example demonstrates the rules above for a record class to work conveniently with complex numbers:
 
