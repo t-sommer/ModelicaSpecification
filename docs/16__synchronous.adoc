@@ -1,4 +1,4 @@
-= Synchronous Language Elements
+== Synchronous Language Elements
 :id: synchronous-language-elements
 
 This chapter defines synchronous behavior suited for implementation of control systems.
@@ -27,7 +27,7 @@ E * xd = A * previous(xd) + B * yd;
 * If a variable belongs to a particular clock, then all other equations where this variable is used, with the exception of as argument to certain special operators, belong also to this clock, as well as all variables that are used in these equations. This property is used for clock inference and allows defining an associated clock only at a few places (above only in the sampler, whereas in the discrete controller and the hold the sampling period is inferred).
 * The approach in this chapter is based on the clock calculus and inference system proposed by Colaco & Pouzet (2003) and implemented in Lucid Synchrone version 2 and 3 (Pouzet 2006). However, the Modelica approach also uses multi-rate periodic clocks based on rational arithmetic introduced by Forget et al. (2008), as an extension of the Lucid Synchrone semantics. These approaches belong to the class of synchronous languages (Benveniste et al. 2003).
 
-== Rationale for Clocked Semantics
+=== Rationale for Clocked Semantics
 
 [NOTE]
 Periodically sampled control systems could also be defined with standard `when`-clauses, see <<when-equations>>, and the `sample` operator, see <<event-related-operators-with-function-syntax>>.
@@ -52,9 +52,9 @@ Using standard `when`-clauses works well for individual simple sampled blocks, b
 . Clocked equations are straightforward to optimize because they are evaluated exactly once at each event instant.
 . Clocked subsystems using arithmetic blocks are straightforward to optimize.
 
-== Definitions
+=== Definitions
 
-=== Clocks and Clocked Variables
+==== Clocks and Clocked Variables
 
 In <<discrete-time-expressions>> the term _discrete-time_ Modelica expression and in <<continuous-time-expressions>> the term _continuous-time_ Modelica expression is defined.
 In this chapter, two additional kinds of discrete-time expressions/variables are defined that are associated to clocks and are therefore called _clocked discrete-time_ expressions.
@@ -92,7 +92,7 @@ In such a case `hold` semantics is used, in other words the value of the clocked
 
 image::clocked.png[caption="A clocked variable. The hold extrapolation of the value at the last event instant is illustrated with dashed green lines."]
 
-=== Base- and Sub-Partitions
+==== Base- and Sub-Partitions
 
 There are two kinds of _clock partitions_:
 
@@ -110,7 +110,7 @@ The terminology for the partitions is as follows:
 ** Discretized sub-partitions
 * Unclocked base-partition
 
-=== Argument Restrictions (Component Expression)
+==== Argument Restrictions (Component Expression)
 
 The built-in operators (with function syntax) defined in the following sections have partially restrictions on their input arguments that are not present for Modelica functions.
 
@@ -148,7 +148,7 @@ y3 = subSample(u, factor = 3 * u);     // error (general expression)
 None of the operators defined in this chapter vectorize, but some can operate directly on array variables (including clocked array variables, but not clock array variables).
 They are not callable in functions.
 
-== Clock Constructors
+=== Clock Constructors
 
 The overloaded constructors listed below are available to generate clocks, and it is possible to call them with the specified named arguments, or with positional arguments.
 
@@ -164,7 +164,7 @@ The overloaded constructors listed below are available to generate clocks, and i
 
 See the original document for full details on the constructors and their semantics.
 
-== Clocked State Variables
+=== Clocked State Variables
 
 .Definition: Clocked state variable
 A component expression which is not a parameter, and to which `previous` has been applied.
@@ -177,11 +177,11 @@ The previous value of a clocked variable can be accessed with the `previous` ope
 |`previous(u)` |Previous value of clocked variable |<<modelica:previous>>
 |===
 
-== Partitioning Operators
+=== Partitioning Operators
 
 A set of _clock conversion operators_ together act as boundaries between different clock partitions.
 
-=== Base-Clock Conversion Operators
+==== Base-Clock Conversion Operators
 
 [cols="1,2,2",options="header"]
 |===
@@ -190,7 +190,7 @@ A set of _clock conversion operators_ together act as boundaries between differe
 |`hold(u)` |Zeroth order hold of clocked-time variable |<<modelica:hold>>
 |===
 
-=== Sub-Clock Conversion Operators
+==== Sub-Clock Conversion Operators
 
 [cols="1,2,2",options="header"]
 |===
@@ -202,7 +202,7 @@ A set of _clock conversion operators_ together act as boundaries between differe
 |`noClock(u)` |Clock that is always inferred |<<modelica:noClock>>
 |===
 
-== Clocked When-Clause
+=== Clocked When-Clause
 
 In addition to the previously discussed `when`-equation (see <<when-equations>>), a _clocked_ `when`-clause is introduced:
 
@@ -220,7 +220,7 @@ General equations are allowed in a clocked `when`-clause.
 
 For a clocked `when`-clause, all equations inside the `when`-clause are clocked with the same clock given by the `clockExpression`.
 
-== Clock Partitioning
+=== Clock Partitioning
 
 This section defines how clock-partitions and clocks associated with equations are inferred.
 
@@ -238,7 +238,7 @@ The clock inference works both forward and backwards regarding the data flow and
 
 See the original document for full details on the partitioning, flattening, and connected components.
 
-== Discretized Sub-Partition
+=== Discretized Sub-Partition
 
 The goal is that every continuous-time Modelica model can be utilized in a sampled data control system.
 This is achieved by solving the continuous-time equations with a defined integration method between clock ticks.
@@ -249,7 +249,7 @@ From the viewpoint of other partitions, the discretized continuous-time variable
 Therefore, outside the discretized sub-partitions themselves, they are treated similarly to discrete-time sub-partitions.
 Especially, operators such as `sample`, `hold`, `subSample` must be used to communicate signals of the discretized sub-partition with other partitions.
 
-== Solver Methods
+=== Solver Methods
 
 A sub-partition can have an integration method, directly associated or inferred from other sub-partitions.
 A predefined type `ModelicaServices.Types.SolverMethod` defines the methods supported by the respective tool by using the `choices` annotation.
@@ -270,12 +270,12 @@ type SolverMethod = String annotation(choices(
 
 See the original document for full details on solver methods, associating solvers to partitions, and inferencing.
 
-== Initialization of Clocked Partitions
+=== Initialization of Clocked Partitions
 
 * Variables in discrete-time sub-partitions cannot be used in initial equation or initial algorithm sections.
 * Attribute `fixed` cannot be applied to variables in discrete-time sub-partitions. The attribute `fixed` is true for clocked states, otherwise false.
 
-== Other Operators
+=== Other Operators
 
 A few additional utility operators are listed below.
 
@@ -288,7 +288,7 @@ A few additional utility operators are listed below.
 
 It is an error if these operators are called in the unclocked base-partition.
 
-== Semantics
+=== Semantics
 
 The execution of sub-partitions requires exact time management for proper synchronization.
 The implication is that testing a `Real`-valued time variable to determine sampling instants is not possible.
