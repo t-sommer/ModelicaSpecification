@@ -7,4 +7,4 @@
 - add headers to tables
 - fix xrefs
 - fix latex in Appendix B and C
-- use custom highlight.js (https://docs.asciidoctor.org/asciidoctor/latest/syntax-highlighting/highlightjs/#use-a-custom-highlight-js-library)
+- convert EBNF to ISO/IEC 14977

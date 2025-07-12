@@ -5,10 +5,10 @@
 :toc-title: Contents
 :toc: left
 // :toclevels: 5
-// :xrefstyle: short
+:xrefstyle: short
 // :docinfodir: docs
 :stem: latexmath
-:source-highlighter: highlightjs
+:source-highlighter: pygments
 // :nofooter:
 // :favicon: images/favicon.ico
 // :icons: font
