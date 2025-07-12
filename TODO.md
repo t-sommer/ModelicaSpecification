@@ -8,3 +8,4 @@
 - fix xrefs
 - fix latex in Appendix B and C
 - convert EBNF to ISO/IEC 14977
+- update copyright year

@@ -9,7 +9,7 @@
 // :docinfodir: docs
 :stem: latexmath
 :source-highlighter: pygments
-// :nofooter:
+:nofooter:
 // :favicon: images/favicon.ico
 // :icons: font
 
