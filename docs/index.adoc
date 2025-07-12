@@ -5,6 +5,8 @@
 :toc-title: Contents
 :toc: left
 // :toclevels: 5
+:idprefix:
+:idseparator: -
 :xrefstyle: short
 // :docinfodir: docs
 :stem: latexmath
