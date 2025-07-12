@@ -116,7 +116,7 @@ end Example;
 Relying on implicit conversion of `Integer` literals to `Real` is common, as seen in the equation above (note use of Modelica code appearing inline in the text).
 
 It is common to mix Modelica code with mathematical notation.
-For example, `average(x, y)` could be defined as x + y divided by 2.
+For example, `average(x, y)` could be defined as latexmath:[\frac{x + y}{2}].
 
 Inline code fragments are sometimes surrounded by quotes to clearly mark their beginning and end, or to emphasize separation from the surrounding text.
 For example, `,` is used to separate the arguments of a function call.
