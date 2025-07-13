@@ -69,20 +69,35 @@ Any other connector element that is hierarchically inside `M`, but not in one of
 This is done before resolving `outer` elements to corresponding `inner` ones.
 
 .Example
+====
+image::media/innerouterconnector.svg[]
+
+The figure visualizes the following `connect`-equations to the `connector` `c` in the models `mi`.
+Consider the following `connect`-equations found in the model for component `m0`:
+
 [source,modelica]
 ----
 // In model for component m0:
 connect(m1.c, m3.c); // m1.c and m3.c are inside connectors
 connect(m2.c, m3.c); // m2.c and m3.c are inside connectors
+----
 
-// In model for component m3:
+and in the model for component `m3` (`c.x` is a sub-connector inside `c`):
+
+[source,modelica]
+----
 connect(c, m4.c);   // c is an outside connector, m4.c is an inside connector
 connect(c.x, m5.c); // c.x is an outside connector, m5.c is an inside connector
 connect(c, d);      // c is an outside connector, d is an outside connector
+----
 
-// In model for component m6:
+and in the model for component `m6`:
+
+[source,modelica]
+----
 connect(d, m7.c);   // d is an outside connector, m7.c is an inside connector
 ----
+====
 
 ==== Expandable Connectors
 
@@ -593,7 +608,7 @@ connector Plug_Expanded_Illegal "connector is illegal"
 end Plug_Expanded_Illegal;
 ----
 
-==== Overconstrained Connections
+=== Overconstrained Connections
 
 There is a special problem regarding equation systems resulting from _loops_ in connection graphs where the connectors contain _non-flow_ (i.e., potential) variables _dependent_ on each other.
 When a loop structure occurs in such a graph, the resulting equation system will be _overconstrained_, i.e., have more equations than variables, since there are implicit constraints between certain non-flow variables in the connector in addition to the connection equations around the loop.
@@ -601,7 +616,7 @@ At the current state-of-the-art, it is not possible to automatically eliminate t
 
 This section describes a set of equation operators for such overconstrained connection-based equation systems, that makes it possible for the model designer to specify enough information in the model to allow a Modelica environment to automatically remove the superfluous equations.
 
-===== Connection Graphs and Their Operators
+==== Connection Graphs and Their Operators
 
 A type or record declaration may have an optional definition of function `equalityConstraint` that shall have the following prototype:
 
@@ -674,29 +689,68 @@ Here, `a` and `b` are connector instances that may be hierarchically structured,
 
 Note, that `Connections.branch`, `Connections.root`, `Connections.potentialRoot` do not generate equations. They only generate nodes and edges in the virtual graph for analysis purposes.
 
-===== Generation of Connection Graph Equations
+==== Generation of Connection Graph Equations
+:id: generation-of-connection-graph-equations
 
 When generating connection graph equations, only the overdetermined components of a connector are considered.
 The connection graph equations replace the equality-equations for variables that are neither flow nor stream in <<generation-of-connection-equations>>.
 
-In order to eliminate any redundant `connect`-equation the following preparation is needed:
+===== Handle Connect-Equation Redundancy
+
+In order to eliminate any redundant `connect`-equation the following preparation is needed.
+
+[NOTE]
+In the common case where there is no `connect`-equation redundancy, a consequence of this preparation is that a `connect`-equation between connectors with *one* overdetermined component may be directly turned into *one* optional spanning-tree edge.
 
 . The connection sets are built similarly to the normal way, but keeping the overdetermined components as primitives.
 . Instead of generating the equality-equation for an overdetermined component, an optional spanning-tree edge in the virtual connection graph is constructed.
 
+[NOTE]
+If a connection set contains _n_ overdetermined components, and was built from _m_ `connect`-equations, then the connection set has a `connect`-equation redundancy of _m - (n - 1) ≥ 0_.
+If there is no `connect`-equation redundancy (i.e., if _m = n - 1_), the optional spanning-tree edges can be chosen to correspond to the `connect`-equations for overdetermined connectors.
+If there is a non-zero `connect`-equation redundancy, there will always exist `connect`-equations without a corresponding optional spanning-tree edge.
+
+It is called *redundancy* since this number of `connect`-equations could be removed without changing the connection set or the generated equations.
+Situations with non-zero `connect`-equation redundancy include connectors connected directly to themselves, duplicated connections, and having all three pair-wise connections between the connectors `a`, `b` and `c`.
+The latter case can be used to consistently handle conditional components (so that disabling `b` does not break the connection between `a` and `c`).
+
 The selected optional spanning tree edges, together with all required spanning tree edges generated from `Connections.branch`, and nodes corresponding to definite and potential roots form the virtual connection graph.
 
+===== Spanning Trees
+
 Before connection equations are generated, the virtual connection graph is transformed into a set of spanning trees by removing optional spanning tree edges from the graph.
+This is performed in the following way:
 
-After this analysis, the _connection graph equations_ are generated in the following way:
+. Root nodes are selected as follows:
+.. Every definite root node defined via the `Connections.root`-equation is a root of one spanning tree.
+   It is an error if two (or more) definite root nodes are connected through required spanning tree edges.
+.. The virtual connection graph may consist of sets of subgraphs that are not connected together.
+   Every subgraph in this set shall have at least one definite root node or one potential root node in a simulation model.
+   If a graph of this set does not contain any definite root node, then one potential root node in this subgraph that has the lowest priority number is selected to be the root of that subgraph.
+   The selection can be inquired in a class with function `Connections.isRoot`, see table above.
+. If there is a cycle among required spanning-tree-edges it is an error, as it is not possible to construct a spanning tree.
+. For a subgraph with _n_ selected roots, optional spanning-tree edges are removed such that the result is a set of _n_ spanning trees with the selected root nodes as roots.
 
-. For every remaining optional spanning-tree edge in any of the spanning trees, the connection equations are generated according to <<generation-of-connection-equations>>. For `connect(a, b)` with overdetermined connector `R`, this corresponds to the optional spanning-tree edge between `a.R` and `b.R` generating the equation `a.R = b.R`.
-. For every remaining optional spanning-tree edge not in any of the spanning trees, the connection equations are generated according to <<generation-of-connection-equations>>, except for overdetermined type or record instances `R`. Here the equations `0 = R.equalityConstraint(a.R, b.R)` are generated instead of `a.R = b.R`.
+===== Equations
 
-===== Examples of Overconstrained Connectors
+After this analysis, the *connection graph equations* are generated in the following way:
 
-====== A Power Systems Overdetermined Connector
+. For every remaining optional spanning-tree edge in any of the spanning trees, the connection equations are generated according to <<generation-of-connection-equations>>.
+  For `connect(a, b)` with overdetermined connector `R`, this corresponds to the optional spanning-tree edge between `a.R` and `b.R` generating the equation `a.R = b.R`.
+. For every remaining optional spanning-tree edge not in any of the spanning trees, the connection equations are generated according to <<generation-of-connection-equations>>, except for overdetermined type or record instances `R`.
+  Here the equations `0 = R.equalityConstraint(a.R, b.R)` are generated instead of `a.R = b.R`.
 
+==== Examples
+:id: examples-of-overconstrained-connectors
+
+.Example
+image::media/overdetermined.svg[caption="Example of a virtual connection graph."]
+
+===== A Power Systems Overdetermined Connector
+:id: an-overdetermined-connector-for-power-systems
+:id: a-power-systems-overdetermined-connector
+
+[NOTE]
 An overdetermined connector for power systems based on the transformation theory of Park may be defined as:
 
 [source,modelica]
@@ -704,11 +758,12 @@ An overdetermined connector for power systems based on the transformation theory
 type AC_Angle "Angle of source, e.g., rotor of generator"
   extends Modelica.Units.SI.Angle; // AC_Angle is a Real number
   // with unit = "rad"
-  function equalityConstraint // non-redundant equality
+  function equalityConstraint
     input AC_Angle theta1;
     input AC_Angle theta2;
     output Real residue[0] "No constraints";
   algorithm
+    /* make sure that theta1 and theta2 from joining edges are identical */
     assert(abs(theta1 - theta2) < 1.e-10, "Consistent angles");
   end equalityConstraint;
 end AC_Angle;
@@ -724,7 +779,7 @@ end AC_Plug;
 The currents and voltages in the connector are defined relatively to the harmonic, high-frequency signal of a power source that is essentially described by angle theta of the rotor of the source.
 This allows much faster simulations, since the basic high frequency signal of the power source is not part of the differential equations.
 For example, when the source and the rest of the line operates with constant frequency (= nominal case), then `AC_Plug.v` and `AC_Plug.i` are constant.
-
+In this case a variable step integrator can select large time steps.
 An element, such as a 3-phase inductor, may be implemented as:
 
 [source,modelica]
@@ -748,7 +803,7 @@ At the place where the source frequency, i.e., essentially variable theta, is de
 
 [source,modelica]
 ----
-AC_Plug p;
+  AC_Plug p;
 equation
   Connections.root(p.theta);
   p.theta = 2*Modelica.Constants.pi*50*time; // 50 Hz
@@ -756,8 +811,13 @@ equation
 
 The graph analysis performed with the virtual connection graph identifies the connectors, where the `AC_Angle` needs not to be passed between components, in order to avoid redundant equations.
 
-====== A 3-Dimensional Mechanical Systems Overdetermined Connector
+Note that the different sources do not integrate the frequency, as that increases the risk of numerical errors.
 
+===== A 3-Dimensional Mechanical Systems Overdetermined Connector
+:id: an-overdetermined-connector-for-3-dimensional-mechanical-systems
+:id: a-3-dimensional-mechanical-systems-overdetermined-connector
+
+[NOTE]
 An overdetermined connector for 3-dimensional mechanical systems may be defined as:
 
 [source,modelica]
@@ -773,6 +833,18 @@ type Orientation "Orientation from frame 1 to frame 2"
     Orientation R_rel "Relative Rotation from frame 1 to frame 2";
   algorithm
     R_rel := R2*transpose(R1);
+    /*
+      If frame_1 and frame_2 are identical, R_rel must be
+      the unit matrix. If they are close together, R_rel can be
+      linearized yielding:
+        R_rel = [ 1, phi3, -phi2;
+        -phi3, 1, phi1;
+        phi2, -phi1, 1 ];
+      where phi1, phi2, phi3 are the small rotation angles around
+      axis x, y, z of frame 1 to rotate frame 1 into frame 2.
+      The atan2 is used to handle large rotation angles, but does not
+      modify the result for small angles.
+    */
     residue := { Modelica.Math.atan2(R_rel[2, 3], R_rel[1, 1]),
     Modelica.Math.atan2(R_rel[3, 1], R_rel[2, 2]),
     Modelica.Math.atan2(R_rel[1, 2], R_rel[3, 3])};
@@ -804,6 +876,7 @@ equation
 end FixedTranslation;
 ----
 
+Since the transformation matrix `frame_a.R` is algebraically coupled with `frame_b.R`, an edge in the virtual connection graph has to be defined.
 At the inertial system, the orientation is consistently initialized and therefore the orientation in the inertial system connector has to be defined as root:
 
 [source,modelica]

@@ -839,7 +839,8 @@ For larger models this is not practical and therefore the only practically usefu
 
 To detect this issue the rule on lookup of composite names (see <<composite-name-lookup>>) ensures that `PartialMedium.dynamicViscosity` is incorrect in a simulation model.
 
-=== Constraining Type
+==== Constraining Type
+:id: constraining-type
 
 In a replaceable declaration the optional `constraining-clause` defines a constraining type.
 Any modifications following the constraining type name are applied both for the purpose of defining the actual constraining type and they are automatically applied in the declaration and in any subsequent redeclaration.
@@ -850,15 +851,15 @@ If the `constraining-clause` is not present in the original declaration (i.e., t
 * The type of the declaration is also used as a constraining type.
 * If modifiers are present in the original declaration, they also become modifiers on the constraining type.
 
-.Syntax
+The syntax of a `constraining-clause` is as follows:
+
 [source,grammar]
 ----
 constraining-clause :
    constrainedby name [ class-modification ]
 ----
 
-.Example
-Merging of modifiers:
+.Example: Merging of modifiers
 [source,modelica]
 ----
 class A
@@ -877,7 +878,7 @@ class D
   extends C(redeclare B a(y = 2));
 end D;
 ----
-which is equivalent to defining `D` as
+which is equivalent to defining `D` as:
 [source,modelica]
 ----
 class D
@@ -895,7 +896,7 @@ end ElectricalSource;
 
 model TrapezoidalSource
   extends ElectricalSource(
-  redeclare Trapezoidal source); // source.n=5
+    redeclare Trapezoidal source); // source.n=5
 end TrapezoidalSource;
 ----
 
@@ -951,7 +952,7 @@ In an element-redeclaration of a replaceable element the modifiers of the replac
 
 When a class is flattened as a constraining type, the flattening of its replaceable elements will use the constraining type and not the actual default types.
 
-The number of dimension in the constraining type should correspond to the number of dimensions in the type-part.
+The number of dimensions in the constraining type should correspond to the number of dimensions in the type-part.
 Similarly the type used in a redeclaration must have the same number of dimensions as the type of redeclared element.
 
 .Example
@@ -963,9 +964,10 @@ replaceable T1[n] x constrainedby T2;
 ----
 In these examples the number of dimensions must be the same in `T1` and `T2`, as well as in a redeclaration.
 Normally `T1` and `T2` are scalar types, but both could also be defined as array types (with the same number of dimensions).
-Thus if `T2` is a scalar type (e.g., `type T2 = Real`) then `T1` must also be a scalar type, and if `T2` is defined as vector type (e.g., `type T2 = Real[3]`) then `T1` must also be vector type.
+Thus if `T2` is a scalar type (e.g., `type T2 = Real;`) then `T1` must also be a scalar type, and if `T2` is defined as vector type (e.g., `type T2 = Real[3];`) then `T1` must also be vector type.
 
 ===== Constraining-Clause Annotations
+:id: constraining-clause-annotations
 
 Description and annotations on the `constraining-clause` are applied to the entire declaration, and it is an error if they also appear on the definition.
 
@@ -989,24 +991,27 @@ replaceable Resistor load2
 replaceable Resistor load3
   "The Load" constrainedby TwoPin "The Load!"; // Error
 ----
-
 See also the examples in <<annotation-choices-for-suggested-redeclarations-and-modifications>>.
 
 ==== Restrictions on Redeclarations
+:id: restrictions-on-redeclarations
 
 The following additional constraints apply to redeclarations (after prefixes are inherited, see <<redeclaration>>):
 
 * Only classes and components declared as replaceable can be redeclared with a new type, which must have an interface compatible with the constraining interface of the original declaration, and to allow further redeclarations one must use `redeclare replaceable`.
-  [NOTE]
-  Redeclaration with the same type can be used to restrict variability and/or change array dimensions.
++
+[NOTE]
+Redeclaration with the same type can be used to restrict variability and/or change array dimensions.
 * An element declared as `constant` cannot be redeclared.
 * An element declared as `final` shall not be modified, and thus not redeclared.
 * Modelica does not allow a protected element to be redeclared as public, or a public element to be redeclared as protected.
 * Array dimensions may be redeclared; provided the sub-typing rules in <<interface-compatibility-or-subtyping>> are satisfied.
-  [NOTE]
-  This is one example of redeclaration of non-replaceable elements.
++
+[NOTE]
+This is one example of redeclaration of non-replaceable elements.
 
 ==== Annotations for Redeclaration and Modification
+:id: annotation-choices-for-suggested-redeclarations-and-modifications
 
 A declaration can have an annotation `choices` containing modifiers on `choice`, where each of them indicates a suitable redeclaration or modifications of the element.
 This is a hint for users of the model, and can also be used by the user interface to suggest reasonable redeclarations, where the string comments on the `choice` modifiers can be used as textual explanations of the choices.
@@ -1023,7 +1028,7 @@ Lookup inside a `choice` modifier is performed in the context of the annotation,
 It is recommended to avoid expressions with references to elements that are not globally accessible, such as contents within a `protected` section of a class.
 By starting names with a dot it can be ensured that no transformation of references will be needed when a `choice` is applied, and that applicability of a `choice` does not depend on context, see <<global-name-lookup>>.
 
-It is allowed to include choices that are invalid in some contexts, e.g., a value might violate a `min`-attribute.
+It is allowed to include choices that are invalid in some contexts, e.g., a value might violate a `min` attribute.
 (Options for tools encountering such choices include not showing them, marking them as invalid, or detecting the violations later.)
 
 For a `Boolean` variable, a `choices` annotation may contain the annotation `checkBox = true`, meaning to display a checkbox to input the values `false` or `true` in the graphical user interface.
@@ -1041,8 +1046,7 @@ It is possible to combine the two annotations for one declaration, and tools may
 When `choicesAllMatching` is not specified the following behavior is recommended for replaceable elements.
 A tool could ideally present (at least) the same choices as for `choicesAllMatching = true`, but if it takes (too long) time to present the list it might be better to use the `choicesAllMatching = false` behavior instead.
 
-.Example
-Demonstrating the `choices` and  `choicesAllMatching = true` annotations applied to replaceable elements.
+.Example: Demonstrating the `choices` and  `choicesAllMatching = true` annotations applied to replaceable elements.
 [source,modelica]
 ----
 replaceable model MyResistor = Resistor
@@ -1066,8 +1070,7 @@ replaceable package Medium = Modelica.Media.Water.ConstantPropertyLiquidWater
   annotation(choicesAllMatching = true);
 ----
 
-.Example
-Demonstrating the `choicesAllMatching = true` annotation for parameter records.
+.Example: Demonstrating the `choicesAllMatching = true` annotation for parameter records.
 [source,modelica]
 ----
 record Medium
@@ -1083,10 +1086,9 @@ model OpenTank
 end OpenTank;
 ----
 The choices for `medium` shall include `Medium()`, `Air_30degC()`, and `MyAir`.
-If `Medium()` is chosen it is necessary to also set its `rho`-parameter.
+If `Medium()` is chosen it is necessary to also set its `rho` parameter.
 
-.Example
-Applying the `choices` annotation to nonreplaceable declarations, e.g., to describe enumerations.
+.Example: Applying the `choices` annotation to nonreplaceable declarations, e.g., to describe enumerations.
 [source,modelica]
 ----
 type KindOfController = Integer(min = 1, max = 3)
@@ -1109,40 +1111,41 @@ parameter Boolean useHeatPort = false annotation(choices(checkBox = true));
 ----
 
 === Selective Model Extension
+:id: selective-model-extension
 
 [NOTE]
-The goal of selective model extension is to enable unforeseen structural variability without requiring deliberately prepared base-models, Buerger2019SelectiveModel.
+The goal of selective model extension is to enable unforeseen structural variability without requiring deliberately prepared base-models, Bürger (2019).
 This is done by deselecting specific elements from a base class, described here, combined with adding elements as normal.
 
-Selective model extension is activated by using one (or more) `inheritance-modification` in the optional `class-or-inheritance-modification` of an `extends`-clause.
+Selective model extension is activated by using one (or more) `inheritance-modification` in the optional `class-or-inheritance-modification` of an `extends` clause.
 
 [NOTE]
 There is no corresponding mechanism for component modifications, short class definitions, or constrainedby.
 
-Consider a class `C` with an `extends`-clause deselecting `$D$`:
+Consider a class `C` with an `extends` clause deselecting `D`:
 [source,modelica]
 ----
 model C
-  extends B(..., break $D$, ...);
+  extends B(..., break D, ...);
   ...
 end C;
 ----
 The semantic rules are:
 
-. The deselection `break $D$` is applied before any other, non selective model extension related, modifications of `B` in `C`.
+. The deselection `break D` is applied before any other, non selective model extension related, modifications of `B` in `C`.
 . When adding elements from `B` to `C` the elements matched by any deselection in `extends B` are excluded.
-  * A component deselection, `break f`, matches the component with that name, `f`, of `B` and all connections with the  component or its subcomponents.
+  * A component deselection, `break f`, matches the component with that name, `f`, of `B` and all connections with the component or its subcomponents.
     Matched components must be models, blocks or connectors.
   * A connection deselection, `break connect(a, b)`, matches all syntactical equivalent connections of `B`.
-    A connection `connect(c, d)`, with `c` and `d` arbitrary but valid connection arguments, is syntactically equivalent  to a connection deselection `break connect(a, b)`, if, and only if, either, `c` is syntactically equivalent to `a` and   `d` is syntactically equivalent to `b` or, vice versa, `c` is syntactically equivalent to `b` and `d` is syntactically equivalent to `a`.
+    A connection `connect(c, d)`, with `c` and `d` arbitrary but valid connection arguments, is syntactically equivalent to a connection deselection `break connect(a, b)`, if, and only if, either, `c` is syntactically equivalent to `a` and `d` is syntactically equivalent to `b` or, vice versa, `c` is syntactically equivalent to `b` and `d` is syntactically equivalent to `a`.
     Two code fragments `a` and `c` are syntactically equivalent, if, and only if, the context-free derivations of `a` and `c` according to the grammar given in <<expressions1>> are the same.
 . Conditionally declared components of `B` are assumed to be declared for all purposes of matching.
 . The deselected component may be of a partial class even in a simulation model.
 . The deselection `break $D$` must match at least one element of `B`.
-. The component deselection are applied before the connection deselections of the same `extends`-clause.
+. The component deselection are applied before the connection deselections of the same `extends` clause.
 
 .Example
-The following gives three typical use cases: adding a component _on a connection_, replacing a non-replaceable component, and finally constructing a reusable model from an example.
+The following gives three typical use cases: adding a component *on a connection*, replacing a non-replaceable component, and finally constructing a reusable model from an example.
 [source,modelica]
 ----
 model System "An example model"
@@ -1189,26 +1192,22 @@ For instance, it may not be possible to modify the `System` and the controlled s
 [NOTE]
 Some consequences of the rules are listed below:
 
-The syntax ensures that nested components cannot be deselected.
-
-Deselected components cannot be modified, neither in the `extends`-clause nor when using `C`.
-However, `C` may add a component with same name as a deselected component (directly or through another `extends-clause`) and that new component can be modified when using `C`.
-
-A class using selective model extension is not necessarily a sub-type of its base class.
-
-Deselection is designed to be light-weight in particular:
-
-* Deselection is independent of any modification.
-* What is deselected can be determined without considering any modifications, neither of the extending class `C` nor its base class `B`.
-* There is no need to instantiate any classes to know that some component is deselected (i.e., not there) for every possible instance of the model with the deselection.
-  An instance tree is not required.
-* Selective model extension operates on the syntactic level only.
-* Conditional components can be deselected without evaluating whether they are disabled or not.
-  In particular deselecting a disabled conditional component is not an error.
-  Connections involving the deselected conditional component are by the deselection removed as for a disabled component.
-* No need to check whether the class of the deselected component was partial.
-* Assuming the deselections are semantically valid they can be handled in any order.
-  Handling component deselections before connection deselections is only necessary to semantically check that a connection deselection does not involve a deselected component.
+* The syntax ensures that nested components cannot be deselected.
+* Deselected components cannot be modified, neither in the `extends` clause nor when using `C`.
+  However, `C` may add a component with same name as a deselected component (directly or through another `extends` clause) and that new component can be modified when using `C`.
+* A class using selective model extension is not necessarily a sub-type of its base class.
+* Deselection is designed to be light-weight in particular:
+  ** Deselection is independent of any modification.
+  ** What is deselected can be determined without considering any modifications, neither of the extending class `C` nor its base class `B`.
+  ** There is no need to instantiate any classes to know that some component is deselected (i.e., not there) for every possible instance of the model with the deselection.
+     An instance tree is not required.
+  ** Selective model extension operates on the syntactic level only.
+  ** Conditional components can be deselected without evaluating whether they are disabled or not.
+     In particular deselecting a disabled conditional component is not an error.
+     Connections involving the deselected conditional component are by the deselection removed as for a disabled component.
+  ** No need to check whether the class of the deselected component was partial.
+  ** Assuming the deselections are semantically valid they can be handled in any order.
+     Handling component deselections before connection deselections is only necessary to semantically check that a connection deselection does not involve a deselected component.
 
 .Example
 The syntactic equivalence of connection deselection ensures that connect-statements in for-loops can be deselected:
@@ -1230,7 +1229,7 @@ equation
   end for;
 end B;
 model C
-  extends B(break connect(b[2 * i], a[i]);
+  extends B(break connect(b[2 * i], a[i]));
 end C;
 ----
 In this case the deselection removes all of the connect-statements.

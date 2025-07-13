@@ -1,10 +1,10 @@
 = Modelica Language Specification
 :sectnums:
-// :sectnumlevels: 5
+:sectnumlevels: 4
 // :sectlinks:
 :toc-title: Contents
 :toc: left
-// :toclevels: 5
+:toclevels: 4
 :idprefix:
 :idseparator: -
 :xrefstyle: short
@@ -14,6 +14,23 @@
 :nofooter:
 // :favicon: images/favicon.ico
 // :icons: font
+
+++++
+<style>
+@media screen and (min-width: 1280px) {
+
+    #toc.toc2 {
+        width: 30em;
+    }
+
+    body.toc2 {
+        padding-left: 30em;
+        padding-right: 0;
+    }
+}
+</style>
+++++
+
 
 ++++
 <div style="text-align: center">

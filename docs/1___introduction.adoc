@@ -133,6 +133,7 @@ This is non-normative content that provides some explanation, motivation, and/or
 It has no defining power and may be skipped by readers strictly interested in just the definition of the Modelica language.
 
 [example]
+====
 This is an example, which is a special kind of non-normative content.
 Examples often contain a mix of code listings and explanatory text, and this is no exception:
 
@@ -142,6 +143,7 @@ String s = 1.0; // Error: No conversion form Real to String.
 ----
 
 To fix the type mismatch above, the number has to be replaced by a `String` expression, such as `"1.0"`.
+====
 
 Other code listings in the document include specification of lexical units and grammatical structure, both using metasymbols of the extended BNF-grammar defined in <<lexical-conventions>>.
 Lexical units are named with all upper-case letters and introduced with the `=` sign:
