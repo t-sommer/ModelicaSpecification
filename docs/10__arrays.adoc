@@ -40,15 +40,24 @@ Colon (`:`) indicates that the dimension upper bound is unknown and is a subtype
 The size of such a variable can be determined from its binding equation, or the size of any of its array attributes (see also <<flexible-array-sizes-and-resizing-of-arrays-in-functions>>).
 The size cannot be determined from other equations or algorithms.
 
-.Array declaration forms
-[cols="2,2,1,1,2",options="header"]
+Upper and lower array dimension index bounds are described in <<array-dimension-lower-and-upper-index-bounds>>.
+
+An array indexed by `Boolean` or enumeration type can only be used in the following ways:
+
+* Subscripted using expressions of the appropriate type (i.e., `Boolean` or the enumerated type).
+
+* Binding equations of the form `x1 = x2` are allowed for arrays independent of whether the index types of dimensions are subtypes of `Integer`, `Boolean`, or enumeration types.
+
+.General forms of declaration of arrays. The notation `EB` stands for an enumeration type or `Boolean`. The general array can have one or more dimensions (latexmath:[k \geq 1]).
+[cols="~,~,^~,~,~"]
 |===
-|Modelica form 1 |Modelica form 2 |# dims |Designation |Explanation
-|`C x;` |`C x;` |0 |Scalar |Scalar
-|`C[n] x;` |`C x[n];` |1 |Vector |n-vector
-|`C[EB] x;` |`C x[EB];` |1 |Vector |Vector indexed by `EB`
-|`C[n, m] x;` |`C x[n, m];` |2 |Matrix |n x m matrix
-|`C[n1, n2, ..., nk] x;` |`C x[n1, n2, ..., nk];` |k |Array |General array
+|Modelica form 1         |Modelica form 2         |# dims  |Designation |Explanation
+
+|`C x;`                  |`C x;`                  |0       |Scalar      |Scalar
+|`C[n] x;`               |`C x[n];`               |1       |Vector      |n-vector
+|`C[EB] x;`              |`C x[EB];`              |1       |Vector      |Vector indexed by `EB`
+|`C[n, m] x;`            |`C x[n, m];`            |2       |Matrix      |n x m matrix
+|`C[n1, n2, ..., nk] x;` |`C x[n1, n2, ..., nk];` |k       |Array       |General array
 |===
 
 A component declared with array dimensions, or where the element type is an array type, is called an _array variable_.
@@ -84,9 +93,10 @@ Zero-valued dimensions are allowed, so: `C x[0];` declares an empty vector, and:
 Some examples of array dimensions of size one are given in the following table.
 
 .Special cases of declaration of arrays as 1-vectors, row-vectors, or column-vectors of arrays
-[cols="2,2,1,1,2",options="header"]
+[cols="~,~,^~,~,~"]
 |===
 |Modelica form 1 |Modelica form 2 |# dims |Designation |Explanation
+
 |`C[1] x;`      |`C x[1];`      |1 |Vector |1-vector, representing a scalar
 |`C[1, 1] x;`   |`C x[1, 1];`   |2 |Matrix |(1 x 1)-matrix, representing a scalar
 |`C[n, 1] x;`   |`C x[n, 1];`   |2 |Matrix |(n x 1)-matrix, representing a column
@@ -250,15 +260,16 @@ size(A, i) = 1 is required for 2 < i <= ndims(A).
 
 ==== Specialized Array Constructor Functions
 
-[cols="1,2,2",options="header"]
+[cols="~,~,~"]
 |===
-|Expression |Description |Details
-|`identity(n)` |Identity matrix |<<modelica:identity>>
-|`diagonal(v)` |Diagonal matrix |<<modelica:diagonal>>
-|`zeros(n1, n2, n3, ...)` |Array with all elements being 0 |<<modelica:zeros>>
-|`ones(n1, n2, n3, ...)` |Array with all elements being 1 |<<modelica:ones>>
-|`fill(s, n1, n2, n3, ...)` |Array with all elements equal |<<modelica:fill>>
-|`linspace(x1, x2, n)` |Vector with equally spaced elements |<<modelica:linspace>>
+|Expression                 |Description                         |Details
+
+|`identity(n)`              |Identity matrix                     |<<modelica:identity>>
+|`diagonal(v)`              |Diagonal matrix                     |<<modelica:diagonal>>
+|`zeros(n1, n2, n3, ...)`   |Array with all elements being 0     |<<modelica:zeros>>
+|`ones(n1, n2, n3, ...)`    |Array with all elements being 1     |<<modelica:ones>>
+|`fill(s, n1, n2, n3, ...)` |Array with all elements equal       |<<modelica:fill>>
+|`linspace(x1, x2, n)`      |Vector with equally spaced elements |<<modelica:linspace>>
 |===
 
 [float]
@@ -725,7 +736,7 @@ Real[1,3] m4 = [1, 2, 3];
 Real[3,1] m5 = [1; 2; 3];
 ----
 
-=== Vector Construction
+==== Vector Construction
 
 Vectors can be constructed with the general array constructor, e.g.,
 [source,modelica]
