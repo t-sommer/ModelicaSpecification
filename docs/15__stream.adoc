@@ -85,6 +85,9 @@ equation
 end FluidSystem;
 ----
 
+.Examplary FluidSystem with 𝑁 = 3 and 𝑀 = 2.
+image::media/fluidsystem.svg[]
+
 [NOTE]
 The connection set represents an infinitesimally small control volume, for which the stream connection equations are equivalent to the conservation equations for mass and energy.
 

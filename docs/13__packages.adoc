@@ -111,6 +111,9 @@ If during lookup a top-level name is not found in the unnamed top-level scope, t
 Assume `MODELICAPATH = C:\library;C:\lib1;C:\lib2`, with three directories containing the roots of the package hierarchies `Modelica`, `MyLib`, and `ComplexNumbers`.
 The first two are represented as the subdirectories `C:\library\Modelica` and `C:\lib1\MyLib`, whereas the third is stored as the file `C:\lib2\ComplexNumbers.mo`.
 
+.Roots of package hierarchies, e.g., `Modelica`, `MyLib`, and `ComplexNumbers` in `MODELICAPATH = C:\library;C:\lib1;C:\lib2`.
+image::media/modelicapath.svg[]
+
 Assume that we want to access the package `MyLib.Pack2`, e.g., through an import clause `import MyLib.Pack2;`.
 During lookup we first try to find a package `MyLib` corresponding to the first part of the name in the import-statement.
 It is not found in the top-level scope since it has not previously been loaded into the environment.
