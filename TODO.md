@@ -11,3 +11,12 @@
 - update copyright year
 - fix table in 7.1.3. Restrictions on the Kind of Base Class
 - fix table in 7.2.3. Merging of Modifications
+
+
+Regexes:
+
+\\lstinline!Boolean*! -> `Boolean`
+
+\\lstinline![^!]*!
+`$1`
+
