@@ -12,16 +12,18 @@ Note, safety critical control software in aircrafts is often defined with such k
 The following properties are different to Lucid Synchrone 3.0:
 
 * Lucid Synchrone has two kinds of transitions: _strong_ and _weak_ transitions.
-  Strong transitions are executed before the actions of a state are evaluated and weak transitions are executed after the actions of a state are evaluated.
-  This can lead to surprising behavior, because the actions of a state are skipped if it is activated by a weak transition and exited by a true strong transition.
+Strong transitions are executed before the actions of a state are evaluated and weak transitions are executed after the actions of a state are evaluated.
+This can lead to surprising behavior, because the actions of a state are skipped if it is activated by a weak transition and exited by a true strong transition.
++
+For this reason, the state machines in this chapter use _immediate_ (= the same as _strong_) and _delayed_ transitions.
+Delayed transitions are _immediate_ transitions where the condition is automatically delayed with an implicit `previous`.
 
-  For this reason, the state machines in this chapter use _immediate_ (= the same as _strong_) and _delayed_ transitions.
-  Delayed transitions are _immediate_ transitions where the condition is automatically delayed with an implicit `previous`.
 * Parallel state machines can be explicitly synchronized with a language element (similarly as parallel branches in Sequential Function Charts).
-  This often occurring operation can also be defined in Statecharts or in Lucid Synchrone state machines but only indirectly with appropriate conditions on transitions.
+This often occurring operation can also be defined in Statecharts or in Lucid Synchrone state machines but only indirectly with appropriate conditions on transitions.
+
 * Modelica blocks can be used as states.
-  They might contain clocked equations.
-  If the equations are discretized, they are integrated between the previous and the current clock tick, if the corresponding state is active.
+They might contain clocked equations.
+If the equations are discretized, they are integrated between the previous and the current clock tick, if the corresponding state is active.
 
 === Transitions
 
@@ -52,20 +54,18 @@ The operators listed below are used to query the status of the state machine.
 |`timeInState()` |Time since activation |<<modelica:timeInState>>
 |===
 
-==== Operator Definitions
-
-===== transition
-
+transition::
++
 [source,modelica]
 ----
 transition(from, to, condition,
   immediate=imm, reset=reset, synchronize=synch, priority=prio)
 ----
-
++
 Arguments `from` and `to` are block instances, and `condition` is a `Boolean` argument.
 The optional arguments `immediate`, `reset`, and `synchronize` are of type `Boolean`, have parameter variability and default to `true`, `true`, and `false` respectively.
 The optional argument `priority` is of type `Integer`, has parameter variability and defaults to 1.
-
++
 This operator defines a transition from instance `from` to instance `to`.
 The `from` and `to` instances become states of a state machine.
 The transition fires when `condition = true` if `imm = true` (this is called an _immediate transition_) or `previous(condition)` when `imm = false` (this is called a _delayed transition_).
@@ -76,55 +76,54 @@ If `reset = true`, the states of the target state are reinitialized, i.e., state
 If `synch = true`, any transition is disabled until all state machines of the from-state have reached final states, i.e., states without outgoing transitions.
 For the precise details about firing a transition, see <<state-machine-semantics>>.
 
-===== initialState
-
+initialState::
++
 [source,modelica]
 ----
 initialState(state)
 ----
-
++
 Argument `state` is the block instance that is defined to be the initial state of a state machine.
 At the first clock tick of the state machine, this state becomes active.
 
-===== activeState
-
+activeState::
++
 [source,modelica]
 ----
 activeState(state)
 ----
-
++
 Argument `state` is a block instance.
 The operator returns `true` if this instance is a state of a state machine and this state is active at the actual clock tick.
 If it is not active, the operator returns `false`.
-
++
 It is an error if the instance is not a state of a state machine.
 
-===== ticksInState
-
+ticksInState::
++
 [source,modelica]
 ----
 ticksInState()
 ----
-
++
 Returns the number of ticks of the clock of the state machine for which the currently active state has maintained its active state without interruption, i.e., without local or hierarchical transitions from this state.
 In the case of a self-transition to the currently active state or to an active enclosing state, the number is reset to one.
-
++
 This function can only be used in state machines.
 
-===== timeInState
-
+timeInState::
++
 [source,modelica]
 ----
 timeInState()
 ----
-
++
 Returns the time duration as `Real` in [s] for which the currently active state has maintained its active state without interruption, i.e., without local or hierarchical transitions from this state.
 In the case of a self-transition to the currently active state or to an active enclosing state, the time is reset to zero.
-
++
 This function can only be used in state machines.
 
 .Example
-
 If there is a transition with `immediate = false` from state `A1` to `A2` and the condition is `ticksInState() >= 5`, and `A1` became active at 10ms, and the clock period is 1ms, then `A1` will be active at 10ms, 11ms, 12ms, 13ms, 14ms, and will be not active at 15ms.
 
 [source,modelica]
@@ -144,12 +143,12 @@ equation
 [NOTE]
 See <<fig-state-machine-layout>> for the recommended layout of a state machine.
 
-image::media/statemachine.svg[caption="Recommended layout of a simple state machine. For the 5 transitions, the settings are as follows, from left to right: immediate = true, false, true, false, true; reset = true, true, false, false, true; synchronize = false, false, false, false, true; priority = 1, 2, 3, 4, 5."]
+.Recommended layout of a simple state machine. For the 5 transitions, the settings are as follows, from left to right: immediate = true, false, true, false, true; reset = true, true, false, false, true; synchronize = false, false, false, false, true; priority = 1, 2, 3, 4, 5.
+image::media/statemachine.svg[]
 
 The annotation for graphics of `transition` has the following structure: `annotation(Line(...), Text(...))`; and for `initialState()`: graphical-primitives`(Line(...))`; with `Line` and `Text` annotations defined in <<annotations>>.
 
 .Example
-
 [source,modelica]
 ----
 transition(state2, state1, x < 10,
