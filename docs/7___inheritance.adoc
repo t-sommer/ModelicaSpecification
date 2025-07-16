@@ -1138,7 +1138,7 @@ The semantic rules are:
     Matched components must be models, blocks or connectors.
   * A connection deselection, `break connect(a, b)`, matches all syntactical equivalent connections of `B`.
     A connection `connect(c, d)`, with `c` and `d` arbitrary but valid connection arguments, is syntactically equivalent to a connection deselection `break connect(a, b)`, if, and only if, either, `c` is syntactically equivalent to `a` and `d` is syntactically equivalent to `b` or, vice versa, `c` is syntactically equivalent to `b` and `d` is syntactically equivalent to `a`.
-    Two code fragments `a` and `c` are syntactically equivalent, if, and only if, the context-free derivations of `a` and `c` according to the grammar given in <<expressions1>> are the same.
+    Two code fragments `a` and `c` are syntactically equivalent, if, and only if, the context-free derivations of `a` and `c` according to the grammar given in <<expressions>> are the same.
 . Conditionally declared components of `B` are assumed to be declared for all purposes of matching.
 . The deselected component may be of a partial class even in a simulation model.
 . The deselection `break $D$` must match at least one element of `B`.

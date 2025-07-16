@@ -56,7 +56,7 @@ Using standard `when`-clauses works well for individual simple sampled blocks, b
 
 ==== Clocks and Clocked Variables
 
-In <<discrete-time-expressions>> the term _discrete-time_ Modelica expression and in <<continuous-time-expressions>> the term _continuous-time_ Modelica expression is defined.
+In <<discrete-time-expressions>> the term _discrete-time_ Modelica expression and in <<continuous-time-and-non-discrete-time-expressions>> the term _continuous-time_ Modelica expression is defined.
 In this chapter, two additional kinds of discrete-time expressions/variables are defined that are associated to clocks and are therefore called _clocked discrete-time_ expressions.
 
 The different kinds of discrete-time variables in Modelica are defined below.
@@ -82,6 +82,7 @@ Clock c3 = subSample(c2, 4);
 
 image::media/clock.svg[caption="A clock variable. The value of a clock variable is not defined -- the plot marks only indicate when the clock is active."]
 
+[[clocked-variable]]
 .Definition: Clocked variable
 The elements of clocked variables r(t_i) are of base type `Real`, `Integer`, `Boolean`, enumeration, `String` that are associated uniquely with a clock c(t_i).
 A clocked variable can only be directly accessed at the event instant where the associated clock is active.
@@ -114,7 +115,8 @@ The terminology for the partitions is as follows:
 
 The built-in operators (with function syntax) defined in the following sections have partially restrictions on their input arguments that are not present for Modelica functions.
 
-.Definition: Component expression
+[[component-expression]]
+Component expression::
 A component expression is a `component-reference` which is a valid expression, i.e., not referring to models or blocks with equations.
 In detail, it is an instance of a (a) base type, (b) derived type, (c) record, (d) an array of such an instance (a-c), (e) one or more elements of such an array (d) defined by index expressions which are evaluable, or (f) an element of records.
 
@@ -185,7 +187,7 @@ Clock(intervalCounter, resolution)::
 +
 [NOTE]
 Rational interval clock.
-The first input argument, intervalCounter, is a clocked component expression (see <<def:component-expression>>) or an evaluable expression of type `Integer` with `min = 0`.
+The first input argument, intervalCounter, is a clocked component expression (see <<component-expression>>) or an evaluable expression of type `Integer` with `min = 0`.
 The optional second argument resolution (defaults to 1) is an evaluable expression of type `Integer` with `min = 1` and `unit = "Hz"`.
 If intervalCounter is an evaluable expression with value zero, the period of the clock is derived by clock inference, see <<sub-clock-inferencing>>.
 +
@@ -227,7 +229,7 @@ Clock(interval)::
 +
 [NOTE]
 Real interval clock.
-The input argument, interval, is a clocked component expression (see <<def:component-expression>>) or a parameter expression.
+The input argument, interval, is a clocked component expression (see <<component-expression>>) or a parameter expression.
 The interval must be strictly positive (interval > 0) of type `Real` with `unit = "s"`.
 The result is of base type `Clock` that ticks when `time` becomes t_start, t_start + interval_1, t_start + interval_1 + interval_2, ...
 The clock starts at the start of the simulation t_start or when the controller is switched on.
@@ -364,7 +366,7 @@ The previous value of a clocked variable can be accessed with the `previous` ope
 
 previous(u)::
 +
-The input argument u is a component expression (see <<def:component-expression>>).
+The input argument u is a component expression (see <<component-expression>>).
 If u is a parameter, its value is returned.
 +
 Otherwise:
@@ -393,7 +395,7 @@ The operators listed below convert between a clocked and an unclocked representa
 
 sample(u, clock)::
 +
-Input argument u is in an unclocked base-partition, and there are no variability restrictions, i.e., it is continuous-time according to <<continuous-time-expressions>>.
+Input argument u is in an unclocked base-partition, and there are no variability restrictions, i.e., it is continuous-time according to <<continuous-time-and-non-discrete-time-expressions>>.
 The optional input argument clock is of type `Clock`, and can in a call be given as a named argument (with the name clock), or as positional argument.
 The operator returns a clocked variable that has clock as associated clock and has the value of the left limit of u when clock is active (that is the value of u just before the event of clock is triggered).
 If clock is not provided, it is inferred, see <<sub-clock-inferencing>>.
@@ -412,7 +414,7 @@ If `sample` has one input argument, or it has two input arguments and the second
 
 hold(u)::
 +
-Input argument u is a clocked (see <<def:clocked-variable>>) component expression (see <<def:component-expression>>) or a parameter expression.
+Input argument u is a clocked (see <<clocked-variable>>) component expression (see <<component-expression>>) or a parameter expression.
 The operator returns a piecewise constant signal of the same type as u.
 When the clock of u ticks, the operator returns u and otherwise returns the value of u from the last clock activation.
 Before the first clock activation of u, the operator returns the start value of u, see <<initialization-of-clocked-partitions>>.
@@ -439,7 +441,7 @@ At the first clock tick at `time = 0`, the left limit of `y` is 2 and therefore 
 
 [NOTE]
 Since `sample(u)` returns the left limit of `u`, and the left limit of `u` is a known value, all inputs to a base-partition are treated as known during sorting.
-Since a periodic and interval clock can tick at most once at a time instant, and since the left limit of a variable does not change during event iteration (i.e., re-evaluating a base-partition associated with a condition clock always gives the same result because the `sample(u)` inputs do not change and therefore need not to be re-evaluated), all base-partitions, see <<base-clock-partitioning>>, need not to be sorted with respect to each other.
+Since a periodic and interval clock can tick at most once at a time instant, and since the left limit of a variable does not change during event iteration (i.e., re-evaluating a base-partition associated with a condition clock always gives the same result because the `sample(u)` inputs do not change and therefore need not to be re-evaluated), all base-partitions, see <<base-partitioning>>, need not to be sorted with respect to each other.
 Instead, at an event instant, active base-partitions can be evaluated first (and once) in any order.
 Afterwards, the unclocked base-partition is evaluated.
 
@@ -555,7 +557,7 @@ And finally every other point is removed by `subSample`, and s1 ticks at 2.5, 3.
 
 backSample(u, backCounter, resolution)::
 +
-The input argument u is either a component expression (see <<def:component-expression>>) or an expression of type `Clock`.
+The input argument u is either a component expression (see <<component-expression>>) or an expression of type `Clock`.
 This is an inverse of `shiftSample` such that `Clock y = backSample(u, cnt, res)` implicitly defines a clock y such that `shiftSample(y, cnt, res)` activates at the same times as u.
 It is an error if the clock of y starts before the base-clock of u.
 +
@@ -780,7 +782,7 @@ u = hold(yd2);                   // incidence(e) = {u}
 
 ==== Sub-Partitioning
 
-For each clocked base-partition B_i, identified in <<base-clock-partitioning>>, the sub-partitioning is performed with sub-clock inference which uses the following incidence definition:
+For each clocked base-partition B_i, identified in <<base-partitioning>>, the sub-partitioning is performed with sub-clock inference which uses the following incidence definition:
 
 latexmath:[$\operatorname{incidence}(e)$] =
 
@@ -805,7 +807,7 @@ E &= \bigcup E_{ij}
 ++++
 
 .Example
-After sub-partitioning of the example from <<base-clock-partitioning>>, the following partitions are identified:
+After sub-partitioning of the example from <<base-partitioning>>, the following partitions are identified:
 [source,modelica]
 ----
 // Base partition 1 (clocked partition)
@@ -930,7 +932,7 @@ Especially neither relations, nor any of the built-in operators of <<event-trigg
 
 ==== Solver Methods
 
-A sub-partition can have an integration method, directly associated (<<associating-a-solver-to-a-partition>>) or inferred from other sub-partitions (<<inferencing-of-solvermethod>>).
+A sub-partition can have an integration method, directly associated (<<associating-a-solver-to-a-sub-partition>>) or inferred from other sub-partitions (<<inferencing-of-solvermethod>>).
 A predefined type `ModelicaServices.Types.SolverMethod` defines the methods supported by the respective tool by using the `choices` annotation.
 
 [NOTE]

@@ -24,9 +24,9 @@ The following definitions hold:
 * A stream connector must have exactly one variable with the `flow` prefix. That variable shall be a scalar that is a subtype of `Real`.
   [NOTE]
   The idea is that all stream variables of a connector are associated with this flow variable.
-* For every outside connector (see <<inside-and-outside-connectors>>), one equation is generated for every variable with the `stream` prefix (to describe the propagation of the stream variable along a model hierarchy). For the exact definition, see the end of <<stream-operator-instream-and-connection-equations>>.
+* For every outside connector (see <<inside-and-outside-connectors>>), one equation is generated for every variable with the `stream` prefix (to describe the propagation of the stream variable along a model hierarchy). For the exact definition, see the end of <<instream-and-connection-equations>>.
 * For inside connectors (see <<inside-and-outside-connectors>>), variables with the `stream` prefix do not lead to connection equations.
-* Connection equations with stream variables are generated in a model when using `inStream` or `actualStream`, see <<stream-operator-instream-and-connection-equations>> and <<stream-operator-actualstream>>.
+* Connection equations with stream variables are generated in a model when using `inStream` or `actualStream`, see <<instream-and-connection-equations>> and <<actualstream>>.
 
 The variable with `flow` prefix must exist at the same level of the connector as the variable with `stream` prefix; i.e., they can each be directly declared in the connector or be inherited, while a stream variable in a sub-connector would result in a separate stream sub-connector.
 
@@ -48,7 +48,7 @@ The Medium definition and the stream variables are associated with the only flow
 The Medium and the stream variables are transported with this flow variable.
 The stream variables `h_outflow` and `X_outflow` are the stream properties inside the component close to the boundary, when fluid flows out of the component into the connection point.
 The stream properties for the other flow direction can be inquired with the built-in `inStream`.
-The value of the stream variable corresponding to the actual flow direction can be inquired through the built-in `actualStream`, see <<stream-operator-actualstream>>.
+The value of the stream variable corresponding to the actual flow direction can be inquired through the built-in `actualStream`, see <<actualstream>>.
 
 === inStream and Connection Equations
 :id: stream-operator-instream-and-connection-equations

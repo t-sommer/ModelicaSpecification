@@ -86,7 +86,7 @@ The following rules apply to `import` clauses:
 * An imported package or definition should always be referred to by its fully qualified name in the `import` clause.
 * Multiple qualified `import` clauses shall not have the same import name (see <<simple-name-lookup>>).
 
-=== The Modelica Library Path -- MODELICAPATH
+=== The Modelica Library Path - MODELICAPATH
 
 The top-level scope implicitly contains a number of classes stored externally.
 If a top-level name is not found at global scope, a Modelica translator shall look up additional classes in an ordered list of library roots, called `MODELICAPATH`.
@@ -201,7 +201,7 @@ end Rotational;
 
 === Stored Definitions Containing Multiple Class Definitions
 
-The `stored-definition` in the grammar allows for zero or more class definitions, but a `stored-definition` not containing exactly one class definition can only be used to define top-level classes, cannot be used for file system mapping of packages or class-hierarchies (see <<file-system-mapping-of-package-class>>), and shall be ignored when searching the `MODELICAPATH` (see <<the-modelica-library-path-modelicapath>>).
+The `stored-definition` in the grammar allows for zero or more class definitions, but a `stored-definition` not containing exactly one class definition can only be used to define top-level classes, cannot be used for file system mapping of packages or class-hierarchies (see <<file-system-mapping-of-packageclass>>), and shall be ignored when searching the `MODELICAPATH` (see <<the-modelica-library-path-modelicapath>>).
 It follows that any `within` clause (see <<the-within-clause>>) in such a `stored-definition` shall not contain a `packageprefixname`.
 
 === External Resources
