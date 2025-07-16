@@ -939,6 +939,7 @@ Scalar multiplication `s * a` or `a * s` with numeric scalar s and numeric scala
 
 Element-wise multiplication `a .* b` of numeric scalars, vectors, matrices or arrays a and b requires a numeric type class for a and b and either size(a) = size(b) or scalar a or scalar b.
 
+[[tab:product]]
 .Array element-wise multiplication
 [cols="1,1,1,2",options="header"]
 |===

@@ -41,6 +41,7 @@ Since Modelica tools have the freedom to symbolically manipulate expressions, th
 
 The following table presents the precedence and associativity of all the expression operators, consistent with and complementing information that can be derived from the Modelica grammar in <<modelica-concrete-syntax>>.
 
+[[tab:operator-precedence]]
 [cols="l,c,l,l",options="header"]
 |===
 |Operator group |Assoc. |Operator syntax |Examples
