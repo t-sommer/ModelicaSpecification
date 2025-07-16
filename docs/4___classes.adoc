@@ -393,7 +393,7 @@ There are annotations to handle the case where the connector should be connected
 
 === Component Variability
 
-As briefly mentioned in <<component-variability-prefixes-discrete-parameter-constant>>, the component variability prefixes are the basis for defining component variability.
+As briefly mentioned in <<component-variability-prefixes>>, the component variability prefixes are the basis for defining component variability.
 Combined with some other information about the components and analysis of expression variability (<<variability-of-expressions>>), they define the component variabilities as follows:
 
 * A variable `vc` declared with `constant` prefix does not change during simulation, with a value that is unaffected even by the initialization problem (i.e., determined during translation).

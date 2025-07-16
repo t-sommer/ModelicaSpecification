@@ -4,7 +4,7 @@ Annotations are intended for storing extra information about a model, such as gr
 The standard annotations (that is, all annotations except the vendor-specific ones, see <<vendor-specific-annotations>>) shall only be used where their semantics is defined.
 A Modelica tool is free to define and use other annotations, in addition to those defined here, according to <<vendor-specific-annotations>>.
 
-Annotations are optional in the Modelica grammar, and when present, indicated using the `annotation` keyword, see `annotation-clause` in the grammar (<<expressions1>>).
+Annotations are optional in the Modelica grammar, and when present, indicated using the `annotation` keyword, see `annotation-clause` in the grammar (<<syntax-expressions>>).
 The structure of the annotation content is the same as a class modification (`class-modification` in the grammar).
 (For replaceable class declarations with a `constraining-clause` also refer to <<constraining-clause-annotations>>.)
 The specification in this document defines the semantic meaning if a tool implements any of these annotations.
@@ -24,7 +24,7 @@ When there is no declaration equation and no other explanation of default behavi
 As all annotations are optional, component declaration annotations will always have default behavior.
 The default behavior is either the implicit absence of any of the effects for defined values of the annotation, or explicitly defined as corresponding to one of the valid values.
 
-When an annotation is defined with a component variability prefix (<<component-variability-prefixes-discrete-parameter-constant>>), this restricts the allowed variability of corresponding annotation modifiers analogously to the rules in <<variability-of-expressions>>.
+When an annotation is defined with a component variability prefix (<<component-variability-prefixes>>), this restricts the allowed variability of corresponding annotation modifiers analogously to the rules in <<variability-of-expressions>>.
 If the annotation is declared as an `/*evaluable*/ parameter` the corresponding modifier is further restricted to be evaluable.
 If the annotation is declared as a `/*literal*/ constant` the corresponding modifier is further restricted to be a literal value.
 
@@ -355,7 +355,7 @@ record Curve
 end Curve;
 ----
 
-The mandatory `x` and `y` expressions are restricted to be result references in the form of `result-reference` in the grammar (see <<expressions1>>), referring to a scalar variable (or a derivative thereof) or `time`.
+The mandatory `x` and `y` expressions are restricted to be result references in the form of `result-reference` in the grammar (see <<syntax-expressions>>), referring to a scalar variable (or a derivative thereof) or `time`.
 It is an error if `x` or `y` does not designate a scalar result.
 If `x` or `y` is a derivative, `der(v, n)`, then n must not exceed the maximum amount of differentiation applied to `v` in the model.
 A diagnostic is recommended in case the simulation result is missing a trajectory for a valid result reference.
@@ -409,6 +409,7 @@ A tool which does not understand any of the vendor-specific meanings will always
 In the places listed in <<attributes-with-variable-replacements>> where text for display is defined, the final value of a result variable can be embedded by referring to the variable as `%{inertia1.w}`.
 This is similar to the `Text` graphical primitive in <<text>>.
 
+[[attributes-with-variable-replacements]]
 .Attributes that can use variable replacements.
 [cols="l,l",options="header"]
 |===
@@ -454,7 +455,7 @@ Later, if this would become supported by standard variable replacement, it might
 ===== Text Markup in Captions
 
 In addition to variable replacements, a very restricted form of text markup is used for the `caption`.
-Note that the text markup escape sequences described in <<text-markup-escape-sequences>> generally apply inside `caption`, with one exception given below for links.
+Note that the text markup escape sequences described in <<escape-sequences>> generally apply inside `caption`, with one exception given below for links.
 
 Links take the form `%[text](link)`, where the `[text]` part is optional, and text markup escape sequences don't apply inside the link.
 The link can be in either of the following forms, where the interpretation is given by the first matching form:

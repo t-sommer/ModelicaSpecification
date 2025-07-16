@@ -12,7 +12,7 @@ Flattening is made in a context which consists of a modification environment (se
 The classes lexically enclosing an element form an ordered set of enclosing classes.
 A class defined inside another class definition (the enclosing class) precedes its enclosing class definition in this set.
 
-Enclosing all class definitions is an unnamed enclosing class that contains all top-level class definitions, and not-yet read classes defined externally as described in <<mapping-package-class-structures-to-a-hierarchical-file-system>>.
+Enclosing all class definitions is an unnamed enclosing class that contains all top-level class definitions, and not-yet read classes defined externally as described in <<file-system-mapping-of-packageclass>>.
 The order of top-level class definitions in the unnamed enclosing class is undefined.
 
 During flattening, the enclosing class of an element being flattened is a partially flattened class.

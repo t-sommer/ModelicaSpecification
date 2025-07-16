@@ -38,8 +38,8 @@ The special kinds of connect-like equations listed below are used to define a st
 [cols="1,2,2",options="header"]
 |===
 |Expression |Description |Details
-|`transition(from, to, condition, ...)` |State machine transition between states |<<modelica:transition>>
-|`initialState(state)` |State machine initial state |<<modelica:initialState>>
+|`transition(from, to, condition, ...)` |State machine transition between states |<<transition>>
+|`initialState(state)` |State machine initial state |<<initialState>>
 |===
 
 The `transition` and `initialState` equations can only be used in equations, and cannot be used inside `if`-equations with conditions that are not parameter expressions, or in `when`-equations.
@@ -49,11 +49,12 @@ The operators listed below are used to query the status of the state machine.
 [cols="1,2,2",options="header"]
 |===
 |Expression |Description |Details
-|`activeState(state)` |Predicate for active state |<<modelica:activeState>>
-|`ticksInState()` |Ticks since activation |<<modelica:ticksInState>>
-|`timeInState()` |Time since activation |<<modelica:timeInState>>
+|`activeState(state)` |Predicate for active state |<<activeState>>
+|`ticksInState()` |Ticks since activation |<<ticksInState>>
+|`timeInState()` |Time since activation |<<timeInState>>
 |===
 
+[[transition]]
 transition::
 +
 [source,modelica]
@@ -76,6 +77,7 @@ If `reset = true`, the states of the target state are reinitialized, i.e., state
 If `synch = true`, any transition is disabled until all state machines of the from-state have reached final states, i.e., states without outgoing transitions.
 For the precise details about firing a transition, see <<state-machine-semantics>>.
 
+[[initialState]]
 initialState::
 +
 [source,modelica]
@@ -86,6 +88,7 @@ initialState(state)
 Argument `state` is the block instance that is defined to be the initial state of a state machine.
 At the first clock tick of the state machine, this state becomes active.
 
+[[activeState]]
 activeState::
 +
 [source,modelica]
@@ -99,6 +102,7 @@ If it is not active, the operator returns `false`.
 +
 It is an error if the instance is not a state of a state machine.
 
+[[ticksInState]]
 ticksInState::
 +
 [source,modelica]
@@ -111,6 +115,7 @@ In the case of a self-transition to the currently active state or to an active e
 +
 This function can only be used in state machines.
 
+[[timeInState]]
 timeInState::
 +
 [source,modelica]
@@ -141,9 +146,10 @@ equation
 === State Machine Graphics
 
 [NOTE]
-See <<fig-state-machine-layout>> for the recommended layout of a state machine.
+<<fig-state-machine-layout>> shows the recommended layout of a state machine.
 
 .Recommended layout of a simple state machine. For the 5 transitions, the settings are as follows, from left to right: immediate = true, false, true, false, true; reset = true, true, false, false, true; synchronize = false, false, false, false, true; priority = 1, 2, 3, 4, 5.
+[[fig-state-machine-layout]]
 image::media/statemachine.svg[]
 
 The annotation for graphics of `transition` has the following structure: `annotation(Line(...), Text(...))`; and for `initialState()`: graphical-primitives`(Line(...))`; with `Line` and `Text` annotations defined in <<annotations>>.
@@ -438,7 +444,9 @@ u2 = v
 
 === Example
 
-image::media/hierarchical-statemachine.svg[caption="Example of a hierarchical state machine."]
+.Example of a hierarchical state machine.
+[[fig-hierarchical-statemachine]]
+image::media/hierarchical-statemachine.svg[]
 
 .Example
 
