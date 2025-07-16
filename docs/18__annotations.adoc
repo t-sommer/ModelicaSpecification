@@ -1,20 +1,19 @@
 == Annotations
-:id: annotations
 
-Annotations are intended for storing extra information about a model, such as graphics, documentation, versioning, etc.
-Standard annotations (all except vendor-specific ones, see <<vendor-specific-annotations>>) shall only be used where their semantics is defined.
+Annotations are intended for storing extra information about a model, such as graphics, documentation or versioning, etc.
+The standard annotations (that is, all annotations except the vendor-specific ones, see <<vendor-specific-annotations>>) shall only be used where their semantics is defined.
 A Modelica tool is free to define and use other annotations, in addition to those defined here, according to <<vendor-specific-annotations>>.
 
-Annotations are optional in the Modelica grammar, and when present, indicated using the `annotation` keyword.
-The structure of the annotation content is the same as a class modification.
-(For replaceable class declarations with a constraining-clause also refer to <<constraining-clause-annotations>>.)
+Annotations are optional in the Modelica grammar, and when present, indicated using the `annotation` keyword, see `annotation-clause` in the grammar (<<expressions1>>).
+The structure of the annotation content is the same as a class modification (`class-modification` in the grammar).
+(For replaceable class declarations with a `constraining-clause` also refer to <<constraining-clause-annotations>>.)
 The specification in this document defines the semantic meaning if a tool implements any of these annotations.
 
 === Notation for Annotation Definitions
 
 Annotations are defined using the syntactic forms of Modelica component declarations and record definitions, with the following special semantics.
 If the annotation is described by a component declaration, the annotation is used in the form of a value modifier for the same name.
-If the annotation is described by a `record` class the annotation is used in the form of a modifier for a `record` component with the same name.
+If the annotation is described by a `record` _class_ the annotation is used in the form of a modifier for a `record` _component_ with the same name.
 
 A declaration equation for a component or record member specifies a default to be used when no corresponding annotation is given.
 An array record member without declaration equation and with size specified by colon (`:`) defaults to being empty.
@@ -25,29 +24,35 @@ When there is no declaration equation and no other explanation of default behavi
 As all annotations are optional, component declaration annotations will always have default behavior.
 The default behavior is either the implicit absence of any of the effects for defined values of the annotation, or explicitly defined as corresponding to one of the valid values.
 
-When an annotation is defined with a component variability prefix, this restricts the allowed variability of corresponding annotation modifiers analogously to the rules in <<variability-of-expressions>>.
-If the annotation is declared as an evaluable parameter the corresponding modifier is further restricted to be evaluable.
-If the annotation is declared as a literal constant the corresponding modifier is further restricted to be a literal value.
+When an annotation is defined with a component variability prefix (<<component-variability-prefixes-discrete-parameter-constant>>), this restricts the allowed variability of corresponding annotation modifiers analogously to the rules in <<variability-of-expressions>>.
+If the annotation is declared as an `/*evaluable*/ parameter` the corresponding modifier is further restricted to be evaluable.
+If the annotation is declared as a `/*literal*/ constant` the corresponding modifier is further restricted to be a literal value.
 
-.Example
+[example]
+====
+Since the semantics of an annotation comes from the interpretation as a modification, empty annotations have no impact at all.
+For example, the following is allowed, but meaningless:
 [source,modelica]
 ----
 annotation(Dialog());
 ----
-Since the semantics of an annotation comes from the interpretation as a modification, empty annotations have no impact at all.
 An annotation such as `annotation(Dialog)` is also meaningless, but deprecated according to <<semantic-restrictions-of-annotation-syntax>>.
+====
 
 === Semantic Restrictions of Annotation Syntax
 
-Except where explicitly stated, the following constructs shall not be used in annotations:
+The syntactic form of annotations, `annotation-clause`, uses the generic `class-modification` in <<modification>>.
+However, except where explicitly stated, the following constructs shall not be used in annotations:
 
-* `final`
-* `each`
-* `redeclare`
-* `replaceable`, `constrainedby`
-* An element-modification without modification is deprecated without exceptions.
+* `final`. For instance, neither `final experiment(StopTime = 2.0)` nor `experiment(final StopTime = 2.0)` may be used to prevent that an extending model overrides the `StopTime` setting.
+* `each`. When an annotation is given for an array component declaration, it applies to the array as a whole. Thus, neither should values be given in arrays matching the size of the declared component, nor should `each` be used express that a scalar value applies to each element of the array.
+* `element-redeclaration` in the grammar. In particular, the keyword `redeclare` cannot be used.
+* `element-replaceable` in the grammar. In particular the keywords `replaceable` and `constrainedby` cannot be used.
+* An `element-modification` without `modification` is deprecated without exceptions. The meaning of such annotations has never been defined.
 
-.Example
+[example]
+====
+The following annotations are not merely meaningless, but deprecated:
 [source,modelica]
 ----
 annotation(
@@ -55,7 +60,8 @@ annotation(
   Dialog(colorSelector)
 );
 ----
-The effect of `colorSelector` is not the same as `colorSelector = true`, even though the latter is the only meaningful use of `colorSelector`.
+In particular, the effect of `colorSelector` is not the same as `colorSelector = true`, even though the latter is the only meaningful use of `colorSelector`.
+====
 
 === Expression Evaluation Inside Annotations
 
@@ -64,10 +70,12 @@ This section describes some differences to the evaluation of expressions inside 
 ==== Enumerations for Use in Annotations
 
 Several annotations make use of dedicated enumeration types.
-These enumeration types do not have the full status of being built-in types as, e.g., `StateSelect`.
+These enumeration types do not have the full status of being built-in types as, e.g., `StateSelect` (<<stateselect>>).
 Instead, they are only in scope where expressions inside annotations are evaluated, shadowing any user-defined definitions with the same names.
 
-.Example
+[example]
+====
+The `smooth` attribute of a `Polygon` can be controlled through a model parameter, but the parameter cannot use the `Smooth` type directly:
 [source,modelica]
 ----
 model BezierParameter
@@ -81,9 +89,11 @@ model BezierParameter
   }));
 end BezierParameter;
 ----
+====
 
 [NOTE]
-When evaluating the expression `expr` in the model `M`, one can imagine it being done as in:
+====
+When evaluating the expression _expr_ in the model `M`, one can imagine it being done as in
 [source,modelica]
 ----
 model M_annotation
@@ -92,7 +102,8 @@ model M_annotation
   T result = expr;
 end M_annotation;
 ----
-where `AnnotationEnumerations` is a hidden package containing all enumeration types used in annotations, and `T` is the expected type of the expression.
+where `AnnotationEnumerations` is a hidden package containing all enumeration types used in annotations, and _T_ is the expected type of the expression.
+====
 
 === Vendor-Specific Annotations
 
@@ -102,7 +113,8 @@ The only requirement is that any tool shall save files with all vendor-specific 
 Two variants of vendor-specific annotations exist; one simple and one hierarchical.
 Double underscore concatenated with a vendor name as initial characters of the identifier are used to identify vendor-specific annotations.
 
-.Example
+[example]
+====
 [source,modelica]
 ----
 annotation(
@@ -110,7 +122,6 @@ annotation(
        graphics = {__NameOfVendor(Circle(center = {0, 0}, radius = 10))}));
 ----
 This introduces a new graphical primitive `Circle` using the hierarchical variant of vendor-specific annotations.
-
 [source,modelica]
 ----
 annotation(
@@ -119,28 +130,33 @@ annotation(
                              __NameOfVendor_shadow = 2)}));
 ----
 This introduces a new attribute `__NameOfVendor_shadow` for the `Rectangle` primitive using the simple variant of vendor-specific annotations.
+====
 
 === Documentation
 
-The `Documentation` annotation has the following contents:
-
+The `Documentation` annotation has the following contents, where the `info` and `revisions` annotations are described in <<annotation-info-revisions>>, and the `figures` annotation is described in <<annotations-for-figures>>:
 [source,modelica]
 ----
 record Documentation
-  constant String info = "" "Description of the class";
-  constant String revisions = "" "Revision history";
+  /*literal*/ constant String info = "" "Description of the class";
+  /*literal*/ constant String revisions = "" "Revision history";
   Figure[:] figures; "Simulation result figures";
-  constant String[:] styleSheets "Style sheets for documentation";
+  /*literal*/ constant String[:] styleSheets "Style sheets for documentation";
 end Documentation;
 ----
 
-The `styleSheets` may also be given as a single string.
+The `styleSheets` may also be given as a single string, see <<style-sheets>>.
 
 How the tool interprets the information in `Documentation` is unspecified.
 
 ==== Class Description and Revision History
 
 Inside the `Documentation` annotation, the `info` annotation gives a textual description of the class, and the `revisions` annotation gives a revision history.
+
+[NOTE]
+====
+The `revisions` documentation may be omitted in printed documentation.
+====
 
 If the string starts with the tag `<html>` or `<HTML>`, the entire string is HTML encoded (assumed to end with `</html>` or `</HTML>`, but to be rendered as HTML even if the end-tag is missing).
 Otherwise, the entire string is rendered as is.
@@ -168,7 +184,10 @@ The style sheets will be cascaded in the given order.
 Specifying just a string for `styleSheets` has the same meaning as specifying a singleton array containing the string.
 
 [NOTE]
+====
 It is recommended to use `class` and `id` selectors with a `$NameOfLibrary$-` prefix to avoid collisions when the content is included in a larger context.
+====
+
 The style sheet rules should not use type or universal selectors, due to possible interference with tool-specific styling.
 
 Vendors should use a `$NameOfVendor$-` prefix to style vendor generated HTML content surrounding the user provided documentation.
@@ -178,38 +197,36 @@ The prefix is used to avoid this happening by accident.
 ==== Figures
 
 Inside the `Documentation` annotation, each element of the `figures` annotation array has the following content:
-
 [source,modelica]
 ----
 record Figure
-  constant String title = "" "Title meant for display";
-  constant String identifier = "" "Identifier meant for programmatic access";
-  constant String group = "" "Name of figure group";
-  constant Boolean preferred = false "Automatically display figure after simulation";
+  /*literal*/ constant String title = "" "Title meant for display";
+  /*literal*/ constant String identifier = "" "Identifier meant for programmatic access";
+  /*literal*/ constant String group = "" "Name of figure group";
+  /*literal*/ constant Boolean preferred = false "Automatically display figure after simulation";
   Plot[:] plots "Plots";
-  constant String caption = "" "Figure caption";
+  /*literal*/ constant String caption = "" "Figure caption";
 end Figure;
 ----
 
 A `Figure` is a graphical container that can contain several `plots` described by `Plot` annotations:
-
 [source,modelica]
 ----
 record Plot
-  constant String title "Title meant for display";
-  constant String identifier = "" "Identifier meant for programmatic access";
+  /*literal*/ constant String title "Title meant for display";
+  /*literal*/ constant String identifier = "" "Identifier meant for programmatic access";
   Curve[:] curves "Plot curves";
-  constant Axis x "X axis properties";
-  constant Axis y "Y axis properties";
+  /*literal*/ constant Axis x "X axis properties";
+  /*literal*/ constant Axis y "Y axis properties";
 end Plot;
 ----
 
-A `Plot` can contain several `curves`, that all share a common `x` and `y` axis with properties described in <<axis-properties>>.
+A `Plot` can contain several `curves`, see <<plot-curves>>, that all share a common `x` and `y` axis with properties described in <<axis-properties>>.
 
 Both `Figure` and `Plot` can have an optional title.
-When the `Figure` title is the empty string (the default), the tool must produce a non-empty title based on the figure content.
-On the other hand, the `Plot` title has a tool-dependent default, but the default may be the empty string.
-When the `Plot` title is the empty string, no title should be shown.
+When the `Figure` `title` is the empty string (the default), the tool must produce a non-empty title based on the figure content.
+On the other hand, the `Plot` `title` has a tool-dependent default, but the default may be the empty string.
+When the `Plot` `title` is the empty string, no title should be shown.
 The plot title is not to be confused with the plot _label_ which is never empty, see below.
 Variable replacements, as described in <<variable-replacements>>, can be used in the `title` of `Figure` and `Plot`.
 
@@ -221,9 +238,13 @@ A `Plot` `identifier` on the other hand is only required to be unique among the 
 If an `identifier` is an empty string it cannot be used for programmatic access and is exempt from the uniqueness requirements.
 
 [NOTE]
+====
 For `Figure`, this makes it possible to reference the plot from a tool-specific scripting environment.
 For `Plot`, this makes it possible to reference the plot in the figure caption, which becomes useful when the `Figure` contains more than one `Plot`.
+====
 
+// henrikt-ma 2020-06: Once there is Modelica URI support for referring to a figure in the collection of a class, it will be easier to explain
+// the following statement.
 Even though a `Figure` annotation can be shared through inheritance between classes in a class hierarchy, note that each simulated class provides its own data to be displayed in the figure.
 
 Every `Plot` has an automatically generated _label_ which is required to be shown as soon as at least one `Plot` in the `Figure` has an `identifier`.
@@ -240,22 +261,22 @@ The `caption` attribute of `Figure` can use the restricted form of text markup d
 
 ===== Axis Properties
 
-Properties may be defined for each `Plot` axis:
+Properties may be defined for each `Plot` axis (see also annotation index: Axis):
 
 [source,modelica]
 ----
 record Axis
-  constant Real min "Axis lower bound, in 'unit'";
-  constant Real max "Axis upper bound, in 'unit'";
-  constant String unit = "" "Unit of axis tick labels";
-  constant String label "Axis label";
-  constant AxisScale scale = Linear() "Mapping between axis values and position on axis"
+  /*literal*/ constant Real min "Axis lower bound, in 'unit'";
+  /*literal*/ constant Real max "Axis upper bound, in 'unit'";
+  /*literal*/ constant String unit = "" "Unit of axis tick labels";
+  /*literal*/ constant String label "Axis label";
+  /*literal*/ constant AxisScale scale = Linear() "Mapping between axis values and position on axis"
 end Axis;
 ----
 
 When an axis bound is not provided, the tool computes one automatically.
 
-A non-empty `unit` shall match `unit-expression`.
+A non-empty `unit` shall match `unit-expression` in <<unit-expressions>>.
 An empty `unit` means that the axis is unitless, and each expression plotted against it may use its own unit determined by the tool.
 The tool is responsible for conveying the information about choice of unit for the different variables, for instance by attaching this information to curve legends.
 
@@ -280,7 +301,7 @@ partial record AxisScale
 end AxisScale;
 ----
 
-The standardized annotations extending from `AxisScale` are `Linear` and  `Log`, but it is also allowed to use a vendor-specific annotation.
+The standardized annotations extending from `AxisScale` are `Linear` and `Log`, but it is also allowed to use a vendor-specific annotation.
 
 Use `Linear` for a linear mapping between axis values and position on axis:
 
@@ -297,19 +318,21 @@ Use `Log` for a logarithmic mapping between axis values and position on axis:
 ----
 record Log
   extends AxisScale;
-  constant Integer base(min = 2) = 10;
+  /*literal*/ constant Integer base(min = 2) = 10;
 end Log;
 ----
 
 The `base` of a `Log` scale determines preferred positions of major axis ticks.
 It is not required that the presentation of axis tick labels reflect the `base` setting.
-For example, when `base` is 10, major axis ticks should preferrably be placed at integer powers of 10, and natural alternatives that a tool may use for major axis tick labels could look like 0.001 or 10^-3.
+For example, when `base` is 10, major axis ticks should preferrably be placed at integer powers of 10, and natural alternatives that a tool may use for major axis tick labels could look like $0.001$ or $10^{-3}$.
 Under some circumstances, such as when the axis range does not span even a single order of magnitude, a tool may disregard the preference in order to get useful axis ticks.
 
-.Example
+[example]
+====
 A _symmetric log_ axis scale is sometimes used for axes spanning across several orders of magnitude of both positive and negative values.
-Details vary, but the mapping from value to linear position along axis is some variation of y → sign(y)·log(1 + |y|/10^α).
+Details vary, but the mapping from value to linear position along axis is some variation of $y \mapsto \operatorname{sign}(y)\, \operatorname{log}(1 + \frac{\abs{y}}{10^{\alpha}})$.
 A tool may implement this as a vendor-specific axis scale:
+
 [source,modelica]
 ----
 Axis(
@@ -317,29 +340,31 @@ Axis(
   scale = __NameOfVendor_symlog(1),
 )
 ----
+====
 
 ===== Plot Curves
 
-The actual data to plot is specified in the `curves` of a `Plot`:
-
+The actual data to plot is specified in the `curves` annotationindex:Curve of a `Plot`:
 [source,modelica]
 ----
 record Curve
   expression x = time "X coordinate values";
   expression y "Y coordinate values";
-  constant String legend "Legend";
-  constant Integer zOrder = 0 "Drawing order control";
+  /*literal*/ constant String legend "Legend";
+  /*literal*/ constant Integer zOrder = 0 "Drawing order control";
 end Curve;
 ----
 
-The mandatory `x` and `y` expressions are restricted to be result references in the form of `result-reference`, referring to a scalar variable (or a derivative thereof) or `time`.
+The mandatory `x` and `y` expressions are restricted to be result references in the form of `result-reference` in the grammar (see <<expressions1>>), referring to a scalar variable (or a derivative thereof) or `time`.
 It is an error if `x` or `y` does not designate a scalar result.
 If `x` or `y` is a derivative, `der(v, n)`, then n must not exceed the maximum amount of differentiation applied to `v` in the model.
 A diagnostic is recommended in case the simulation result is missing a trajectory for a valid result reference.
 
 [NOTE]
+====
 While the syntax for referring to a second order derivative is `der(v, 2)`, the appearance is left for tools to decide.
 For example, a tool might choose to present this as `der(der(v))`.
+====
 
 When the `unit` of an `Axis` is non-empty, it is an error if the unit of the corresponding `x` or `y` expression (i.e., a variable's `unit`, or second for `time`) is incompatible with the axis unit.
 
@@ -353,547 +378,145 @@ Ties are resolved using order of appearance in the `curves` of a `Plot`, with la
 
 ===== Escape Sequences
 
-In an attribute inside a figure where the variable replacements or the text markup can be used, the following use of text markup escape sequences applies.
+In an attribute inside a figure where the variable replacements of <<variable-replacements>> or the text markup of <<text-markup-in-captions>> can be used, the following use of text markup escape sequences applies.
 These escape sequences are applied after the application of other markup, and are not applied at all inside some of the other markup, see details for the respective markup.
 
 The percent character `%` shall be encoded `%%`.
 The following are all the recognized escape sequences:
 
+[cols="c,c,l",options="header"]
 |===
 |Sequence |Encoded character |Comment
 |`%%` |`%` |Only way to encode character.
-|`%]` |`]` |Prevents termination of markup delimited by `[ ... ]`.
+|`%]` |`]`  |Prevents termination of markup delimited by `[$\ldots$]`.
 |===
 
 [NOTE]
-With the percent character being encoded as `%%`, the behavior of `%` appearing in any other way than the escape sequences above, for variable replacement, or for the text markup is undefined, and thus possible to define in the future without breaking backward compatibility.
+====
+With the percent character being encoded as `%%`, the behavior of `%` appearing in any other way than the escape sequences above, for variable replacement (see <<variable-replacements>>), or for the text markup (see <<text-markup-in-captions>>) is undefined, and thus possible to define in the future without breaking backward compatibility.
+====
 
 ===== Vendor-Specific Markup
 
-Vendor-specific markup takes the form `__$nameOfVendor_1(data_1)...__$nameOfVendor_n(data_n)`, where n ≥ 1.
-It is only allowed as part of constructs described in <<variable-replacements>> and <<text-markup-in-captions>>, where it will be denoted by `vendorSpecificMarkup`.
-The `nameOfVendor` consists of only digits and letters, and shall only convey the name of the vendor defining the meaning of the associated `data`.
-Text markup escape sequences don't apply inside the `data`, implying that it cannot contain the closing parenthesis, `)`.
+Vendor-specific markup takes the form `__$nameOfVendor_{1}($data_{1}$)...__$nameOfVendor_{n}($data_{n}$)`, where n ≥ 1.
+It is only allowed as part of constructs described in <<variable-replacements>> and <<text-markup-in-captions>>, where it will be denoted by vendorSpecificMarkup.
+The nameOfVendor consists of only digits and letters, and shall only convey the name of the vendor defining the meaning of the associated data.
+Text markup escape sequences don't apply inside the data, implying that it cannot contain the closing parenthesis, `)`.
 A tool which does not understand any of the vendor-specific meanings will always be able to safely ignore all vendor-specific markup.
 
 ===== Variable Replacements
 
 In the places listed in <<attributes-with-variable-replacements>> where text for display is defined, the final value of a result variable can be embedded by referring to the variable as `%{inertia1.w}`.
-This is similar to the `Text` graphical primitive.
+This is similar to the `Text` graphical primitive in <<text>>.
 
-.Attributes that can use variable replacements
+.Attributes that can use variable replacements.
+[cols="l,l",options="header"]
 |===
 |Attribute |Annotation
-|`title` |`Figure` and `Plot`
+|`title`   |`Figure` and `Plot`
 |`caption` |`Figure`
-|`legend` |`Curve`
-|`label` |`Axis`
+|`legend`  |`Curve`
+|`label`   |`Axis`
 |===
 
 In `%{variable}`, text markup escape sequences don't apply inside the variable, which has the form of `result-reference`.
 This means that a complete `result-reference` shall be scanned before looking for the terminating closing brace.
 
-.Example
+[example]
+====
 The variable replacement `%{'%%'}` references the variable `'%%'`, not the variable `'%'`.
+====
 
-.Example
+[example]
+====
 The variable replacement `%{foo . '}bar{'}` makes a valid reference to the variable `foo.'}bar{'`.
+====
 
 Note that expansion to the final value means that expansion is not restricted to parameters and constants, so that values to be shown in a caption can be determined during simulation.
 
 [NOTE]
+====
 By design, neither `%class` nor `%name` is supported in this context, as this information is expected to already be easily accessible (when applicable) in tool-specific ways.
+(Titles making use of `%class` or `%name` would then only lead to ugly duplication of this information.)
+====
 
 Vendor-specific markup can be added to a variable replacement in the form `%vendorSpecificMarkup{variable}`.
 The vendor-specific markup must not fundamentally alter the meaning of the variable replacement, in order to ensure that a tool can safely ignore all vendor-specific markup and still obtain a result that fits the current context.
 
-.Example
+[example]
+====
 One application of vendor-specific markup for variable replacement is to prototype a feature that can later be turned into standardized format control.
 For example, the replaced variable may have an automatically inferred unit, but no `displayUnit`-attribute.
 The tool vendor AVendor could then describe a selection of display unit with `%__AVendor(?displayUnit=mm){integrator1.y}`.
 Later, if this would become supported by standard variable replacement, it might take the form of something like `%{integrator1.y?displayUnit=mm}` instead.
+====
 
 ===== Text Markup in Captions
 
 In addition to variable replacements, a very restricted form of text markup is used for the `caption`.
-Note that the text markup escape sequences described above generally apply inside `caption`, with one exception given below for links.
+Note that the text markup escape sequences described in <<text-markup-escape-sequences>> generally apply inside `caption`, with one exception given below for links.
 
 Links take the form `%[text](link)`, where the `[text]` part is optional, and text markup escape sequences don't apply inside the link.
 The link can be in either of the following forms, where the interpretation is given by the first matching form:
-
-* `variable:id`, where id is a component reference in the form of `result-reference`, such as `inertia1.w`.
-* `plot:id`, where id is the identifier of a `Plot` in the current `Figure`.
-* A URI.
+* A `variable:id`, where id is a component reference in the form of `result-reference` in the grammar, such as `inertia1.w`.
+* A `plot:id`, where id is the identifier of a `Plot` in the current `Figure`.
+* A URI. Well established schemes such as `https://github.com/modelica` or `modelica:/Modelica`, as well as lesser known schemes may be used.
+  (A tool that has no special recognition of a scheme can try sending the URI to the operating system for interpretation.)
 
 When `[text]` is omitted, a Modelica tool is free to derive a default based on the link.
 
 [NOTE]
-For the character `]` to appear in text, it needs to be encoded as the escape sequence `%]`, or it would be interpreted as the terminating delimiter of the `[text]`.
+====
+Note that for the character `]` to appear in text, it needs to be encoded as the escape sequence `%]`, or it would be interpreted as the terminating delimiter of the `[text]`.
 
 Similarly, the closing parenthesis `)` must be handled with care in link in order to not be interpreted as the terminating delimiter of the `(link)`.
-For a `variable:`, no special treatment is needed, as the component reference syntax of the id allows parentheses to appear without risk of misinterpretation inside a quoted identifier.
-For a `plot:`, there is currently no way to reference a plot with `)` in its identifier.
-For a URI, a closing parenthesis must be URL encoded in order to not be interpreted as the end of the `(link)`.
+* For a `variable:`, no special treatment is needed, as the component reference syntax of the id allows parentheses to appear without risk of misinterpretation inside a quoted identifier.
+  For example, `%(variable:'try)me!')` has a parenthesis in `'try)me!'` that must not be mistaken for the end of the `(link)`.
+* For a `plot:`, there is currently no way to reference a plot with `)` in its `identifier`.
+* For a URI, a closing parenthesis must be URL encoded in order to not be interpreted as the end of the `(link)`.
+  For example, the URL in `%(http://example.org/(tryme))` is just `http://example.org/(tryme`, and the entire link is followed by a stray closing parenthesis.
+  To make it work, one has to use URL encoding: `%(http://example.org/%28tryme%29)` (using URL encoding of the opening parenthesis just for symmetry, and note that the `%` of the percent-encoded sequences are not subject to text markup escape sequences).
+====
 
 The styling of the link text, as well as the link action, is left for each Modelica tool to decide.
 
 [NOTE]
+====
 For example, `%(variable:inertia1.w)` could be displayed as the text `inertia1.w` formatted with upright monospaced font, and have a pop-up menu attached with menu items for plotting the variable, setting its start value, or investigating the equation system from which it is solved.
 On the other hand, `%[angular velocity](variable:inertia1.w)` could be formatted in the same style as the surrounding text, except some non-intrusive visual clue about it being linked.
+====
+
+[NOTE]
+====
+Note that link is currently not allowed to be a URI reference, i.e., a URI or a relative reference such as `#foo`.
+This is due to to the current inability to define a base URI referencing the current figure.
+Once this becomes possible, the URI form of link may be changed into a URI reference.
+====
 
 Vendor-specific markup can be added to a link in the form `%[text]vendorSpecificMarkup(link)`.
 The vendor-specific markup must not fundamentally alter the appearance of the link, in order to ensure that a tool can safely ignore all vendor-specific markup and still obtain a result that fits the current context.
 
-.Example
+[example]
+====
 The HTML `<a>` tag has several attributes with potential application to links, such as `target`.
 This attribute serves a natural purpose if the display of figures is integrated with the display of documentation.
 The tool vendor AVendor could map the HTML feature to Modelica in the form `%__AVendor(?target=_blank)(modelica:/Modelica#info)`.
+====
 
 A sequence of one or more newlines (encoded either literally or using the `\n` escape sequence) means a paragraph break.
+(A line break within a paragraph is not supported, and any paragraph break before the first paragraph or after the last paragraph has no impact.)
 
 Vendor-specific markup for alternative content takes the form `%vendorSpecificMarkup[text]`.
 The vendor-specific markup must not fundamentally alter the appearance of the text, in order to ensure that a tool can safely ignore all vendor-specific markup and still obtain a result that fits the current context.
 
-.Example
+[example]
+====
 One application of vendor-specific alternative content is to prototype a feature that can later be turned into standardized markup.
 For example, say that the tool AVendor wants to generalize the variable replacements such that the duration of a simulation can be substituted into a caption.
 During the development, this could be represented as the vendor-specific markup `%__AVendor(?duration)[10 s]`, if the simulation has a duration of 10 seconds at the time of writing the caption.
 When AVendor renders this, it ignores the text `10 s` and just displays the actual duration instead.
-Later, if this would become supported by standard markup, it might take the form of something like `%{experiment:duration}` instead.
-
-=== Symbolic Processing
-
-The annotation listed below, in addition to annotations described in <<derivatives-and-inverses-of-functions>> and <<function-inlining-and-event-generation>>, can influence the symbolic processing.
-
-|===
-|Annotation |Description |Details
-|`Evaluate` |Use parameter value for symbolic processing |<<modelica:Evaluate>>
-|===
-
-.Example
-[source,modelica]
-----
-parameter Boolean b = false annotation(Evaluate = true);
-----
-
-=== Simulations
-
-The annotations listed below define how models can be checked, translated, and simulated.
-
-|===
-|Annotation |Description |Details
-|`experiment` |Simulation experiment settings |<<modelica:experiment>>
-|`HideResult` |Don't show component's simulation result |<<modelica:HideResult>>
-|`TestCase` |Information for model used as test case |<<modelica:TestCase>>
-|===
-
-.Example
-[source,modelica]
-----
-record experiment
-  constant Real StartTime(unit = "s") = 0;
-  constant Real StopTime(unit = "s");
-  constant Real Interval(unit = "s");
-  constant Real Tolerance(unit = "1");
-end experiment;
-----
-
-=== Usage Restrictions
-
-The annotations listed below are used to restrict the ways in which classes and instances of classes may be used.
-
-|===
-|Annotation |Description |Details
-|`singleInstance` |Allow at most one instance |<<modelica:singleInstance>>
-|`mustBeConnected` |Connector must be connected at least once |<<modelica:mustBeConnected>>
-|`mayOnlyConnectOnce` |Connector may at most be connected once |<<modelica:mayOnlyConnectOnce>>
-|===
-
-=== Graphical Objects
-
-A graphical representation of a class consists of two abstraction layers, icon layer and diagram layer showing graphical objects, component icons, connectors and connection lines.
-The icon representation typically visualizes the component by hiding hierarchical details.
-The hierarchical decomposition is described in the diagram layer showing icons of subcomponents and connections between these.
-
-Graphical annotations described in this chapter tie into the Modelica grammar as follows.
-
-[source,modelica]
-----
-graphical-annotations :
-  annotation "(" [ layer-annotations ] ")"
-
-layer-annotations :
-  ( icon-layer | diagram-layer ) [ "," layer-annotations ]
-icon-layer :
-  "Icon" "(" [ coordsys-specification "," ] graphics ")"
-diagram-layer :
-  "Diagram" "(" [ coordsys-specification "," ] graphics ")"
-----
-
-.Example
-[source,modelica]
-----
-annotation(
-   Icon(coordinateSystem(extent = {{-100, -100}, {100, 100}}),
-        graphics = {Rectangle(extent = {{-100, -100}, {100, 100}}),
-                    Text(extent = {{-100, -100}, {100, 100}},
-                         textString = "Icon")}));
-----
-
-The graphics is specified as an ordered sequence of graphical primitives described below.
-Base class contents are drawn behind the graphical primitives of the current class, with base classes ordered from back to front according to the order of the `extends`-clauses, and graphical primitives according to order of appearance in the annotation.
-
-These `Icon`, `Diagram`, and `Documentation` annotations are only allowed directly in classes (e.g., not on components or connections).
-The allowed annotations for a short class definition is the union of the allowed annotations in classes and on `extends`-clauses.
-
-==== Common Definitions
-
-[source,modelica]
-----
-type DrawingUnit = Real(final unit="mm");
-type Point = DrawingUnit[2] "{x, y}";
-type Extent = Point[2] "Defines a rectangular area {{x1, y1}, {x2, y2}}";
-----
-
-The interpretation of `unit` is with respect to printer output in natural size (not zoomed).
-
-All graphical entities have a visible attribute which indicates if the entity should be shown.
-
-[source,modelica]
-----
-partial record GraphicItem
-  Boolean visible = true;
-  Point origin = {0, 0};
-  Real rotation(quantity="angle", unit="deg")=0;
-end GraphicItem;
-----
-
-The `origin` attribute specifies the origin of the graphical item in the coordinate system of the layer in which it is defined.
-The origin is used to define the geometric information of the item and for all transformations applied to the item.
-All geometric information is given relative the `origin` attribute, which by default is `{0, 0}`.
-
-The `rotation` attribute specifies the rotation of the graphical item counter-clockwise around the point defined by the `origin` attribute.
-
-==== Coordinate Systems
-
-Each of the layers has its own coordinate system.
-
-[source,modelica]
-----
-record CoordinateSystem
-  constant Extent extent;
-  constant Boolean preserveAspectRatio = true;
-  constant Real initialScale = 0.1;
-  constant DrawingUnit grid[2];
-end CoordinateSystem;
-----
-
-.Example
-[source,modelica]
-----
-CoordinateSystem(extent = {{-10, -10}, {10, 10}});
-----
-
-The coordinate systems for the icon and diagram layers are by default defined as follows:
-
-[source,modelica]
-----
-record Icon "Representation of the icon layer"
-  CoordinateSystem coordinateSystem(extent = {{-100, -100}, {100, 100}});
-  GraphicItem[:] graphics;
-end Icon;
-
-record Diagram "Representation of the diagram layer"
-  CoordinateSystem coordinateSystem(extent = {{-100, -100}, {100, 100}});
-  GraphicItem[:] graphics;
-end Diagram;
-----
-
-==== Graphical Properties
-
-Properties of graphical objects and connection lines are described using the following attribute types.
-
-[source,modelica]
-----
-type Color = Integer[3](min = 0, max = 255) "RGB representation";
-constant Color Black = zeros(3);
-type LinePattern = enumeration(None, Solid, Dash, Dot, DashDot, DashDotDot);
-type FillPattern = enumeration(None, Solid, Horizontal, Vertical,
-                               Cross, Forward, Backward, CrossDiag,
-                               HorizontalCylinder, VerticalCylinder, Sphere);
-type BorderPattern = enumeration(None, Raised, Sunken, Engraved);
-type Smooth = enumeration(None, Bezier);
-type EllipseClosure = enumeration(None, Chord, Radial, Automatic);
-type Arrow = enumeration(None, Open, Filled, Half);
-type TextStyle = enumeration(Bold, Italic, UnderLine);
-type TextAlignment = enumeration(Left, Center, Right);
-----
-
-Filled shapes have the following attributes for the border and interior.
-
-[source,modelica]
-----
-record FilledShape "Style attributes for filled shapes"
-  Color lineColor = Black "Color of border line";
-  Color fillColor = Black "Interior fill color";
-  LinePattern pattern = LinePattern.Solid "Border line pattern";
-  FillPattern fillPattern = FillPattern.None "Interior fill pattern";
-  DrawingUnit lineThickness = 0.25 "Line thickness";
-end FilledShape;
-----
-
-==== Component Instance
-
-A component instance can be placed within a diagram or icon layer.
-It has an annotation with a `Placement` modifier to describe the placement.
-Placements are defined in terms of coordinate system transformations:
-
-[source,modelica]
-----
-record Transformation
-  Extent extent;
-  Real rotation(quantity = "angle", unit = "deg") = 0;
-  Point origin = {0, 0};
-end Transformation;
-
-record Placement
-  Boolean visible = true;
-  Transformation transformation "Placement in the diagram layer";
-  Boolean iconVisible "Visible in icon layer; for public connector";
-  Transformation iconTransformation
-    "Placement in the icon layer; for public connector";
-end Placement;
-----
-
-==== Default Outline for Missing Graphics
-
-If the icon of a component placed in a diagram layer does not contain any graphical primitives (including inherited ones, and regardless of `visible`-attributes; but excluding connectors), tools shall show a tool-dependent rudimentary outline of the component's transformed `extent`.
-
-==== Extends-Clause
-
-Each `extends`-clause (and short class definition) may have layer specific annotations which describe the rendering of the base class' icon and diagram layers in the derived class.
-
-[source,modelica]
-----
-record IconMap
-  constant Extent extent = {{0, 0}, {0, 0}};
-  constant Boolean primitivesVisible = true;
-end IconMap;
-
-record DiagramMap
-  constant Extent extent = {{0, 0}, {0, 0}};
-  constant Boolean primitivesVisible = true;
-end DiagramMap;
-----
-
-==== Connections
-
-A connection is specified with an annotation containing a `Line` primitive and optionally a `Text` primitive.
-
-.Example
-[source,modelica]
-----
-connect(a.x, b.x)
-  annotation(Line(points = {{-25, 30}, {10, 30}, {10, -20}, {40, -20}}));
-----
-
-The optional `Text` primitive defines a text that will be written on the connection line.
-
-[source,modelica]
-----
-record Text
-  extends GraphicItem;
-  Extent extent;
-  String string "Note: different name";
-  Real fontSize = 0 "unit pt";
-  String fontName;
-  TextStyle textStyle[:];
-  Color textColor = Black;
-  TextAlignment horizontalAlignment =
-    if index < 0 then TextAlignment.Right else TextAligment.Left "Note: different default";
-  Integer index "Note: new";
-end Text;
-----
-
-==== Graphical Primitives
-
-===== Line
-
-[source,modelica]
-----
-record Line
-  extends GraphicItem;
-  Point points[:];
-  Color color = Black;
-  LinePattern pattern = LinePattern.Solid;
-  DrawingUnit thickness = 0.25;
-  Arrow arrow[2] = {Arrow.None, Arrow.None} "{start arrow, end arrow}";
-  DrawingUnit arrowSize = 3;
-  Smooth smooth = Smooth.None "Spline";
-end Line;
-----
-
-===== Polygon
-
-[source,modelica]
-----
-record Polygon
-  extends GraphicItem;
-  extends FilledShape;
-  Point points[:];
-  Smooth smooth = Smooth.None "Spline outline";
-end Polygon;
-----
-
-===== Rectangle
-
-[source,modelica]
-----
-record Rectangle
-  extends GraphicItem;
-  extends FilledShape;
-  BorderPattern borderPattern = BorderPattern.None;
-  Extent extent;
-  DrawingUnit radius = 0 "Corner radius";
-end Rectangle;
-----
-
-===== Ellipse
-
-[source,modelica]
-----
-record Ellipse
-  extends GraphicItem;
-  extends FilledShape;
-  Extent extent;
-  Real startAngle(quantity = "angle", unit = "deg") = 0;
-  Real endAngle(quantity = "angle", unit = "deg") = 360;
-  EllipseClosure closure = EllipseClosure.Automatic;
-end Ellipse;
-----
-
-===== Text
-
-[source,modelica]
-----
-record Text
-  extends GraphicItem;
-  Extent extent;
-  String textString;
-  Real fontSize = 0 "unit pt";
-  String fontName;
-  TextStyle textStyle[:];
-  Color textColor = Black;
-  TextAlignment horizontalAlignment = TextAlignment.Center;
-end Text;
-----
-
-===== Bitmap
-
-[source,modelica]
-----
-record Bitmap
-  extends GraphicItem;
-  Extent extent;
-  String fileName "Name of bitmap file";
-  String imageSource "Base64 representation of bitmap";
-end Bitmap;
-----
-
-==== Variable Graphics and Schematic Animation
-
-Any value in graphical annotations can be dependent on evaluable parameters except when restricted otherwise in their respective definitions.
-
-`DynamicSelect` has the syntax of a function call with two arguments, where the first argument specifies the value of the static state and the second argument the value of the dynamic state.
-
-.Example
-[source,modelica]
-----
-annotation(Icon(graphics = {
-  Rectangle(
-    extent =
-      DynamicSelect({{0, 0}, {20, 20}},
-                    {{0, 0}, {20, level}}),
-    fillColor =
-      DynamicSelect({0, 0, 255},
-                    if overflow then {255, 0, 0} else {0, 0, 255})
-  )}));
-----
-
-==== User Input
-
-It is possible to interactively modify variables during a simulation.
-The variables may either be parameters, discrete-time variables or states.
-New numeric values can be given, a mouse click can change a `Boolean` variable or a mouse movement can change a `Real` variable.
-Input fields may be associated with a `GraphicItem` or a component as an array named `interaction`.
-
-===== Mouse Input
-
-[source,modelica]
-----
-record OnMouseDownSetBoolean
-  Boolean variable "Name of variable to change when mouse button pressed";
-  Boolean value "Assigned value";
-end OnMouseDownSetBoolean;
-----
-
-===== Edit Input
-
-[source,modelica]
-----
-record OnMouseDownEditInteger
-  Integer variable "Name of variable to change";
-end OnMouseDownEditInteger;
-
-record OnMouseDownEditReal
-  Real variable "Name of variable to change";
-end OnMouseDownEditReal;
-
-record OnMouseDownEditString
-  String variable "Name of variable to change";
-end OnMouseDownEditString;
-----
-
-=== Graphical User Interface
-
-The annotations listed below define properties for use in graphical user interfaces.
-
-|===
-|Annotation |Description |Details
-|`preferredView` |Default view when opening class |<<modelica:preferredView>>
-|`DocumentationClass` |Purpose of class is documentation |<<modelica:DocumentationClass>>
-|`defaultComponentName` |Default name for new components |<<modelica:defaultComponentName>>
-|`defaultComponentPrefixes` |Default type prefixes for new components |<<modelica:defaultComponentPrefixes>>
-|`missingInnerMessage` |Message for unresolved `outer` |<<modelica:missingInnerMessage>>
-|`absoluteValue` |Quantity is absolute |<<modelica:absoluteValue>>
-|`defaultConnectionStructurallyInconsistent` |Suppress certain verification errors |<<modelica:defaultConnectionStructurallyInconsistent>>
-|`obsolete` |Message when using obsolete class |<<modelica:obsolete>>
-|`unassignedMessage` |Hint for unmatched variable |<<modelica:unassignedMessage>>
-|`Dialog` |Setup for modifications |<<modelica:Dialog>>
-|===
-
-=== Connector Sizing
-
-This section describes the `connectorSizing` annotation inside a `Dialog` annotation.
-
-=== Versions
-
-A top-level package or model can specify the version of top-level classes it uses, its own version number, and if possible how to convert from previous versions.
-This can be used by a tool to guarantee that consistent versions are used, and if possible to upgrade usage from an earlier version to a current one.
-
-=== Access Control to Protect Intellectual Property
-
-This section presents annotations to define the protection and the licensing of packages.
-The goal is to unify basic mechanisms to control the access to a package in order to protect the intellectual property contained in it.
-
-=== License Texts
-
-For a top-level class the `annotation(License="modelica:/TopPackage/Resources/Licenses/MyLicense.txt")` gives a license text file for the class.
-
-=== Functions
-
-See <<derivatives-and-inverses-of-functions>>, <<function-inlining-and-event-generation>>, and <<annotations-for-external-libraries-and-include-files>>.
-
-=== Choices for Modifications and Redeclarations
-
-See <<annotation-choices-for-suggested-redeclarations-and-modifications>>.
+Later, if this would become supported by standard markup, it might take the form of something like `%{experiment:duration}` instead (note that `experiment:duration` is not in the form of a component reference, avoiding conflict with current use of variable replacements).
+
+In a similar way, vendor-specific alternative content can be used to prototype a link for future inclusion in the link markup (either by extending the meaning of Modelica URIs, or by introducing another pseudo-scheme similar to `variable:`).
+This is an example where the vendor-specific markup could make use of the text (for link text) together with the vendor-specific data (describing the actual link).
+====
