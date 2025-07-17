@@ -5,7 +5,7 @@ A Modelica `operator record` can overload the behavior for operations such as co
 
 The overloading is defined in such a way that ambiguities are not allowed and give an error.
 Furthermore, it is sufficient to define overloading for scalars.
-Some overloaded array operations are automatically deduced from the overloaded scalar operations (see <<item-overloaded-binary-arrays>> and <<item-overloaded-unary-arrays>>), and others can be defined independently of the corresponding scalar operations.
+Some overloaded array operations are automatically deduced from the overloaded scalar operations (see <<item-overloaded-binary-array>> and <<item-overloaded-unary-arrays>), and others can be defined independently of the corresponding scalar operations.
 
 === Overview of Overloaded Operators
 
@@ -101,9 +101,10 @@ Restrictions:
 
 Let X denote a binary operator and consider an expression `a X b` where `a` is an instance or array of instances of class `A` and `b` is an instance or array of instances of class `B`.
 
-. [[overloaded-binary-predefined]]
+. [[item-overloaded-binary-predefined]]
 If `A` and `B` are predefined types of such, then the corresponding built-in operation is performed.
-. [[overloaded-binary-unique]]
+
+. [[item-overloaded-binary-unique]]
 Otherwise, if there exists _exactly one_ function f in the union of `A.X` and `B.X` such that `f(a, b)` is a valid match for the function f, then `a X b` is evaluated using this function.
 It is an error, if multiple functions match.
 If `A` is not an operator record class, `A.X` is seen as the empty set, and similarly for `B`.
@@ -141,8 +142,9 @@ Complex c = a * b; // interpreted as:
 // Complex.'*'.multiply(Complex.'constructor'.fromReal(a), b);
 ----
 ====
-. [[overloaded-binary-arrays]]
-Otherwise, if `a` or `b` is an array expression, then the expression is conceptually evaluated according to the rules of <<scalar-vector-matrix-and-array-operator-functions>> with the following exceptions concerning <<matrix-and-vector-multiplication-of-numeric-arrays>>:
+
+. [[item-overloaded-binary-array]]
+Otherwise, if `a` or `b` is an array expression, then the expression is conceptually evaluated according to the rules of <<scalar-vector-matrix-and-array-operator-functions>> with the following exceptions concerning <<multiplication-of-matrices-and-vectors>>:
 .. `vector * vector` is not automatically defined based on the scalar multiplication.
 +
 [NOTE]
@@ -165,29 +167,41 @@ If the operator `'0'` is not defined for that class it is an error if the inner 
 For array multiplication it is assumed that the scalar elements form a non-commutative ring that does not necessarily have a multiplicative identity.
 ====
 
-. [[overloaded-binary-error]]
+. [[item-overloaded-binary-error]]
 Otherwise the expression is erroneous.
 
-For an element-wise operator, `a .op b`, <<overloaded-binary-predefined>>, <<overloaded-binary-arrays>>, <<overloaded-binary-error>> are used; e.g., the operator `.+` will always be defined in terms of `'+'`.
+For an element-wise operator, `a .op b`, <<item-overloaded-binary-predefined>>, <<item-overloaded-binary-array>>, <<item-overloaded-binary-error>> are used; e.g., the operator `.+` will always be defined in terms of `'+'`.
 
 Restrictions:
 
 * A function is allowed for a binary operator if and only if it has at least two inputs; at least one of which is of the operator record class, and the first two inputs shall not have default values, and all inputs after the first two must have default values.
-* For an operator record class there shall not exist any (potential) call that lead to multiple matches in <<overloaded-binary-unique>> above.
+
+* For an operator record class there shall not exist any (potential) call that lead to multiple matches in <<item-overloaded-binary-unique>> above.
 
 === Overloaded Unary Operations
+:id: overloaded-unary-operations
 
-Let `op` denote a unary operator and consider an expression `op a` where `a` is an instance or array of instances of class `A`.
+Let X denote a unary operator and consider an expression `X a` where `a` is an instance or array of instances of class `A`.
+Then `X a` is evaluated in the following way.
 
 . If `A` is a predefined type, then the corresponding built-in operation is performed.
-. If `A` is an operator record class and there exists a unique function `f` in `A.op` such that `A.op.f(a)` is a valid match, then `op a` is evaluated to `A.op.f(a)`. It is an error if there are multiple valid matches.
-. Otherwise, if `a` is an array expression, then the expression is conceptually evaluated according to the rules of array operator functions.
+
+. [[item-unary-operator-record-unique-match]]
+If `A` is an operator record class and there exists a unique function f in `A.X` such that `A.X.f(a)` is a valid match, then `X a` is evaluated to `A.X.f(a)`.
+It is an error, if there are multiple valid matches.
+Note that if the operations take array arguments, they will in this step only match if the number of dimensions match.
+
+. [[item-overloaded-unary-array]]
+Otherwise, if `a` is an array expression, then the expression is conceptually evaluated according to the rules of <<scalar-vector-matrix-and-array-operator-functions>>.
+
 . Otherwise the expression is erroneous.
 
 Restrictions:
 
-* A function is allowed for a unary operator if and only if it has at least one input; and the first input is of the record type (or suitable arrays of such) and does not have a default value, and all inputs after the first one must have default values.
-* For an operator record class there shall not exist any (potential) call that leads to multiple matches.
+* A function is allowed for a unary operator if and only if it has least one input; and the first input is of the record type (or suitable arrays of such) and does not have a default value, and all inputs after the first one must have default values.
+
+* For an operator record class there shall not exist any (potential) call that lead to multiple matches in <<item-unary-operator-record-unique-match>> above.
+
 * A binary and/or unary operator-class may only contain functions that are allowed for this binary and/or unary operator-class; and in case of `'-'` it is the union of these sets, since it may define both a unary (negation) and binary (subtraction) operator.
 
 === Example of Overloading for Complex Numbers
