@@ -8,12 +8,19 @@ The following syntactic metasymbols are used (extended BNF):
 
 [cols="2*a",options=autowidth]
 |===
-|Syntax      |Description
+|Syntax |Description
 
-|`[ ... ]`   |Optional
-|`{ ... }`   |Repeat zero or more times
-|`... \| ...` |Alternatives
-|`"text"`    |The `text` is treated as a single token (no white-space between any characters)
+|`[ ... ]`
+|Optional
+
+|`{ ... }`
+|Repeat zero or more times
+
+|`... \| ...`
+|Alternatives
+
+|`"text"`
+|The `text` is treated as a single token (no white-space between any characters)
 |===
 
 The following lexical units are defined:
