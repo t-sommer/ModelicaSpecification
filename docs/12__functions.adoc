@@ -656,7 +656,7 @@ end collectPositive;
 ==== Automatic Vectorization
 
 Functions with one scalar return value can be applied to arrays element-wise, e.g., if `A` is a vector of reals, then `sin(A)` is a vector where each element is the result of applying the function `sin` to the corresponding element in `A`.
-Only `function` classes that are transitively non-replaceable (see <<transitively-non-replaceable>> and <<restrictions-on-base-classes-and-constraining-types-to-be-transitively-non-replaceable>>) may be called vectorized.
+Only `function` classes that are transitively non-replaceable (see <<transitively-non-replaceable>> and <<require-transitively-non-replaceable>>) may be called vectorized.
 
 Consider the expression `f(arg1, ..., argn)`, an application of the function `f` to the arguments `arg1`, ..., `argn`.
 Potential vectorization of this call is defined as follows.
@@ -732,7 +732,7 @@ algorithm
 
 There are basically four groups of built-in functions in Modelica:
 
-* Intrinsic mathematical and conversion functions (see <<numeric-functions-and-conversion-functions>>).
+* Intrinsic mathematical and conversion functions (see <<numeric-functions-and-conversion-operators>>).
 * Derivative and special operators with function syntax (see <<derivative-and-special-purpose-operators-with-function-syntax>>).
 * Event-related operators with function syntax (see <<event-related-operators-with-function-syntax>>).
 * Built-in array functions (see <<built-in-array-operators-and-functions>>).

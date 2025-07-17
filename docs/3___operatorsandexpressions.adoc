@@ -354,7 +354,7 @@ The built-in functions may also be overloaded such that a single Modelica functi
 Here, _built-in_ means that they are defined at the Modelica language level, not through a Modelica `function` definition.
 The following built-in operators/functions are available:
 
-* Mathematical functions and conversion operators, see <<numeric-functions-and-conversion-functions>> below.
+* Mathematical functions and conversion operators, see <<numeric-functions-and-conversion-operators>> below.
 * Derivative and special purpose operators with function syntax, see <<derivative-and-special-purpose-operators-with-function-syntax>> below.
 * Event-related operators, see <<event-related-operators-with-function-syntax>> below.
 * Array operators/functions, see <<built-in-array-functions>>.

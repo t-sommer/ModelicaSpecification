@@ -132,7 +132,7 @@ A class reference is _transitively non-replaceable_ iff (i.e., if and only if) a
 * If the class definition is short (i.e., `class A = P.B`) it is transitively non-replaceable if it is non-replaceable and equal to class reference (`P.B`) that is transitively non-replaceable.
 
 [NOTE]
-According to <<restrictions-on-base-classes-and-constraining-types-to-be-transitively-non-replaceable>>, for a hierarchical name all parts of the name must be transitively non-replaceable, i.e., in `extends A.B.C` this implies that `A.B.C` must be transitively non-replaceable, as well as `A` and `A.B`, with the exception of the _class extends redeclaration mechanism_ see <<the-class-extends-redeclaration-mechanism>>.
+According to <<require-transitively-non-replaceable>>, for a hierarchical name all parts of the name must be transitively non-replaceable, i.e., in `extends A.B.C` this implies that `A.B.C` must be transitively non-replaceable, as well as `A` and `A.B`, with the exception of the _class extends redeclaration mechanism_ see <<the-class-extends-redeclaration-mechanism>>.
 
 ==== Inheritance Interface or Class Type
 For inheritance, the interface also must include protected elements; this is the only change compared to above.

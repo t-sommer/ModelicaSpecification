@@ -1664,7 +1664,7 @@ The type conversion function `Integer(<expression of enumeration type>)` returns
 .Example
 `String(E.Small)` gives `"Small"`.
 
-See also <<numeric-functions-and-conversion-functions>>.
+See also <<numeric-functions-and-conversion-operators>>.
 
 ===== Conversion of Integer to Enumeration
 :id: conversion-of-integer-to-enumeration
