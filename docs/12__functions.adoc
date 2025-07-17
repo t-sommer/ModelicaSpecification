@@ -2307,7 +2307,7 @@ z1 = myfoo(2.4, 3, &i2);
 
 This section describes the utility functions declared in ModelicaUtilities.h, which can be called in external Modelica functions written in C.
 
-The tool must ensure that the header is found by `#include "ModelicaUtilities.h"` within an `Include` annotation (see <<annotations-for-external-libraries-and-include-files>>); no `IncludeDirectory` annotation is needed.
+The tool must ensure that the header is found by `#include "ModelicaUtilities.h"` within an `Include` annotation (see <<annotations-for-external-functions>>); no `IncludeDirectory` annotation is needed.
 
 .Example
 The following usage patterns are common:

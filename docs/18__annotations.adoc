@@ -134,7 +134,7 @@ This introduces a new attribute `__NameOfVendor_shadow` for the `Rectangle` prim
 
 === Documentation
 
-The `Documentation` annotation has the following contents, where the `info` and `revisions` annotations are described in <<annotation-info-revisions>>, and the `figures` annotation is described in <<annotations-for-figures>>:
+The `Documentation` annotation has the following contents, where the `info` and `revisions` annotations are described in <<class-description-and-revision-history>>, and the `figures` annotation is described in <<figures>>:
 [source,modelica]
 ----
 record Documentation
@@ -250,7 +250,7 @@ Even though a `Figure` annotation can be shared through inheritance between clas
 Every `Plot` has an automatically generated _label_ which is required to be shown as soon as at least one `Plot` in the `Figure` has an `identifier`.
 A tool is free to choose both labeling scheme (such as _a_, _b_, ..., or _i_, _ii_, ...), placement in the plot, and styling in the plot itself as well as in other contexts.
 
-When a `Figure` defines a non-empty `group`, it is used to organize figures similar to how `group` is used in the `Dialog` annotation (see <<annotations-for-the-graphical-user-interface>>).
+When a `Figure` defines a non-empty `group`, it is used to organize figures similar to how `group` is used in the `Dialog` annotation (see <<graphical-user-interface>>).
 However, leaving `group` at the default of an empty string does not mean that a group will be created automatically, but that the figure resides outside of any group.
 The `group` is both the key used for grouping, and the name of the group for display purposes.
 
@@ -787,7 +787,7 @@ The string value must be non-empty and provide the reason why it may only be con
 This annotation is intended for non-causal connectors, see <<restrictions-of-connections-and-connectors>>.
 The connection handling operates on connection sets, and thus this restriction should also operate on those sets.
 The set handling avoids the case where only one of two equivalent models generate diagnostics.
-The stream connector part is primarily intended to exclude sensor-variables, see <<connection-of-3-stream-connectors-where-one-mass-flow-rate-is-identical-to-zero-n-3-and>>, but also excludes non-reversible outgoing flows.
+The stream connector part is primarily intended to exclude sensor-variables, see <<zero-mass-flow-rateconnection-of-3-stream-connectors>>, but also excludes non-reversible outgoing flows.
 ====
 
 .Example
@@ -1071,7 +1071,7 @@ only shows connectors by adding a dummy primitive with visible = false.]
 ==== Extends-Clause
 :id: extends-clause
 
-Each `extends`-clause (and short class definition, as stated in <<annotations-for-graphical-objects>>) may have layer specific annotations which describe the rendering of the base class' icon and diagram layers in the derived class.
+Each `extends`-clause (and short class definition, as stated in <<graphical-objects>>) may have layer specific annotations which describe the rendering of the base class' icon and diagram layers in the derived class.
 
 [source,modelica]
 ----
@@ -1510,7 +1510,6 @@ end OnMouseDownEditString;
 ----
 
 === Graphical User Interface
-:id: annotations-for-the-graphical-user-interface
 
 The annotations listed below define properties for use in graphical user interfaces.
 
@@ -1625,7 +1624,7 @@ If the type prefixes contain `inner` or `outer` and the default name cannot be u
 *Semantics*
 
 Only has an effect if specified, and the string must then be non-empty.
-When specified and an `outer` component of the class does not have a corresponding `inner` component, the string message may be used as part of a diagnostic message (together with appropriate context), see <<instance-hierarchy-name-lookup-of-inner-declarations>>.
+When specified and an `outer` component of the class does not have a corresponding `inner` component, the string message may be used as part of a diagnostic message (together with appropriate context), see <<inner-declarations-instance-hierarchy-name-lookup>>.
 The default is a tool-specific diagnostic message.
 
 .Example
@@ -2481,10 +2480,10 @@ The items of the `Access` enumeration have the following meanings:
 . `Access.hide`
 Do not show the class anywhere (it is not possible to inspect any part of the class).
 . `Access.icon`
-The class can be instantiated and public parameter, constant, input, output variables as well as public connectors can be accessed, as well as the `Icon` annotation, as defined in <<annotations-for-graphical-objects>> (the declared information of these elements can be shown).
+The class can be instantiated and public parameter, constant, input, output variables as well as public connectors can be accessed, as well as the `Icon` annotation, as defined in <<graphical-objects>> (the declared information of these elements can be shown).
 Additionally, the class name and its description text can be accessed.
 . `Access.documentation`
-Same as `Access.icon` and additionally the `Documentation` annotation (as defined in <<annotations-for-documentation>>) can be accessed.
+Same as `Access.icon` and additionally the `Documentation` annotation (as defined in <<documentation>>) can be accessed.
 HTML-generation in the `Documentation` annotation is normally performed before encryption, but the generated HTML is intended to be used with the encrypted package.
 Thus the HTML-generation should use the same access as the encrypted version -- even before encryption.
 . `Access.diagram`
@@ -2734,7 +2733,7 @@ For a top-level class the `annotation(License="modelica:/TopPackage/Resources/Li
 The annotation may give a scalar string or an array of strings, where each string is a URI referencing a license text file, see <<external-resources>>.
 The license text files are human-readable files containing the license conditions.
 If the annotation specifies an array of license text files the conditions in all of them must be satisfied (i.e., it is not intended for dual-licensing).
-External functions may also contain this annotation (with similar content), see <<annotations-for-external-libraries-and-include-files>>.
+External functions may also contain this annotation (with similar content), see <<annotations-for-external-functions>>.
 
 When generating a distributable version for a translated model the license text files for used functions and top-level classes should be included.
 Exceptions could be that licenses will be distributed in another way, or that there is an agreement to include different licenses (e.g., for internal libraries).
@@ -2743,9 +2742,9 @@ Note that the `License` annotation only allows the library developer and tool to
 === Functions
 :id: annotations-for-functions
 
-See <<derivatives-and-inverses-of-functions>>, <<function-inlining-and-event-generation>>, and <<annotations-for-external-libraries-and-include-files>>.
+See <<derivatives-and-inverses-of-functions>>, <<function-inlining-and-event-generation>>, and <<annotations-for-external-functions>>.
 
 === Choices for Modifications and Redeclarations
 :id: annotation-choices-for-modifications-and-redeclarations
 
-See <<annotation-choices-for-suggested-redeclarations-and-modifications>>.
+See <<annotations-for-redeclaration-and-modification>>.

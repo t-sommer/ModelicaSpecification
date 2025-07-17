@@ -2,7 +2,7 @@
 :id: interface-or-type-relationships
 
 A class or component, e.g., denoted `A`, can in some cases be used at a location designed for another class or component, e.g., denoted `B`.
-In Modelica this is the case for replaceable classes (see <<redeclaration>>) and for `inner`/`outer` elements (see <<instance-hierarchy-name-lookup-of-inner-declarations>>).
+In Modelica this is the case for replaceable classes (see <<redeclaration>>) and for `inner`/`outer` elements (see <<inner-declarations-instance-hierarchy-name-lookup>>).
 Replaceable classes are the primary mechanism to create very flexible models.
 In this chapter, the precise rules are defined when `A` can be used at a location designed for `B`.
 The restrictions are defined in terms of compatibility rules (<<interface-compatibility-or-subtyping>> and <<plug-compatibility-or-restricted-subtyping>>) between "interfaces" (<<the-concepts-of-type-interface-and-subtype>>); this can also be viewed as sub-typing (<<the-concepts-of-type-interface-and-subtype>>).

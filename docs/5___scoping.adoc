@@ -494,7 +494,7 @@ Either the referenced instance belongs to the model to be simulated the path sta
 [NOTE]
 To resolve the names, a name lookup using the instance tree is performed, starting at the instance scope (unless the name is fully qualified) of the modification, algorithm or equation.
 If it is not found locally the search is continued at the instance of the lexically enclosing class of the scope (this is normally not equal to the parent of the current instance), and then continued with their parents as described in <<static-name-lookup>>.
-If the found component is an outer declaration, the search is continued using the direct parents in the instance tree (see <<instance-hierarchy-name-lookup-of-inner-declarations>>).
+If the found component is an outer declaration, the search is continued using the direct parents in the instance tree (see <<inner-declarations-instance-hierarchy-name-lookup>>).
 If the lookup has to look into a class which is not instantiated yet (or only partially instantiated), it is instantiated in place.
 
 The flat equation system consists of a list of variables with dimensions, flattened equations and algorithms, and a list of called functions which are flattened separately.

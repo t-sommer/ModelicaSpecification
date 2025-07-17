@@ -328,7 +328,7 @@ CylinderBus cylinder_bus[4];
 
 === Generation of Connection Equations
 
-When generating _connection equations_, `outer` elements are resolved to the corresponding `inner` elements in the instance hierarchy (see instance hierarchy name lookup <<instance-hierarchy-name-lookup-of-inner-declarations>>).
+When generating _connection equations_, `outer` elements are resolved to the corresponding `inner` elements in the instance hierarchy (see instance hierarchy name lookup <<inner-declarations-instance-hierarchy-name-lookup>>).
 The arguments to each `connect`-equation are resolved to two connector elements.
 
 For every use of the `connect`-equation

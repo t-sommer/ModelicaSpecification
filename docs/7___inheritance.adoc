@@ -262,7 +262,7 @@ The _modification environment_ of a class contains arguments which modify elemen
 The modification environment is built by merging class modifications, where outer modifications override inner modifications.
 
 [NOTE]
-This should not be confused with `inner outer` prefixes described in <<instance-hierarchy-name-lookup-of-inner-declarations>>.
+This should not be confused with `inner outer` prefixes described in <<inner-declarations-instance-hierarchy-name-lookup>>.
 
 ==== Merging of Modifications
 
