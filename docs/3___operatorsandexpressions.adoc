@@ -19,7 +19,7 @@ The semantics of the operations is defined for both scalar and array arguments i
 
 It is also possible to define functions and call them in a normal fashion.
 The function call syntax for both positional and named arguments is described in <<positional-or-named-input-arguments>> and for vectorized calls in <<initialization-and-binding-equations>>.
-The built-in array functions are given in <<lower-and-upper-index-bounds>> and other built-in operators in <<built-in-intrinsic-operators-with-function-syntax>>.
+The built-in array functions are given in <<lower-and-upper-index-bounds>> and other built-in operators in <<built-in-operators-and-functions>>.
 
 === Operator Precedence and Associativity
 
@@ -357,7 +357,7 @@ The following built-in operators/functions are available:
 * Mathematical functions and conversion operators, see <<numeric-functions-and-conversion-operators>> below.
 * Derivative and special purpose operators with function syntax, see <<derivative-and-special-purpose-operators-with-function-syntax>> below.
 * Event-related operators, see <<event-related-operators-with-function-syntax>> below.
-* Array operators/functions, see <<built-in-array-functions>>.
+* Array operators/functions, see <<built-in-array-operators-and-functions>>.
 * Synchronous operators, see <<synchronous-language-elements>>.
 * State machine operators, see <<transitions>>.
 
@@ -463,7 +463,7 @@ String(r, format = s)
 String(e, <options>)
 ----
 Convert a scalar non-`String` expression to a `String` representation.
-The first argument may be a `Boolean` b, an `Integer` i, a `Real` r, or an enumeration value e (see <<type-conversion-of-enumeration-values-to-string-or-integer>>).
+The first argument may be a `Boolean` b, an `Integer` i, a `Real` r, or an enumeration value e (see <<conversion-of-enumeration-to-string-or-integer>>).
 The `<options>` represent zero or more of the following named arguments (that cannot be passed as positional arguments):
 
 * `Integer minimumLength = 0`: Minimum length of the resulting string. If necessary, the blank character is used to fill up unused space.
@@ -502,7 +502,7 @@ Some situations worth a remark:
 
 ==== Event Triggering Mathematical Functions
 
-The operators listed below trigger events if used outside of a `when`-clause and outside of a clocked discrete-time partition (see <<clocked-discrete-time-and-clocked-discretized-continuous-time-partition>>).
+The operators listed below trigger events if used outside of a `when`-clause and outside of a clocked discrete-time partition (see <<discrete-time-and-discretized-sub-partitions>>).
 
 [cols="l,l,l",options="header"]
 |===
@@ -625,7 +625,7 @@ The operators listed below include the derivative operator and special purpose o
 
 |`der(expr)` |Time derivative |<<der>>
 |`delay(expr, ...)` |Time delay |<<delay>>
-|`cardinality(c)` |Number of occurrences in `connect`-equations |<<cardinality>>
+|`cardinality(c)` |Number of occurrences in `connect`-equations |<<cardinality-deprecated>>
 |`homotopy(actual, simplified)` |Homotopy initialization |<<homotopy>>
 |`semiLinear(x, k+, k-)` |Sign-dependent slope |<<semiLinear>>
 |`inStream(v)` |Stream variable flow into component |<<inStream>>
@@ -644,7 +644,7 @@ der(expr)
 The time derivative of `expr`.
 If the expression `expr` is a scalar it needs to be a subtype of `Real`.
 The expression and all its time-varying subexpressions must be continuous and semi-differentiable.
-An exception is when the operator `reinit` (see <<modelica:reinit>>) is activated, as not even states are continuous.
+An exception is when the operator `reinit` (see <<reinit>>) is activated, as not even states are continuous.
 If `expr` is an array, the operator is applied to all elements of the array.
 For non-scalar arguments the function is vectorized according to <<vectorized-calls-of-functions>>.
 
@@ -703,7 +703,7 @@ The following relation shall hold: `0 <= delayTime <= delayMax`, otherwise an er
 If `delayMax` is not supplied in the argument list, `delayTime` needs to be a parameter expression.
 For non-scalar arguments the function is vectorized according to <<vectorized-calls-of-functions>>.
 
-===== cardinality
+===== cardinality (deprecated)
 [source,modelica]
 ----
 cardinality(c)
@@ -790,7 +790,7 @@ The operators `noEvent`, `pre`, `edge`, and `change`, are vectorizable according
 |`terminal()` |Predicate for the end of a successful analysis |<<terminal>>
 |`noEvent(expr)` |Evaluate expr without triggering events |<<noEvent>>
 |`smooth(p, expr)` |Treat expr as p times continuously differentiable |<<smooth>>
-|`sample(start, interval)` |Periodic triggering of events |<<event-sample>>
+|`sample(start, interval)` |Periodic triggering of events |<<sample>>
 |`pre(y)` |Left limit y(t-) of variable y(t) |<<pre>>
 |`edge(b)` |Expands into `(b and not pre(b))` |<<edge>>
 |`change(v)` |Expands into `(v <> pre(v))` |<<change>>
@@ -1047,7 +1047,7 @@ Discrete-time expressions are:
 * Function calls where all input arguments of the function are discrete-time expressions.
 * Expressions where all the subexpressions are discrete-time expressions.
 * Expressions in the body of a `when`-clause, `initial equation`, or `initial algorithm`.
-* Expressions in a clocked discrete-time partition, see <<clocked-discrete-time-and-clocked-discretized-continuous-time-partition>>.
+* Expressions in a clocked discrete-time partition, see <<discrete-time-and-discretized-sub-partitions>>.
 * Unless inside `noEvent`: Ordered relations (`>`, `<`, `>=`, `<=`) and the event generating functions `ceil`, `floor`, `div`, and `integer`, if at least one argument is non-discrete-time expression and subtype of `Real`.
   [NOTE]
   These will generate events, see <<events-and-synchronization>>.

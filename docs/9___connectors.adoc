@@ -338,7 +338,7 @@ connect(a, b);
 ----
 a connection set is generated for each pair of corresponding primitive components of `a` and `b` together with an indication of whether they are from an inside or an outside connector.
 
-[definition]
+[[primitive-elements]]
 .Primitive elements
 The primitive elements are of simple types or of types defined as `operator record` (i.e., a component of an `operator record` type is not split into sub-components).
 

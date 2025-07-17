@@ -13,6 +13,7 @@ In a first step, a Modelica translator transforms a hierarchical Modelica simula
 
 As a result of this transformation process, a set of equations is obtained consisting of differential, algebraic and discrete equations of the following form where (`v := [p; t; ẋ; x; y; z; m; pre(z); pre(m)]`):
 
+[[eq:dae-discrete-valued]]
 [latexmath]
 ++++
 \begin{subequations}

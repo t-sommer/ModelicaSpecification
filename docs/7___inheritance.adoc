@@ -562,7 +562,7 @@ model Test2
 end Test2;
 ----
 
-==== Removing Modifiers -- break
+==== Removing Modifiers - break
 
 Modifications may contain the special keyword `break` instead of an expression.
 The intention of `break` is to remove the value.

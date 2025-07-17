@@ -1626,6 +1626,7 @@ The default is to not perform this specific inlining.
 +
 This annotation cannot be combined with annotations `Inline` and `LateInline`.
 
+[[generate-events]]
 GenerateEvents Annotation::
 +
 [source,modelica]

@@ -46,7 +46,7 @@ A Modelica class may also contain annotations, i.e., formal comments, which spec
 
 === Some Definitions
 
-Explanations of many terms can be found using the document index in <<document-index>>.
+Explanations of many terms can be found using the document index in the document index.
 Some important terms are defined below.
 
 [definition]

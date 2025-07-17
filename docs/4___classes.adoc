@@ -49,7 +49,7 @@ Regarding inheritance of protected and public elements, see <<inheritance-of-pro
 === Double Declaration not Allowed
 
 The name of a declared element shall not have the same name as any other element in its partially flattened enclosing class.
-However, the internal flattening of a class can in some cases be interpreted as having two elements with the same name; these cases are described in <<simultaneous-inner-outer-declarations>> and <<redeclaration>>.
+However, the internal flattening of a class can in some cases be interpreted as having two elements with the same name; these cases are described in <<simultaneous-innerouter-declarations>> and <<redeclaration>>.
 
 .Example
 [source,modelica]
@@ -73,7 +73,7 @@ Variables and classes can be used before they are declared.
 Declaration order is only significant for:
 
 * Functions with more than one input variable called with positional arguments, see <<positional-or-named-input-arguments>>.
-* Functions with more than one output variable, see <<output-formal-parameters-of-functions>>.
+* Functions with more than one output variable, see <<output-formal-parameters>>.
 * Records that are used as arguments to external functions, see <<records>>.
 * Enumeration literal order within enumeration types, see <<enumeration-types>>.
 ====
@@ -212,7 +212,7 @@ Unlike other equations, a declaration equation can be overridden (replaced or re
 For declarations of vectors and matrices, declaration equations are associated with each element.
 
 Only components of the specialized classes `type`, `record`, `operator record`, and `connector`, or components of classes inheriting from `ExternalObject` may have declaration equations.
-See also the corresponding rule for algorithms, <<restrictions-on-assigned-variables>>.
+See also the corresponding rule for algorithms, <<assigned-variables-restrictions>>.
 
 ===== Prefix Rules
 
@@ -606,7 +606,7 @@ The restriction that discrete-valued variables (of type `Boolean`, etc) cannot b
 
 A continuous-time variable (defined in <<component-variability>>) `vn` may have a non-vanishing time derivative (provided `der(vn)` is allowed this can be expressed as `der(vn) <> 0`) and may also change its value discontinuously at any time during transient analysis (see <<events-and-synchronization>>).
 It may also contain a combination of these effects.
-Regarding existence of `der(vn)`, see <<modelica:der>>.
+Regarding existence of `der(vn)`, see <<der>>.
 
 ==== Variability of Structured Entities
 
@@ -772,7 +772,7 @@ where N represents arbitrary array dimensions, conceptually yields an array clas
 'end' TN;
 ----
 
-Such an array class has exactly one anonymous component (_); see also <<restriction-on-combining-base-classes-and-other-elements>>.
+Such an array class has exactly one anonymous component (_); see also <<combining-base-classes-and-other-elements>>.
 When a component of such an array class type is flattened, the resulting flattened component type is an array type with the same dimensions as _ and with the optional modifier applied.
 
 .Example
@@ -795,7 +795,7 @@ Load R; // Error unless Load is redeclared since TwoPin is a partial class.
 
 If a short class definition does not specify any specialized class the new class definition will inherit the specialized class (this rule applies iteratively and also for redeclare).
 
-A `base-prefix` applied in the `short-class-definition` does not influence its type, but is applied to components declared of this type or types derived from it; see also <<restriction-on-combining-base-classes-and-other-elements>>.
+A `base-prefix` applied in the `short-class-definition` does not influence its type, but is applied to components declared of this type or types derived from it; see also <<combining-base-classes-and-other-elements>>.
 
 .Example
 [source,modelica]
@@ -1423,7 +1423,7 @@ The default `fixed`-attribute is `true` for parameters and constants, and `false
 
 The following attributes shall be evaluable: `quantity`, `unit`, `displayUnit`, `fixed`, and `stateSelect`.
 
-The `quantity`-attribute is used to impose a constraint on connection sets, see <<connect-set-quantity-rule>>.
+The `quantity`-attribute is used to impose a constraint on connection sets, see <<restrictions-of-connections-and-connectors>>.
 
 The `unit`- and `displayUnit`-attributes may be either the empty string or a string matching `unit-expression` in <<unit-expressions>>.
 The meaning of the empty string depends on the context.
@@ -1461,7 +1461,7 @@ end Integer;
 
 The following attributes shall be evaluable: `quantity`, and `fixed`.
 
-The `quantity`-attribute is used to impose a constraint on connection sets, see <<connect-set-quantity-rule>>.
+The `quantity`-attribute is used to impose a constraint on connection sets, see <<restrictions-of-connections-and-connectors>>.
 
 The default `min`- and `max`-attributes are the minimum and maximum numbers of `IntegerType`.
 The minimal recommended number range for `IntegerType` is from -2147483648 to +2147483647, corresponding to a two's-complement 32-bit integer implementation.
@@ -1489,7 +1489,7 @@ end Boolean;
 
 The following attributes shall be evaluable: `quantity`, and `fixed`.
 
-The `quantity` attribute is used to impose a constraint on connection sets, see <<connect-set-quantity-rule>>.
+The `quantity` attribute is used to impose a constraint on connection sets, see <<restrictions-of-connections-and-connectors>>.
 
 The fallback value is `false`.
 
@@ -1512,7 +1512,7 @@ end String;
 
 The following attributes shall be evaluable: `quantity`, and `fixed`.
 
-The `quantity` attribute is used to impose a constraint on connection sets, see <<connect-set-quantity-rule>>.
+The `quantity` attribute is used to impose a constraint on connection sets, see <<restrictions-of-connections-and-connectors>>.
 
 A `StringType` value (such as `<value>` or other textual attributes of built-in types) may contain any Unicode data (and nothing else).
 
@@ -1646,7 +1646,7 @@ end E;
 
 The following attributes shall be evaluable: `quantity`, and `fixed`.
 
-The `quantity` attribute is used to impose a constraint on connection sets, see <<connect-set-quantity-rule>>.
+The `quantity` attribute is used to impose a constraint on connection sets, see <<restrictions-of-connections-and-connectors>>.
 
 The fallback value is the `min` bound.
 
