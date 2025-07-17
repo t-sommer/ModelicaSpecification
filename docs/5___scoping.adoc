@@ -141,7 +141,7 @@ An element declared with the prefix `outer` references an element instance with 
 
 Outer component declarations shall not have modifications (including binding equations).
 Outer class declarations should be defined using short-class definitions without modifications.
-However, see also <<simultaneous-inner-outer-declarations>>.
+However, see also <<simultaneous-innerouter-declarations>>.
 
 If the outer component declaration is a disabled conditional component (see <<conditional-component-declaration>>) it is also ignored for the automatic creation of inner component (neither causing it; nor influencing the type of it).
 
@@ -311,7 +311,7 @@ end System;
 
 === Flattening Process
 
-In order to guarantee that elements can be used before they are declared and that elements do not depend on the order of their declaration (see <<declaration-order-and-usage-before-declaration>>) in the enclosing class, the flattening proceeds in the following two major steps:
+In order to guarantee that elements can be used before they are declared and that elements do not depend on the order of their declaration (see <<declaration-order>>) in the enclosing class, the flattening proceeds in the following two major steps:
 
 . Instantiation process
 . Generation of the flat equation system

@@ -991,7 +991,7 @@ replaceable Resistor load2
 replaceable Resistor load3
   "The Load" constrainedby TwoPin "The Load!"; // Error
 ----
-See also the examples in <<annotation-choices-for-suggested-redeclarations-and-modifications>>.
+See also the examples in <<annotations-for-redeclaration-and-modification>>.
 
 ==== Restrictions on Redeclarations
 :id: restrictions-on-redeclarations

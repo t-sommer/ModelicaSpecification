@@ -388,7 +388,7 @@ The type of the full expression (e.g., `if x then A else B`) is also defined bel
   That generates a heterogenous array of records, see <<arrays>>.
   The type of the full expression is a record comprised of named elements that are type compatible with the corresponding named elements of both `A` and `B`.
 * The rules for array expressions depend on the operation (the rules for binary operators are given in <<scalar-vector-matrix-and-array-operator-functions>>
-and for array concatenation in <<array-concatenation>>).
+and for array concatenation in <<concatenation>>).
   The rules for the remaining case of `if`-expressions and array-expressions are:
 ** If `A` is an array expression then `B` must also be an array expression, and `ndims(A)` = `ndims(B)`.
   The type of the full expression is an array expression with elements compatible with the elements of both `A` and `B`.

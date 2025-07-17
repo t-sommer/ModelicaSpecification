@@ -273,7 +273,7 @@ The array constructor operator `{ ... }` is described in <<vector-matrix-and-arr
 
 ==== Array Concatenation Operator
 
-The array concatenation operator `[ ... ]` is described in <<array-concatenation>>.
+The array concatenation operator `[ ... ]` is described in <<concatenation>>.
 
 ==== Array Range Operator
 
@@ -439,7 +439,7 @@ If `n` is even, `v` must be non-negative and `y` shall be the non-negative root.
 Integer(e)
 ----
 Ordinal number of the expression `e` of enumeration type that evaluates to the enumeration value `E.enumvalue`, where `Integer(E.e1) = 1`, `Integer(E.en) = n`, for an enumeration type `E = enumeration(e1, ..., en)`.
-See also <<type-conversion-of-enumeration-values-to-string-or-integer>>.
+See also <<conversion-of-enumeration-to-string-or-integer>>.
 
 ===== EnumTypeName
 [source,modelica]

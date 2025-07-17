@@ -1671,7 +1671,7 @@ See also <<numeric-functions-and-conversion-operators>>.
 :id: type-conversion-of-integer-to-enumeration-values
 
 Whenever an enumeration type is defined, a type conversion function with the same name and in the same scope as the enumeration type is implicitly defined.
-This function can be used in an expression to convert an integer value to the corresponding (as described in <<type-conversion-of-enumeration-values-to-string-or-integer>>) enumeration value.
+This function can be used in an expression to convert an integer value to the corresponding (as described in <<conversion-of-enumeration-to-string-or-integer>>) enumeration value.
 
 For an enumeration type named `EnumTypeName`, the expression `EnumTypeName(<Integer expression>)` returns the enumeration value `EnumTypeName.e` such that `Integer(EnumTypeName.e)` is equal to the original integer expression.
 

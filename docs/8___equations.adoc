@@ -75,7 +75,7 @@ Three examples:
 According to the grammar the if-then-else expression in the second example needs to be enclosed in parentheses to avoid parsing ambiguities.
 Also compare with <<assignments-from-called-functions-with-multiple-results>> about calling functions with several results in assignment statements.
 
-==== For-Equations -- Repetitive Equation Structures
+==== For-Equations - Repetitive Equation Structures
 
 .Syntax
 [source,grammar]
