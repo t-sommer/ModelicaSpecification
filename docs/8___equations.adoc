@@ -163,7 +163,7 @@ These can be placed inside `for`-equations and `if`-equations; provided the indi
 The `for`-equations/`if`-equations are expanded.
 `connect`-equations are described in detail in <<connect-equations-and-connectors>>.
 
-The same restrictions apply to `Connections.branch`, `Connections.root`, and `Connections.potentialRoot`; which after expansion are handled according to <<equation-operators-for-overconstrained-connection-based-equation-systems1>>.
+The same restrictions apply to `Connections.branch`, `Connections.root`, and `Connections.potentialRoot`; which after expansion are handled according to <<overconstrained-connections>>.
 
 ==== If-Equations
 
@@ -557,7 +557,7 @@ end ThrowingBall;
 
 ==== Equation Operators for Overconstrained Connection-Based Equation Systems
 
-See <<equation-operators-for-overconstrained-connection-based-equation-systems1>> for a description of this topic.
+See <<overconstrained-connections>> for a description of this topic.
 
 === Synchronous Data-Flow Principle and Single Assignment Rule
 

@@ -105,7 +105,7 @@ If the `expandable` qualifier is present on a connector definition, all instance
 Instances of connectors that do not possess this qualifier are _non-expandable connectors_.
 
 Before generating connection equations, non-parameter scalar variables and non-parameter array elements declared in expandable connectors are marked as only being potentially present.
-A non-parameter array element may be declared with array dimensions `:` indicating that the size is unknown (note that the size of such a dimension cannot be determined using `size`, see <<array-dimension-and-size-functions>>).
+A non-parameter array element may be declared with array dimensions `:` indicating that the size is unknown (note that the size of such a dimension cannot be determined using `size`, see <<dimension-and-size-functions>>).
 This applies to both variables of simple types, and variables of structured types.
 
 Then connections containing expandable connectors are elaborated:
@@ -503,7 +503,7 @@ This corresponds to a direct connection of the resistor.
 * In a `connect`-equation the two connectors must have the same named component elements with the same dimensions; recursively down to the primitive components.
   The primitive components with the same name are matched and belong to the same connection set.
 * The matched primitive components of the two connectors must have the same primitive types, and flow variables may only connect to other flow variables, stream variables only to other stream variables, and causal variables (`input`/`output`) only to causal variables (`input`/`output`).
-* A connection set of causal variables (`input`/`output`) may at most contain variables from one inside `output` connector (for state-machines extended as specified in <<merging-connections-to-multiple-outputs>>) or one public outside `input` connector.
+* A connection set of causal variables (`input`/`output`) may at most contain variables from one inside `output` connector (for state-machines extended as specified in <<merging-connections-to-outputs>>) or one public outside `input` connector.
 * At least one of the following must hold for a connection set containing causal variables generated for a non-partial model or block:
   . the connection set includes variables from an outside public expandable connector,
   . the set contains variables from protected outside connectors,
