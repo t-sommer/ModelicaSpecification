@@ -12,6 +12,9 @@
 - fix table in 7.1.3. Restrictions on the Kind of Base Class
 - fix table in 7.2.3. Merging of Modifications
 
+Build with:
+
+sudo docker run --rm -it -v $PWD:/documents/ asciidoctor/docker-asciidoctor asciidoctor -B /documents/ -b html5 --failure-level WARN -v --attribute=revnumber=3.7-dev --attribute=revdate=$(date +%F) docs/index.adoc
 
 Regexes:
 
