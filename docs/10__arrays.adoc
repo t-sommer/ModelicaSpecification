@@ -366,50 +366,56 @@ The restriction on the type of the input in <<reduction-expressions>> for reduct
 |`product(... for ...)` |Product reduction |<<modelica:product-reduction>>
 |===
 
-[float]
-[min]
+[[modelica:min-of-array]]
+min::
 [source,modelica]
 ----
 min(A)
 ----
 Returns the least element of array expression A; as defined by `<`.
 
-[min]
+[[modelica:min-binary]]
+min::
 [source,modelica]
 ----
 min(x, y)
 ----
 Returns the least element of the scalars x and y; as defined by `<`.
 
-[min]
+[[modelica:min-reduction]]
+min::
 [source,modelica]
 ----
 min(e(i, ..., j) for i in u, ..., j in v)
 ----
 Returns the least value (as defined by `<`) of the scalar expression e(i, ..., j) evaluated for all combinations of i in u, ..., j in v.
 
-[max]
+[[modelica:max-of-array]]
+max::
 [source,modelica]
 ----
 max(A)
 ----
 Returns the greatest element of array expression A; as defined by `>`.
 
-[max]
+[[modelica:max-binary]]
+max::
 [source,modelica]
 ----
 max(x, y)
 ----
 Returns the greatest element of the scalars x and y; as defined by `>`.
 
-[max]
+[[modelica:max-reduction]]
+max::
 [source,modelica]
 ----
 max(e(i, ..., j) for i in u, ..., j in v)
 ----
 Returns the greatest value (as defined by `>`) of the scalar expression e(i, ..., j) evaluated for all combinations of i in u, ..., j in v.
 
-[sum]
+[[modelica:sum-of-array]]
+sum::
 [source,modelica]
 ----
 sum(A)
@@ -417,7 +423,8 @@ sum(A)
 Returns the scalar sum of all the elements of array expression A.
 Equivalent to sum reduction (see below, including application to operator records) over all array indices: sum(A[j, k, ...] for j, k, ...)
 
-[sum]
+[[modelica:sum-reduction]]
+sum::
 [source,modelica]
 ----
 sum(e(i, ..., j) for i in u, ..., j in v)
@@ -436,7 +443,8 @@ For non-Integer indexing this uses all valid indices instead of 1..end.
 
 The type of sum(e(i, ..., j) for i in u, ..., j in v) is the same as the type of e(i, ..., j).
 
-[product]
+[[modelica:product-of-array]]
+product::
 [source,modelica]
 ----
 product(A)
@@ -444,7 +452,8 @@ product(A)
 Returns the scalar product of all the elements of array expression A.
 Equivalent to product reduction (see below) over all array indices: product(A[j, k, ...] for j, k, ...)
 
-[product]
+[[modelica:product-reduction]]
+product::
 [source,modelica]
 ----
 product(e(i, ..., j) for i in u, ..., j in v)
@@ -521,8 +530,8 @@ The functions `outerProduct`,  `symmetric`, `cross` and `skew` require Real vect
 |`skew(x)` |Skew symmetric matrix associated with vector |<<modelica:skew>>
 |===
 
-[float]
-[transpose]
+transpose::
+[[modelica:transpose]]
 [source,modelica]
 ----
 transpose(A)
@@ -530,16 +539,16 @@ transpose(A)
 Permutes the first two dimensions of array A.
 It is an error if array A does not have at least 2 dimensions.
 
-[float]
-[outerProduct]
+outerProduct::
+[[modelica:outerProduct]]
 [source,modelica]
 ----
 outerProduct(x, y)
 ----
 Returns the outer product of vectors x and y, that is: matrix(x) * transpose(matrix(y))
 
-[float]
-[symmetric]
+[[modelica:symmetric]]
+symetric::
 [source,modelica]
 ----
 symmetric(A)
@@ -551,8 +560,8 @@ B[i, j] =
   if i <= j then A[i, j]
   else A[j, i]
 
-[float]
-[cross]
+[[modelica:cross]]
+cross::
 [source,modelica]
 ----
 cross(x, y)
@@ -562,8 +571,8 @@ vector([ x[2] * y[3] - x[3] * y[2] ;
          x[3] * y[1] - x[1] * y[3] ;
          x[1] * y[2] - x[2] * y[1] ])
 
-[float]
-[skew]
+[[modelica:skew]]
+skew::
 [source,modelica]
 ----
 skew(x)
