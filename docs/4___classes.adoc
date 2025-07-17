@@ -817,9 +817,8 @@ Real x[:]=foo(time);
 
 It is not legal to combine equations, algorithms, components, non-empty base classes (see below), or protected elements with an extends from an array class, a class with non-empty `base-prefix`, a simple type (`Real`, `Boolean`, `Integer`, `String` and enumeration types), or any class transitively extending from an array class, a class with non-empty `base-prefix`, or a simple type.
 
-[definition]
 [[empty-class]]
-.Empty class
+Empty class::
 A class without equations, algorithms, or components, and where any base-classes are themselves empty.
 
 [NOTE]
@@ -1000,8 +999,7 @@ In fact, it is guaranteed that a redeclaration cannot lead to an unbalanced mode
 The restrictions below apply after flattening -- i.e., inherited components are included -- possibly modified.
 The corresponding restrictions on connectors and connections are in <<restrictions-of-connections-and-connectors>>.
 
-[definition]
-.Local number of unknowns
+Local number of unknowns::
 The local number of unknowns of a `model` or `block` class is the sum based on the components:
 * For each declared component of specialized class `type` (`Real`, `Integer`, `String`, `Boolean`, enumeration and arrays of those, etc.) or `record`, or `operator record` not declared as `outer`, it is the number of unknown variables inside it (i.e., excluding parameters and constants and counting the elements after expanding all records, operator record, and arrays to a set of scalars of primitive types).
 * Each declared component of specialized class `type` or `record` declared as `outer` is ignored.
@@ -1010,8 +1008,7 @@ The local number of unknowns of a `model` or `block` class is the sum based on t
 * For each declared component of specialized class `connector` component, it is the number of unknown variables inside it (i.e., excluding parameters and constants and counting the elements after expanding all records and arrays to a set of scalars of primitive types).
 * For each declared component of specialized class `block` or `model`, it is the sum of the number of inputs and flow variables in the (top level) public connector components of these components (and counting the elements after expanding all records and arrays to a set of scalars of primitive types).
 
-[definition]
-.Local equation size
+Local equation size::
 The local equation size of a `model` or `block` class is the sum of the following numbers:
 * The number of equations defined locally (i.e., not in any `model` or `block` component), including binding equations, and equations generated from `connect`-equations.
   [NOTE]
@@ -1043,8 +1040,7 @@ Here `u` and `u2` are top-level inputs and not connectors.
 The variable `u2` has a binding equation, but `u` does not have a binding equation.
 In the equation count, it is assumed that an equation for `u` is supplied when using the model.
 
-[definition]
-.Locally balanced
+Locally balanced:
 A `model` or `block` class is locally balanced if the local number of unknowns is identical to the local equation size for all legal values of constants and parameters.
 
 [NOTE]
@@ -1052,8 +1048,7 @@ Here, legal values must respect final bindings and min/max-restrictions.
 A tool shall verify the locally balanced property for the actual values of parameters and constants in the simulation model.
 It is a quality of implementation for a tool to verify this property in general, due to arrays of (locally) undefined sizes, conditional declarations, `for`-loops etc.
 
-[definition]
-.Globally balanced
+Globally balanced::
 Similarly as locally balanced, but including all unknowns and equations from all components.
 The global number of unknowns is computed by expanding all unknowns (i.e., excluding parameters and constants) into a set of scalars of primitive types.
 This should match the global equation size defined as:
@@ -1385,8 +1380,7 @@ It also follows that the only way to declare a subtype of, e.g., `Real` is to us
 The definitions use `RealType`, `IntegerType`, `BooleanType`, `StringType`, `EnumType` as mnemonics corresponding to machine representations.
 These are called the primitive types.
 
-[definition]
-.Fallback value
+Fallback value::
 In situations where the `start`-attribute would apply if provided, but the attribute is not provided, the fallback value shall be used instead.
 Tools are recommended to give diagnostics when the fallback value is used.
 The fallback values for variables of the different predefined types are defined below.

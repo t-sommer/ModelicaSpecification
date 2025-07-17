@@ -49,40 +49,33 @@ A Modelica class may also contain annotations, i.e., formal comments, which spec
 Explanations of many terms can be found using the document index in the document index.
 Some important terms are defined below.
 
-[definition]
-.Component
+Component::
 An element defined by the production `component-clause` in the Modelica grammar (basically a variable or an instance of a class)
 
-[definition]
-.Element
+Element::
 Class definition, `extends`-clause, or `component-clause` declared in a class (basically a class reference or a component in a declaration).
 
-[definition]
-.Flattening
+Flattening::
 The translation of a model described in Modelica to the corresponding model described as a hybrid DAE (see <<modelica-dae-representation>>), involving expansion of inherited base classes, parameterization of base classes, local classes and components, and generation of connection equations from `connect`-equations.
 In other words, mapping the hierarchical structure of a model into a set of differential, algebraic and discrete equations together with the corresponding variable declarations and function definitions from the model.
 
-[definition]
-.Initialization
+Initialization::
 Simulation starts with solving the initialization problem at the starting time, resulting in values for all variables that are consistent with the result of the flattening.
 
-[definition]
-.Transient analysis
+Transient analysis::
 Starting from the result of the initialization problem, the model is simulated forward in time.
 This uses numerical methods for handling the hybrid DAE, resulting in solution trajectories for the model's variables, i.e., the value of the variables as a function of time.
 
 [NOTE]
 In the numerical literature transient analysis is often called solving the initial value problem, but that term is not used here to avoid confusion with the initialization problem.
 
-[definition]
-.Simulation
+Simulation::
 Simulation is the combination of initialization followed by transient analysis.
 
 [NOTE]
 The model can be analyzed in ways other than simulation, e.g., linearization, and parameter estimation, but they are not described in the specification.
 
-[definition]
-.Translation
+Translation::
 Translation is the process of preparing a Modelica simulation model for simulation, starting with flattening but not including the simulation itself.
 
 [NOTE]
@@ -121,8 +114,7 @@ For example, `average(x, y)` could be defined as latexmath:[\frac{x + y}{2}].
 Inline code fragments are sometimes surrounded by quotes to clearly mark their beginning and end, or to emphasize separation from the surrounding text.
 For example, `,` is used to separate the arguments of a function call.
 
-[definition]
-.Something
+Something::
 Text defining the meaning of _something_.
 
 In addition to the style of definition above, new terminology can be introduced in the running text.

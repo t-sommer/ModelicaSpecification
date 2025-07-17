@@ -12,19 +12,16 @@ In this chapter, two kinds of terminology are used for identical concepts to get
 A short summary of the terms is given in the following table.
 The details are defined in the rest of this chapter.
 
-[definition]
-.Type or interface
+Type or interface::
 The "essential" part of the public declaration sections of a class that is needed to decide whether `A` can be used instead of `B`.
 [NOTE]
 E.g., a declaration `Real x` is part of the type (also called _interface_), but `import A` is not.
 
-[definition]
-.Class type or inheritance interface
+Class type or inheritance interface::
 The "essential" part of the public _and protected_ declaration sections of a class that is needed to decide whether `A` can be used instead of `B`.
 The class type, also called inheritance interface, is needed when inheritance takes place, since then the protected declarations have to be taken into account.
 
-[definition]
-.Subtype or compatible interface
+Subtype or compatible interface::
 `A` is a subtype of `B`, or equivalently, the interface of `A` is compatible to the interface of `B`, if the "essential" part of the public declaration sections of `B` is also available in `A`.
 [NOTE]
 E.g., if `B` has a declaration `Real x`, this declaration must also be present in `A`.
@@ -32,16 +29,14 @@ If `A` has a declaration `Real y`, this declaration may be present in `B`.
 
 If `A` is a subtype of `B`, then `B` is said to be a _supertype_ of `A`.
 
-[definition]
-.Restricted subtype or plug compatible interface
+Restricted subtype or plug compatible interface::
 `A` is a restricted subtype of `B`, or equivalently, the interface of `A` is plug compatible to the interface of `B`, if `A` is a subtype of `B` and if connector components in `A` that are not in `B`, are default connectable.
 [NOTE]
 E.g., it is not allowed that these connectors have variables with the `input` prefix, because then they must be connected.
 A model or block `A` cannot be used instead of `B`, if the particular situation does not allow to make a connection to these additional connectors.
 In such a case the stricter _plug compatible_ is required for a redeclaration.
 
-[definition]
-.Function subtype or function compatible interface
+Function subtype or function compatible interface::
 `A` is a function subtype of `B`, or equivalently, the interface of `A` is function compatible to the interface of `B`, if `A` is a subtype of `B` and if the additional arguments of function `A` that are not in function `B` are defined in such a way, that `A` can be called at places where `B` is called.
 [NOTE]
 E.g., an additional argument must have a default value.
@@ -228,15 +223,13 @@ If a sub-component is redeclared, see <<redeclaration>>, it is impossible to con
 A connector with `input` prefix must be connected to, and since one cannot connect across hierarchies, one should not be allowed to introduce such a connector at a level where a connection is not possible.
 Therefore all public components present in the interface `A` that are not present in `B` must be connected by default.
 
-[definition]
-.Plug-compatibility (= restricted subtyping)
+Plug-compatibility (= restricted subtyping)::
 An interface `A` is plug-compatible with (a restricted subtype of) an interface `B` (or the constraining interface of `B`) iff:
 
 * `A` is compatible with (subtype of) `B`.
 * All public components present in `A` but not in `B` must be default-connectable (as defined below).
 
-[definition]
-.Default connectable
+Default connectable::
 A component of an interface is default-connectable iff:
 
 * All of its components are default connectable.
@@ -310,9 +303,8 @@ A replaceable class might be used as the class for a sub-component, therefore pl
 Functions may be called with either named or positional arguments, and thus both the name and order is significant.
 If a function is redeclared, see <<redeclaration>>, any new arguments must have defaults (and be at the end) in order to preserve the meaning of existing calls.
 
-[definition]
 [[function-compatibility]]
-.Function-compatibility or function-subtyping for functions
+Function-compatibility or function-subtyping for functions::
 A `function` class `A` is _function-compatible with or a function subtype of_ `function` class `B` iff (the terms _function-compatible_ and _function subtype_ of are synonyms and used interchangeably):
 
 * `A` is compatible to (subtype of) `B`.
