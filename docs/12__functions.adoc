@@ -735,7 +735,7 @@ There are basically four groups of built-in functions in Modelica:
 * Intrinsic mathematical and conversion functions (see <<numeric-functions-and-conversion-functions>>).
 * Derivative and special operators with function syntax (see <<derivative-and-special-purpose-operators-with-function-syntax>>).
 * Event-related operators with function syntax (see <<event-related-operators-with-function-syntax>>).
-* Built-in array functions (see <<built-in-array-functions>>).
+* Built-in array functions (see <<built-in-array-operators-and-functions>>).
 
 Note that when the specification references a function having the name of a built-in function it references the built-in function, not a user-defined function having the same name.
 
@@ -1635,7 +1635,7 @@ GenerateEvents Annotation::
 +
 Has only an effect within a function declaration.
 +
-By default, `GenerateEvents = false` and expressions in the function body that would normally be event-generating shall not generate events, similar to inlining the function body while wrapping all expressions in `noEvent`, see <<modelica:noEvent>>.
+By default, `GenerateEvents = false` and expressions in the function body that would normally be event-generating shall not generate events, similar to inlining the function body while wrapping all expressions in `noEvent`, see <<noEvent>>.
 By specifying `GenerateEvents = true`, event-generating expressions in the function body shall generate events as normal, similar to inlining the function body without wrapping all expressions in `noEvent`.
 Having `GenerateEvents = true` implies `Inline = true` unless overridden by specifying one of the inlining annotations with value `true` (in particular, `GenerateEvents = true` cannot be combined with `Inline = false`).
 +
@@ -1683,7 +1683,7 @@ Unless the external language is specified, it is assumed to be `"C"`.
 [NOTE]
 The intended use of, e.g., C99 is to detect if the user tries to link with a C99-function using a C89 compiler.
 
-The deprecated `"builtin"` specification is only used for the elementary mathematical functions described in <<built-in-mathematical-functions-and-external-built-in-functions>>.
+The deprecated `"builtin"` specification is only used for the elementary mathematical functions described in <<elementary-mathematical-functions>>.
 The external function call mechanism for `"builtin"` functions is implementation-defined.
 
 [NOTE]
@@ -1745,7 +1745,7 @@ The valid return values for an external function returning a `String` are:
 
 * A string given as `String` input to the external function.
 * A pointer to a C string literal.
-* A pointer returned by one of the string allocation functions in <<utility-functions-for-allocating-strings>>.
+* A pointer returned by one of the string allocation functions in <<string-allocation-utility-functions>>.
 
 [NOTE]
 The reason why it is not allowed to return a string allocated with, for instance, `malloc` is that there is no transfer of ownership when a string is returned from the external function.

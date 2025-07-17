@@ -385,7 +385,7 @@ The mathematical functions and conversion operators listed below do not generate
 Except for the `min`, `max` and the `String` conversion operator they are vectorizable according to <<automatic-vectorization>>.
 The `min` and `max` functions have array-specific variants which perform array reduction operations described in <<reduction-functions-and-operators>>.
 
-Additional non-event generating mathematical functions are described in <<built-in-mathematical-functions-and-external-built-in-functions>>, whereas the event-triggering mathematical functions are described in <<event-triggering-mathematical-functions>>.
+Additional non-event generating mathematical functions are described in <<elementary-mathematical-functions>>, whereas the event-triggering mathematical functions are described in <<event-triggering-mathematical-functions>>.
 
 ===== abs
 [source,modelica]

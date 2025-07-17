@@ -132,7 +132,7 @@ In this case the search succeeds and the package `MyLib.Pack2` is loaded into th
 === File System Mapping of Package/Class
 
 A package/class hierarchy may be represented in the hierarchical structure of the operating system (the file system).
-For classes with version information see also <<mapping-of-versions-to-file-system>>.
+For classes with version information see also <<versions-in-the-file-system>>.
 The nature of such an external entity falls into one of the following two groups:
 
 * Directory in the file system.

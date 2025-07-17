@@ -1990,8 +1990,8 @@ equation
 ----
 ====
 
+[[annotations-for-version-handling]]
 === Versions
-:id: annotations-for-version-handling
 
 A top-level package or model can specify the version of top-level classes it uses, its own version number, and if possible how to convert from previous versions.
 This can be used by a tool to guarantee that consistent versions are used, and if possible to upgrade usage from an earlier version to a current one.
