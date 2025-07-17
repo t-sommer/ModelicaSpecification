@@ -272,24 +272,24 @@ size(A, i) = 1 is required for 2 < i <= ndims(A).
 |`linspace(x1, x2, n)`      |Vector with equally spaced elements |<<modelica:linspace>>
 |===
 
-[float]
-[identity]
+[[modelica:identity]]
+identity::
 [source,modelica]
 ----
 identity(n)
 ----
 Returns the n x n Integer identity matrix, with ones on the diagonal and zeros at the other places.
 
-[float]
-[diagonal]
+[[modelica:diagonal]]
+diagonal::
 [source,modelica]
 ----
 diagonal(v)
 ----
 Returns a square matrix with the elements of vector v on the diagonal and all other elements zero.
 
-[float]
-[zeros]
+[[modelica:zeros]]
+zeros::
 [source,modelica]
 ----
 zeros(n1, n2, n3, ...)
@@ -297,8 +297,8 @@ zeros(n1, n2, n3, ...)
 Returns the n1 x n2 x n3 x ... Integer array with all elements equal to zero (ni >= 0).
 The function needs one or more arguments, that is, zeros() is not legal.
 
-[float]
-[ones]
+[[modelica:ones]]
+ones::
 [source,modelica]
 ----
 ones(n1, n2, n3, ...)
@@ -306,8 +306,8 @@ ones(n1, n2, n3, ...)
 Returns the n1 x n2 x n3 x ... Integer array with all elements equal to one (ni >= 0).
 The function needs one or more arguments, that is, ones() is not legal.
 
-[float]
-[fill]
+[[modelica:fill]]
+fill::
 [source,modelica]
 ----
 fill(s, n1, n2, n3, ...)
@@ -321,8 +321,8 @@ fill(s, n) = {s, s, ..., s}.
 
 The function needs two or more arguments; that is, fill(s) is not legal.
 
-[float]
-[linspace]
+[[modelica:linspace]]
+linspace::
 [source,modelica]
 ----
 linspace(x1, x2, n)
