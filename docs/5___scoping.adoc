@@ -45,7 +45,7 @@ Implicitly defined names of record constructor functions and enumeration type co
 Names of record classes and enumeration types are ignored during function name lookup.
 
 [NOTE]
-The reason to ignore the implicitly defined names is that a record and the implicitly created record constructor function, see <<record-constructor-functions>>, and an enumeration type and the implicitly created conversion function (<<type-conversion-of-integer-to-enumeration-values>>), have the same name.
+The reason to ignore the implicitly defined names is that a record and the implicitly created record constructor function, see <<record-constructor-functions>>, and an enumeration type and the implicitly created conversion function (<<conversion-of-integer-to-enumeration>>), have the same name.
 
 ==== Simple Name Lookup
 
@@ -150,7 +150,7 @@ An `outer` element reference in a simulation model requires that one correspondi
 * If there are two (or more) `outer` declarations with the same name, both lacking matching `inner` declarations, and the `outer` declarations are not of the same class it is an error.
 * If there is one (or more) `outer` declarations of a partial class it is an error.
 * In other cases, i.e., if a unique non-partial class is used for all `outer` declarations of the same name lacking a matching inner declaration, then an `inner` declaration of that class is automatically added at the top of the model and a diagnostic is given.
-* The annotations defined in <<annotations-for-the-graphical-user-interface>> does not affect this process, other than that:
+* The annotations defined in <<graphical-user-interface>> does not affect this process, other than that:
   ** `missingInnerMessage` can be used for the diagnostic (and possibly error messages)
 
 An `outer` element component may be of a partial class (but the referenced `inner` component must be of a non-partial class).
@@ -519,7 +519,7 @@ The instance tree is recursively walked through as follows for elements of the c
   Some references -- in particular to non simple, non record objects like connectors in `connect`-equations and states in `transition`-equations are not resolved yet and handled afterwards.
 * Instances of local classes are ignored.
 * The unnamed nodes corresponding to `extends`-clauses are recursively handled.
-* If there are function calls encountered during this process, the call is filled up with default arguments as defined in <<positional-or-named-input-arguments-of-functions>>.
+* If there are function calls encountered during this process, the call is filled up with default arguments as defined in <<positional-or-named-input-arguments>>.
   These are built from the modifications of input arguments which are resolved using their instance scope.
   The called function itself is looked up in the instance tree.
   All used functions are flattened and put into the list of functions.

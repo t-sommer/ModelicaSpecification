@@ -72,7 +72,7 @@ Variables and classes can be used before they are declared.
 ====
 Declaration order is only significant for:
 
-* Functions with more than one input variable called with positional arguments, see <<positional-or-named-input-arguments-of-functions>>.
+* Functions with more than one input variable called with positional arguments, see <<positional-or-named-input-arguments>>.
 * Functions with more than one output variable, see <<output-formal-parameters-of-functions>>.
 * Records that are used as arguments to external functions, see <<records>>.
 * Enumeration literal order within enumeration types, see <<enumeration-types>>.
@@ -221,7 +221,7 @@ A prefix is property of an element of a class definition which can be present or
 Type prefixes (that is, `flow`, `stream`, `discrete`, `parameter`, `constant`, `input`, `output`) shall only be applied for type, record, operator record, and connector components -- see also record specialized class, <<specialized-classes>>.
 This is further restricted below; some of these combinations of type prefixes and specialized classes are not legal.
 
-An exception is `input` for components whose type is of the specialized class `function` (these can only be used for function formal parameters and has special semantics, see <<functional-input-arguments-to-functions>>).
+An exception is `input` for components whose type is of the specialized class `function` (these can only be used for function formal parameters and has special semantics, see <<functional-input-arguments>>).
 In this case, the `input` prefix is not applied to the elements of the component, and the prefix is allowed even if the elements of the component have `input` or `output` prefix.
 
 In addition, instances of classes extending from `ExternalObject` may have type prefixes `parameter` and `constant`, and in functions also type prefixes `input` and `output`, see <<external-objects>>.

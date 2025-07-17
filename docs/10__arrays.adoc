@@ -37,10 +37,10 @@ The following table shows the two possible forms of declarations and defines the
 The type of a dimension upper bound expression, e.g., n, m, p, ... in the table below, needs to be a subtype of `Integer` or `EB` for a class `EB` that is an enumeration type or subtype of the `Boolean` type.
 
 Colon (`:`) indicates that the dimension upper bound is unknown and is a subtype of `Integer`.
-The size of such a variable can be determined from its binding equation, or the size of any of its array attributes (see also <<flexible-array-sizes-and-resizing-of-arrays-in-functions>>).
+The size of such a variable can be determined from its binding equation, or the size of any of its array attributes (see also <<flexible-array-sizes-and-resizing-of-arrays>>).
 The size cannot be determined from other equations or algorithms.
 
-Upper and lower array dimension index bounds are described in <<array-dimension-lower-and-upper-index-bounds>>.
+Upper and lower array dimension index bounds are described in <<lower-and-upper-index-bounds>>.
 
 An array indexed by `Boolean` or enumeration type can only be used in the following ways:
 
@@ -142,7 +142,7 @@ The lower and upper index bounds for a dimension of an array indexed by `Integer
 
 === Flexible Array Sizes
 
-Regarding flexible array sizes and resizing of arrays in functions, see <<flexible-array-sizes-and-resizing-of-arrays-in-functions>>.
+Regarding flexible array sizes and resizing of arrays in functions, see <<flexible-array-sizes-and-resizing-of-arrays>>.
 
 === Built-in Array Operators and Functions
 
@@ -770,7 +770,7 @@ Colors ec[3] = Colors.red : Colors.green;
 === Indexing
 
 The array indexing operator `name[...]` is used to access array elements for retrieval of their values or for updating these values.
-An indexing operation is subject to upper and lower array dimension index bounds (see <<array-dimension-lower-and-upper-index-bounds>>).
+An indexing operation is subject to upper and lower array dimension index bounds (see <<lower-and-upper-index-bounds>>).
 The indexing operator takes two or more operands, where the first operand is the array to be indexed and the rest of the operands are _index_ (or _subscript_) expressions:
 
 `arrayname[indexexpr1, indexexpr2, ...]`
@@ -871,7 +871,7 @@ The standard type coercion defined in <<standard-type-coercion>> applies.
 ==== Equality and Assignment
 
 Equality `a = b` and assignment `a := b` of scalars, vectors, matrices, and arrays is defined element-wise and require both objects to have the same number of dimensions and corresponding dimension sizes.
-See <<array-indexing>> regarding assignments to array variables with vector of subscripts.
+See <<indexing>> regarding assignments to array variables with vector of subscripts.
 
 The operands need to be type equivalent.
 This is legal for the simple types and all types satisfying the requirements for a record, and is in the latter case applied to each component-element of the records.

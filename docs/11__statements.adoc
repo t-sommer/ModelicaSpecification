@@ -67,7 +67,7 @@ This is usually the case, except for algorithms with `when` statements, and espe
 
 ==== The Algorithm in a Function
 
-See <<initialization-and-binding-equations-of-components-in-functions>>.
+See <<initialization-and-binding-equations>>.
 
 === Statements
 
@@ -111,7 +111,7 @@ The resulting value is stored into the variable denoted by `component-reference`
 
 The `expression` must not have higher variability than the assigned component (see <<variability-of-expressions>>).
 
-Assignment to array variables with subscripts is described in <<array-indexing>>.
+Assignment to array variables with subscripts is described in <<indexing>>.
 
 ===== Assignments from Called Functions with Multiple Results
 
@@ -459,9 +459,9 @@ end when;
 In contrast to `when` equations, there are no additional restrictions within `when` statements:
 
 * In algorithms, all assignment statements are already restricted to left-hand-side variables.
-* If at least one element of an array appears on the left-hand-side of the assignment operator inside a `when` statement, it is as if the entire array appears in the left-hand-side according to <<execution-of-an-algorithm-in-a-model>>.
+* If at least one element of an array appears on the left-hand-side of the assignment operator inside a `when` statement, it is as if the entire array appears in the left-hand-side according to <<an-algorithm-in-a-model>>.
   Thus, there is no need to restrict the indices to parameter-expressions.
-* The `for` loops and `if` statements are not problematic inside `when` statements in algorithms, since all left-hand-side variables inside `when` statements are assigned to their pre-values before the start of the algorithm, according to <<execution-of-an-algorithm-in-a-model>>.
+* The `for` loops and `if` statements are not problematic inside `when` statements in algorithms, since all left-hand-side variables inside `when` statements are assigned to their pre-values before the start of the algorithm, according to <<an-algorithm-in-a-model>>.
 
 ===== Defining When-Statements by If-Statements
 

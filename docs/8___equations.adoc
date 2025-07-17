@@ -13,7 +13,7 @@ Equations in Modelica can be classified into different categories depending on t
 * Normal equality equations occurring in equation sections, including `connect`-equations and other equation types of special syntactic form (see <<equations-in-equation-sections>>).
 * Declaration equations, which are part of variable, parameter, or constant declarations (see <<declaration-equations>>).
 * Modification equations, which are commonly used to modify attributes of classes (see <<modifications>>).
-* _Binding equations_, which include both declaration equations and element modification for the value of the variable itself. These are considered equations when appearing outside functions, and then a component with a binding equation has its value bound to some expression. (Binding equations can also appear in functions, see <<initialization-and-binding-equations-of-components-in-functions>>.)
+* _Binding equations_, which include both declaration equations and element modification for the value of the variable itself. These are considered equations when appearing outside functions, and then a component with a binding equation has its value bound to some expression. (Binding equations can also appear in functions, see <<initialization-and-binding-equations>>.)
 * _Initial equations_, which are used to express equations for solving initialization problems (see <<initialization-initial-equation-and-initial-algorithm>>).
 
 === Flattening and Lookup in Equations
@@ -738,7 +738,7 @@ An active `when`-clause inactivates the following `elsewhen` (similarly as for `
 That means that any subsequent `elsewhen initial()` has no effect, similarly as `when false then`.
 
 [NOTE]
-There is no special handling of inactive `when`-statements during initialization, instead variables assigned in `when`-statements are initialized using `v := pre(v)` before the body of the algorithm (since they are discrete), see <<execution-of-an-algorithm-in-a-model>>.
+There is no special handling of inactive `when`-statements during initialization, instead variables assigned in `when`-statements are initialized using `v := pre(v)` before the body of the algorithm (since they are discrete), see <<an-algorithm-in-a-model>>.
 
 Further constraints, necessary to determine the initial values of all variables (depending on the component variability, see <<component-variability>> for definitions), can be defined in the following ways:
 

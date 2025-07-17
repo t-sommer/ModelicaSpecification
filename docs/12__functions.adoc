@@ -147,23 +147,23 @@ Modelica functions have the following restrictions compared to a general Modelic
   [NOTE]
   It is a quality of implementation how much analysis a tool performs in order to determine if the output variables are computed.
   A function _cannot contain_ calls to the Modelica _built-in operators_ `der`, `initial`, `terminal`, `sample`, `pre`, `edge`, `change`, `reinit`, `delay`, `cardinality`, `inStream`, `actualStream`, to the operators of the built-in package `Connections`, to the operators defined in <<synchronous-language-elements>> and <<state-machines>>, and is not allowed to contain `when`-statements.
-* The dimension _sizes_ not declared with colon (`:`) of each array result or array local variable (i.e., a non-input component) of a function must be either given by the input formal parameters, or given by constant or parameter expressions, or by expressions containing combinations of those (see <<initialization-and-binding-equations-of-components-in-functions>>).
-* For initialization of local variables of a function see <<initialization-and-binding-equations-of-components-in-functions>>.
+* The dimension _sizes_ not declared with colon (`:`) of each array result or array local variable (i.e., a non-input component) of a function must be either given by the input formal parameters, or given by constant or parameter expressions, or by expressions containing combinations of those (see <<initialization-and-binding-equations>>).
+* For initialization of local variables of a function see <<initialization-and-binding-equations>>.
 * Components of a function will inside the function behave as though they had discrete-time variability.
 
 Modelica functions have the following enhancements compared to a general Modelica `class`:
 
 * Functions can be called (see <<function-call>>).
-  * The calls can use a mix of positional and named arguments (see <<positional-or-named-input-arguments-of-functions>>).
-  * Instances of functions have a special meaning (see <<functional-input-arguments-to-functions>>).
+  * The calls can use a mix of positional and named arguments (see <<positional-or-named-input-arguments>>).
+  * Instances of functions have a special meaning (see <<functional-input-arguments>>).
   * The lookup of the `function` class to be called is extended (see <<composite-name-lookup>>).
 * A function can be _recursive_.
-* A formal parameter or local variable may be initialized through a _binding_ (=) of a default value in its declaration (see <<initialization-and-binding-equations-of-components-in-functions>>).
+* A formal parameter or local variable may be initialized through a _binding_ (=) of a default value in its declaration (see <<initialization-and-binding-equations>>).
   If a non-input component in the function uses a record class that contain one or more binding equations they are viewed as initialization of those component of the record component.
 * A function is dynamically instantiated when it is called rather than being statically instantiated by an instance declaration, which is the case for other kinds of classes.
 * A function may have an external function interface specifier as its body.
 * A function may have a `return` statement in its algorithm section body.
-* A function allows dimension sizes declared with colon (`:`) to be resized for non-input array variables (see <<flexible-array-sizes-and-resizing-of-arrays-in-functions>>).
+* A function allows dimension sizes declared with colon (`:`) to be resized for non-input array variables (see <<flexible-array-sizes-and-resizing-of-arrays>>).
 * A function may be defined in a short function definition to be a function partial derivative.
 
 === Pure Modelica Functions
@@ -293,7 +293,7 @@ algorithm
 
 === Function Call
 
-Function classes and record constructors (see <<record-constructor-functions>>) and enumeration type conversions (see <<type-conversion-of-integer-to-enumeration-values>>) can be called as described in this section.
+Function classes and record constructors (see <<record-constructor-functions>>) and enumeration type conversions (see <<conversion-of-integer-to-enumeration>>) can be called as described in this section.
 
 ==== Positional or Named Input Arguments
 
@@ -427,7 +427,7 @@ end quadrature2;
 
 ===== Function Partial Application
 
-A function partial application is similar to a function call with certain formal parameters bound to expressions, the specific rules are specified in this section and are not identical to the ones for function call in <<positional-or-named-input-arguments-of-functions>>.
+A function partial application is similar to a function call with certain formal parameters bound to expressions, the specific rules are specified in this section and are not identical to the ones for function call in <<positional-or-named-input-arguments>>.
 A function partial application returns a partially evaluated function that is also a function, with the remaining not bound formal parameters still present in the same order as in the original function declaration.
 A function partial application is specified by the `function` keyword followed by a function call to `func_name` giving named formal parameter associations for the formal parameters to be bound, e.g.:
 [source,modelica]
@@ -604,7 +604,7 @@ These bindings must be executed in an order where a variable is not used before 
 Binding equations can only be used for components of a function.
 If no binding equation is given for a non-input component the variable is uninitialized (except for record components where modifiers may also initialize that component).
 It is an error to use (or return) an uninitialized variable in a function.
-Binding equations for input formal parameters are interpreted as default arguments, as described in <<positional-or-named-input-arguments-of-functions>>.
+Binding equations for input formal parameters are interpreted as default arguments, as described in <<positional-or-named-input-arguments>>.
 
 [NOTE]
 It is recommended to check for use of uninitialized variables statically -- if this is not possible a warning is recommended combined with a run-time check.

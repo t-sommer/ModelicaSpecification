@@ -311,6 +311,7 @@ Functions may be called with either named or positional arguments, and thus both
 If a function is redeclared, see <<redeclaration>>, any new arguments must have defaults (and be at the end) in order to preserve the meaning of existing calls.
 
 [definition]
+[[function-compatibility]]
 .Function-compatibility or function-subtyping for functions
 A `function` class `A` is _function-compatible with or a function subtype of_ `function` class `B` iff (the terms _function-compatible_ and _function subtype_ of are synonyms and used interchangeably):
 

@@ -18,8 +18,8 @@ Expressions can contain basic operations, `+`, `-`, `*`, `/`, `^`, etc. with nor
 The semantics of the operations is defined for both scalar and array arguments in <<scalar-vector-matrix-and-array-operator-functions>>.
 
 It is also possible to define functions and call them in a normal fashion.
-The function call syntax for both positional and named arguments is described in <<positional-or-named-input-arguments-of-functions>> and for vectorized calls in <<initialization-and-binding-equations-of-components-in-functions>>.
-The built-in array functions are given in <<array-dimension-lower-and-upper-index-bounds>> and other built-in operators in <<built-in-intrinsic-operators-with-function-syntax>>.
+The function call syntax for both positional and named arguments is described in <<positional-or-named-input-arguments>> and for vectorized calls in <<initialization-and-binding-equations>>.
+The built-in array functions are given in <<lower-and-upper-index-bounds>> and other built-in operators in <<built-in-intrinsic-operators-with-function-syntax>>.
 
 === Operator Precedence and Associativity
 
@@ -211,7 +211,7 @@ Modelica supports the standard set of relational and logical operators, all of w
 |`<>` |Inequality
 |===
 
-A single equals sign `=` is never used in relational expressions, only in equations (see <<equations>>, <<equality-and-assignment>>) and in function calls using named parameter passing (see <<positional-or-named-input-arguments-of-functions>>).
+A single equals sign `=` is never used in relational expressions, only in equations (see <<equations>>, <<equality-and-assignment>>) and in function calls using named parameter passing (see <<positional-or-named-input-arguments>>).
 
 The following logical operators are defined:
 
@@ -450,7 +450,7 @@ For any enumeration type `EnumTypeName`, returns the enumeration value `EnumType
 Refer to the definition of `Integer` above.
 
 It is an error to attempt to convert values of `i` that do not correspond to values of the enumeration type.
-See also <<type-conversion-of-integer-to-enumeration-values>>.
+See also <<conversion-of-integer-to-enumeration>>.
 
 ===== String
 [source,modelica]
