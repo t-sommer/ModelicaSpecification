@@ -156,8 +156,8 @@ The `promote` function listed below is utilized to define other array operators 
 |`promote(A, n)` |Append dimensions of size 1 |<<modelica:promote>>
 |===
 
-[float]
-[promote]
+[[modelica:promote]]
+promote::
 [source,modelica]
 ----
 promote(A, n)
@@ -194,16 +194,16 @@ Boolean check[3, 4] = fill(true, 3, 4);
 |`size(A)` |Sizes of all array dimensions |<<modelica:size-vector>>
 |===
 
-[float]
-[ndims]
+[[modelica:ndims]]
+ndims::
 [source,modelica]
 ----
 ndims(A)
 ----
 Returns the number of dimensions k of expression A, with k >= 0.
 
-[float]
-[size]
+[[modelica:size-of-dim]]
+size::
 [source,modelica]
 ----
 size(A, i)
@@ -212,8 +212,8 @@ Returns the size of dimension i of array expression A where 1 <= i <= ndims(A).
 
 If A refers to a component of an expandable connector, then the component must be a declared component of the expandable connector, and it must not use colon (`:`) to specify the array size of dimension i.
 
-[float]
-[size]
+[[modelica:size-vector]]
+size::
 [source,modelica]
 ----
 size(A)
@@ -232,8 +232,8 @@ If A refers to a component of an expandable connector, then the component must b
 |`matrix(A)` |Two-dimensional array |<<modelica:matrix>>
 |===
 
-[float]
-[scalar]
+[[modelica:scalar]]
+scalar::
 [source,modelica]
 ----
 scalar(A)
@@ -241,16 +241,16 @@ scalar(A)
 Returns the single element of array A.
 size(A, i) = 1 is required for 1 <= i <= ndims(A).
 
-[float]
-[vector]
+[[modelica:vector]]
+vector::
 [source,modelica]
 ----
 vector(A)
 ----
 Returns a 1-vector if A is a scalar, and otherwise returns a vector containing all the elements of the array, provided there is at most one dimension size > 1.
 
-[float]
-[matrix]
+[[modelica:matrix]]
+matrix::
 [source,modelica]
 ----
 matrix(A)
