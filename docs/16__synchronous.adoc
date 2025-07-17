@@ -154,16 +154,18 @@ They are not callable in functions.
 
 The overloaded constructors listed below are available to generate clocks, and it is possible to call them with the specified named arguments, or with positional arguments (according to the order shown in the details after the table).
 
-[cols="l,l,l",options="header"]
+[cols="a,a,a",options=autowidth]
 |===
-|Expression |Description |Details
-|`Clock()` |Inferred clock |<<modelica:clock-inferred>>
+|Expression                           |Description             |Details
+
+|`Clock()`                            |Inferred clock          |<<modelica:clock-inferred>>
 |`Clock(intervalCounter, resolution)` |Rational interval clock |<<modelica:clock-rational>>
-|`Clock(interval)` |Real interval clock |<<modelica:clock-interval>>
-|`Clock(condition, startInterval)` |Event clock |<<modelica:clock-event>>
-|`Clock(c, solverMethod)` |Solver clock |<<modelica:clock-solver>>
+|`Clock(interval)`                    |Real interval clock     |<<modelica:clock-interval>>
+|`Clock(condition, startInterval)`    |Event clock             |<<modelica:clock-event>>
+|`Clock(c, solverMethod)`             |Solver clock            |<<modelica:clock-solver>>
 |===
 
+[[modelica:clock-inferred]]
 Clock()::
 +
 [NOTE]
@@ -183,6 +185,7 @@ end when;
 Note, in most cases, the operator is not needed and equations could be written without a `when`-clause (but not in the example above, since the `print` statement is otherwise not associated to a clock).
 This style is useful if a modeler would clearly like to mark the equations that must belong to one clock (although a tool could figure this out as well, if the `when`-clause is not present).
 
+[[modelica:clock-rational]]
 Clock(intervalCounter, resolution)::
 +
 [NOTE]
@@ -225,6 +228,7 @@ equation
 Note that operator `interval(c)` of `Clock c = Clock(nextInterval, resolution)` returns:
 `previous(intervalCounter) / resolution` (in seconds)
 
+[[modelica:clock-interval]]
 Clock(interval)::
 +
 [NOTE]
@@ -244,6 +248,7 @@ The given interval and time shift can be modified by using the `subSample`, `sup
 There are restrictions where this operator can be used, see `Clock` expressions below.
 Note that interval does not have to an evaluable expression, since different real interval clocks are never compared.
 
+[[modelica:clock-event]]
 Clock(condition, startInterval)::
 +
 [NOTE]
@@ -278,6 +283,7 @@ This is because both the event clock and sample introduce a delay of one event i
 [NOTE]
 The implicitly given interval and time shift can be modified by using the `subSample`, `superSample`, `shiftSample` and `backSample` operators on the returned clock, see <<sub-clock-conversion-operators>>, provided the base interval is not smaller than the implicitly given interval.
 
+[[modelica:clock-solver]]
 Clock(c, solverMethod)::
 +
 [NOTE]
@@ -358,12 +364,14 @@ A component expression which is not a parameter, and to which `previous` has bee
 
 The previous value of a clocked variable can be accessed with the `previous` operator, listed below.
 
-[cols="l,l,l",options="header"]
+[cols="a,a,a",options=autowidth]
 |===
-|Expression |Description |Details
+|Expression    |Description                        |Details
+
 |`previous(u)` |Previous value of clocked variable |<<modelica:previous>>
 |===
 
+[[modelica:previous]]
 previous(u)::
 +
 The input argument u is a component expression (see <<component-expression>>).
@@ -386,13 +394,15 @@ A set of *clock conversion operators* together act as boundaries between differe
 
 The operators listed below convert between a clocked and an unclocked representation and vice versa.
 
-[cols="l,l,l",options="header"]
+[cols="a,a,a",options=autowidth]
 |===
-|Expression |Description |Details
-|`sample(u, clock)` |Sample unclocked expression |<<modelica:clocked-sample>>
-|`hold(u)` |Zeroth order hold of clocked-time variable |<<modelica:hold>>
+|Expression         |Description                                |Details
+
+|`sample(u, clock)` |Sample unclocked expression                |<<modelica:clocked-sample>>
+|`hold(u)`          |Zeroth order hold of clocked-time variable |<<modelica:hold>>
 |===
 
+[[modelica:clocked-sample]]
 sample(u, clock)::
 +
 Input argument u is in an unclocked base-partition, and there are no variability restrictions, i.e., it is continuous-time according to <<continuous-time-and-non-discrete-time-expressions>>.
@@ -412,6 +422,7 @@ Note that `sample` is an overloaded function:
 If `sample` has two positional input arguments and the second argument is of type `Real`, it is the operator from <<event-related-operators-with-function-syntax>>.
 If `sample` has one input argument, or it has two input arguments and the second argument is of type `Clock`, it is the base-clock conversion operator from this section.
 
+[[modelica:hold]]
 hold(u)::
 +
 Input argument u is a clocked (see <<clocked-variable>>) component expression (see <<component-expression>>) or a parameter expression.
@@ -452,14 +463,15 @@ In such a scenario, accessing the left limit of `u` in `sample(u)` just means to
 
 The operators listed below convert between synchronous clocks.
 
-[cols="l,l,l",options="header"]
+[cols="a,a,a",options=autowidth]
 |===
-|Expression |Description |Details
-|`subSample(u, factor)` |Clock that is slower by a factor  |<<modelica:subSample>>
-|`superSample(u, factor)` |Clock that is faster by a factor  |<<modelica:superSample>>
-|`shiftSample(u, shiftCounter, resolution)` |Clock with time-shifted ticks |<<modelica:shiftSample>>
-|`backSample(u, backCounter, resolution)` |Inverse of `shiftSample` |<<modelica:backSample>>
-|`noClock(u)` |Clock that is always inferred |<<modelica:noClock>>
+|Expression                                  |Description                      |Details
+
+|`subSample(u, factor)`                      |Clock that is slower by a factor |<<modelica:subSample>>
+|`superSample(u, factor)`                    |Clock that is faster by a factor |<<modelica:superSample>>
+|`shiftSample(u, shiftCounter, resolution)`  |Clock with time-shifted ticks    |<<modelica:shiftSample>>
+|`backSample(u, backCounter, resolution)`    |Inverse of `shiftSample`         |<<modelica:backSample>>
+|`noClock(u)`                                |Clock that is always inferred    |<<modelica:noClock>>
 |===
 
 These operators have the following properties:
@@ -477,6 +489,7 @@ If u is an expression of type `Clock`, the operator returns a `Clock` -- except 
 Named arguments can make the calls easier to understand.
 * The input arguments `shiftCounter` and `backCounter` are evaluable expressions of type `Integer` with `min = 0`.
 
+[[modelica:subSample]]
 subSample(u, factor)::
 +
 The clock of `y = subSample(u, factor)` is factor times slower than the clock of u.
@@ -484,6 +497,7 @@ At every factor ticks of the clock of u, the operator returns the value of u.
 The first activation of the clock of y coincides with the first activation of the clock of u, and then every activation of the clock of y coincides with the every factor-th activativation of the clock of u.
 If factor is not provided or is equal to zero, it is inferred, see <<sub-clock-inferencing>>.
 
+[[modelica:superSample]]
 superSample(u, factor)::
 +
 The clock of `y = superSample(u, factor)` is factor times faster than the clock of u.
@@ -505,6 +519,7 @@ Clock y3 = superSample(u, 2);  // error
 Clock y4 = superSample(y1, 5); // error
 ----
 
+[[modelica:shiftSample]]
 shiftSample(u, shiftCounter, resolution)::
 +
 The operator `c = shiftSample(u, k, resolution)` splits the interval between ticks of u into resolution equidistant intervals i.
@@ -555,6 +570,7 @@ First you `superSample` to split each sampling interval in two equal parts leadi
 Then the simple `shiftSample` removes the first three ticks giving 2.5, 3.0, 3.5, 4.0, 4.5, 5.0, 5.5, 6.0.
 And finally every other point is removed by `subSample`, and s1 ticks at 2.5, 3.5, 4.5, 5.5.
 
+[[modelica:backSample]]
 backSample(u, backCounter, resolution)::
 +
 The input argument u is either a component expression (see <<component-expression>>) or an expression of type `Clock`.
@@ -582,6 +598,7 @@ Clock y1 = shiftSample(u, 3);     // ticks: 3.0, 4.0, ...
 Clock y2 = backSample(y1, 2);     // ticks: 1.0, 2.0, ...
 ----
 
+[[modelica:noClock]]
 noClock(u)::
 +
 The clock of `y = noClock(u)` is always inferred, and u must be part of the same base-clock as y.
@@ -1000,14 +1017,60 @@ The arguments of these operators are to be used as input signals u and output si
 The solver methods (with exception of `"External"`) are defined by integrating from clock tick t_{i-1} to clock tick
 t_{i} and computing the desired variables at t_{i}, with h = t_{i} - t_{i-1} = `interval(u)` and x_{i} = x(t_{i}) (for all methods: y_i = g(x_i,u_{c,i},u_{d,i},t_i)):
 
-[cols="l,l",options="header"]
+[cols="a,<a",options=autowidth]
 |===
-|SolverMethod |Solution method
-|"ExplicitEuler" | x_{i} := x_{i-1}+h·\dot{x}_{i-1}; \dot{x}_{i} := f(x_i,u_{c,i},u_{d,i},t_i)
-|"ExplicitMidPoint2" | x_{i} := x_{i-1}+h·f(x_{i-1}+½·h·\dot{x}_{i-1},(u_{c,i-1}+u_{c,i})/2,u_{d,i-1},t_{i-1}+½·h); \dot{x}_{i} := f(x_i,u_{c,i},u_{d,i},t_i)
-|"ExplicitRungeKutta4" | k_1 := h·\dot{x}_{i-1}; k_2 := h·f(x_{i-1}+½k_1,(u_{c,i-1}+u_{c,i})/2,u_{d,i-1},t_{i-1}+½·h); k_3 := h·f(x_{i-1}+½k_2,(u_{c,i-1}+u_{c,i})/2,u_{d,i-1},t_{i-1}+½·h); k_4 := h·f(x_{i-1}+k_3,u_{c,i},u_{d,i},t_i); x_{i} := x_{i-1}+⅙·(k_1+2·k_2+2·k_3+k_4); \dot{x}_{i} := f(x_i,u_{c,i},u_{d,i},t_i)
-|"ImplicitEuler" | Equation system with unknowns: x_i, \dot{x}_i; x_{i} = x_{i-1}+h·\dot{x}_i; \dot{x}_{i} = f(x_i,u_{c,i},u_{d,i},t_i)
-|"ImplicitTrapezoid" | Equation system with unknowns: x_i, \dot{x}_i; x_{i} = x_{i-1}+½h·(\dot{x}_i+\dot{x}_{i-1}); \dot{x}_{i} = f(x_i,u_{c,i},u_{d,i},t_i)
+|SolverMethod          |Solution method
+
+|"ExplicitEuler"       
+|[latexmath]
+++++
+\begin{aligned}
+x_{i} &:= x_{i-1}+h\cdot\dot{x}_{i-1}\\
+\dot{x}_{i} &:= f(x_i,u_{c,i},u_{d,i},t_i)
+\end{aligned}
+++++
+
+|"ExplicitMidPoint2"
+|[latexmath]
+++++
+\begin{aligned}
+x_{i} &:= x_{i-1}+h\cdot f(x_{i-1}+\frac{1}{2}\cdot h \cdot\dot{x}_{i-1},\frac{u_{c,i-1}+u_{c,i}}{2},u_{d,i-1},t_{i-1}+\tfrac{1}{2}\cdot h)\\
+\dot{x}_{i} &:= f(x_i,u_{c,i},u_{d,i},t_i)
+\end{aligned}
+++++
+
+|"ExplicitRungeKutta4" 
+|[latexmath]
+++++
+\begin{aligned}
+k_1 &:= h\cdot \dot{x}_{i-1}\\
+k_2 &:= h\cdot f(x_{i-1}+\tfrac{1}{2}k_1,\frac{u_{c,i-1}+u_{c,i}}{2},u_{d,i-1},t_{i-1}+\tfrac{1}{2}\cdot h)\\
+k_3 &:= h\cdot f(x_{i-1}+\tfrac{1}{2}k_2,\frac{u_{c,i-1}+u_{c,i}}{2},u_{d,i-1},t_{i-1}+\tfrac{1}{2}\cdot h)\\
+k_4 &:= h\cdot f(x_{i-1}+k_3,u_{c,i},u_{d,i},t_i)\\
+x_{i} &:= x_{i-1}+\tfrac{1}{6}\cdot(k_1+2\cdot k_2+2\cdot k_3+k_4)\\
+\dot{x}_{i} &:= f(x_i,u_{c,i},u_{d,i},t_i)
+\end{aligned}
+++++
+
+|"ImplicitEuler"       
+|Equation system with unknowns: latexmath:[x_i, \dot{x}_i]
+[latexmath]
+++++
+\begin{aligned}
+x_{i} &= x_{i-1}+h\cdot\dot{x}_i\\
+\dot{x}_{i} &= f(x_i,u_{c,i},u_{d,i},t_i)
+\end{aligned}
+++++
+
+|"ImplicitTrapezoid"   
+|Equation system with unknowns: latexmath:[x_i, \dot{x}_i]
+[latexmath]
+++++
+\begin{aligned}
+x_{i} &= x_{i-1}+\tfrac{1}{2}h\cdot(\dot{x}_i+\dot{x}_{i-1})\\
+\dot{x}_{i} &= f(x_i,u_{c,i},u_{d,i},t_i)
+\end{aligned}
+++++
 |===
 
 The initial conditions will be used at the first tick of the clock, and the first integration step will go from the first to the second tick of the clock.
@@ -1131,15 +1194,17 @@ Instead, initialization is performed in the following way:
 
 A few additional utility operators are listed below.
 
-[cols="l,l,l",options="header"]
+[cols="a,a,a",options=autowidth]
 |===
-|Expression |Description |Details
-|`firstTick(u)` |Test for first clock tick |<<modelica:firstTick>>
-|`interval(u)` |Interval between previous and present tick |<<modelica:interval>>
+|Expression     |Description                                |Details
+
+|`firstTick(u)` |Test for first clock tick                  |<<modelica:firstTick>>
+|`interval(u)`  |Interval between previous and present tick |<<modelica:interval>>
 |===
 
 It is an error if these operators are called in the unclocked base-partition.
 
+[[modelica:firstTick]]
 firstTick(u)::
 +
 [source,modelica]
@@ -1151,6 +1216,7 @@ This operator returns true at the first tick of the clock of the expression, in 
 The operator returns false at all subsequent ticks of the clock.
 The optional argument u is only used for clock inference, see <<clock-partitioning>>.
 
+[[modelica:interval]]
 interval(u)::
 +
 [source,modelica]

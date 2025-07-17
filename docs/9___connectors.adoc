@@ -668,16 +668,16 @@ Additionally, corresponding nodes of the virtual connection graph have to be def
 The overconstrained equation operators for connection graphs are listed below.
 Here, `a` and `b` are connector instances that may be hierarchically structured, e.g., `a` may be an abbreviation for `enginePort.frame_a`.
 
-[cols="1,1,1"]
+[cols="a,a,a",options=autowidth]
 |===
-|Expression |Description |Details
+|Expression                             |Description                           |Details
 
-| `connect(a, b)` | Optional spanning-tree edge | See below
-| `Connections.branch(a.R, b.R)` | Required spanning-tree edge | See below
-| `Connections.root(a.R)` | Definite root node | See below
-| `Connections.potentialRoot(a.R, ...)` | Potential root node | See below
-| `Connections.isRoot(a.R)` | Predicate for being selected as root | See below
-| `Connections.rooted(a.R)` | Predicate for being closer to root | See below
+| `connect(a, b)`                       | Optional spanning-tree edge          | See below
+| `Connections.branch(a.R, b.R)`        | Required spanning-tree edge          | See below
+| `Connections.root(a.R)`               | Definite root node                   | See below
+| `Connections.potentialRoot(a.R, ...)` | Potential root node                  | See below
+| `Connections.isRoot(a.R)`             | Predicate for being selected as root | See below
+| `Connections.rooted(a.R)`             | Predicate for being closer to root   | See below
 |===
 
 - `connect(a, b)`: Defines an optional spanning-tree edge from the overdetermined type or record instances in connector `a` to the corresponding overdetermined type or record instances in connector `b` for a virtual connection graph.

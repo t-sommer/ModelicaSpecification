@@ -35,23 +35,25 @@ One and only one instance in each state machine must be marked as initial by app
 
 The special kinds of connect-like equations listed below are used to define a state machine.
 
-[cols="1,2,2",options="header"]
+[cols="a,a,a",options=autowidth]
 |===
-|Expression |Description |Details
+|Expression                             |Description                             |Details
+
 |`transition(from, to, condition, ...)` |State machine transition between states |<<transition>>
-|`initialState(state)` |State machine initial state |<<initialState>>
+|`initialState(state)`                  |State machine initial state             |<<initialState>>
 |===
 
 The `transition` and `initialState` equations can only be used in equations, and cannot be used inside `if`-equations with conditions that are not parameter expressions, or in `when`-equations.
 
 The operators listed below are used to query the status of the state machine.
 
-[cols="1,2,2",options="header"]
+[cols="a,a,a",options=autowidth]
 |===
-|Expression |Description |Details
+|Expression           |Description                |Details
+
 |`activeState(state)` |Predicate for active state |<<activeState>>
-|`ticksInState()` |Ticks since activation |<<ticksInState>>
-|`timeInState()` |Time since activation |<<timeInState>>
+|`ticksInState()`     |Ticks since activation     |<<ticksInState>>
+|`timeInState()`      |Time since activation      |<<timeInState>>
 |===
 
 [[transition]]

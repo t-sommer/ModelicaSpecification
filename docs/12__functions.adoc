@@ -976,14 +976,16 @@ The annotations listed below are related to differentiation and closed-form inve
 A function declaration can have `derivative` annotations specifying derivative functions or preferably, for a function written in Modelica, use the `smoothOrder` annotation to indicate that the tool can construct the derivative function automatically.
 Partial derivatives are not provided via annotations, but using a certain type of short function definition described in <<partial-derivatives-of-functions>>.
 
-[cols="l,l,l",options="header"]
+[cols="a,a,a",options=autowidth]
 |===
-|Annotation |Description |Details
+|Annotation    |Description                   |Details
+
 |`smoothOrder` |Function smoothness guarantee |<<modelica:smoothOrder>>
-|`derivative` |Provide function derivative |<<modelica:derivative>>
-|`inverse` |Provide closed-form inverses |<<modelica:inverse>>
+|`derivative`  |Provide function derivative   |<<modelica:derivative>>
+|`inverse`     |Provide closed-form inverses  |<<modelica:inverse>>
 |===
 
+[[modelica:smoothOrder]]
 smoothOrder Annotation::
 +
 [source,grammar]
@@ -1020,6 +1022,7 @@ Based on the actual arguments of the function call either of the two derivative 
 +
 This annotation is used by many functions of the `Modelica.Fluid` library, such as `Modelica.Fluid.Dissipation.PressureLoss.StraightPipe.dp_laminar_DP`, since geometric arguments to these functions are usually constant.
 
+[[modelica:derivative]]
 derivative Annotation::
 +
 [source,grammar]
@@ -1046,6 +1049,7 @@ Specifying `order` is only considered a restriction if `order > 1`.
 +
 For details abouts using the `derivative` annotation, see <<using-the-derivative-annotation>>.
 
+[[modelica:inverse]]
 inverse Annotation::
 +
 [source,grammar]
@@ -1551,20 +1555,22 @@ where the requirement y > 0 can no longer be detected, resulting in a simulation
 The annotations listed below affect inlining of functions and the related topic of event generation inside functions.
 See <<notation-for-annotation-definitions>> regarding the notation used to describe the annotations.
 
-[cols="l,l,l",options="header"]
+[cols="a,a,a",options=autowidth]
 |===
-|Annotation |Description |Details
-|`Inline` |Inline function |<<modelica:Inline>>
-|`LateInline` |Inline after all symbolic transformations |<<modelica:LateInline>>
-|`InlineAfterIndexReduction` |Inline after index reduction |<<modelica:InlineAfterIndexReduction>>
-|`GenerateEvents` |Generate events for zero crossings in function |<<modelica:GenerateEvents>>
+|Annotation                  |Description                                    |Details
+
+|`Inline`                    |Inline function                                |<<inline>>
+|`LateInline`                |Inline after all symbolic transformations      |<<late-inline>>
+|`InlineAfterIndexReduction` |Inline after index reduction                   |<<inline-after-index-reduction>>
+|`GenerateEvents`            |Generate events for zero crossings in function |<<generate-events>>
 |===
 
 Inlining a function makes the statements of the function body accessible to symbolic operations, potentially leading to expression simplifications and more efficient solution of equations.
 At the same time, another important consequence of inlining a function is that any annotations for derivatives or inverses are lost.
 Hence, one needs to find the right balance between inlining too early (loss of provided derivatives and inverses) and too late (earlier stages of symbolic processing cannot benefit from symbolic simplifications).
 
-Inline Annotation::
+[[inline]]
+Inline::
 +
 [source,modelica]
 ----
@@ -1583,7 +1589,8 @@ The default for inlining is tool-specific.
 [NOTE]
 `Inline = true` is for example used in `Modelica.Mechanics.MultiBody.Frames` and in functions of `Modelica.Media` to have no overhead for function calls such as resolving a vector in a different coordinate system and at the same time the function can be analytically differentiated, e.g., for index reduction needed for mechanical systems.
 
-LateInline Annotation::
+[[late-inline]]
+LateInline::
 +
 [source,modelica]
 ----
@@ -1612,7 +1619,8 @@ In particular, tools may automatically delay inlining in order to take advantage
 This annotation is for example used in `Modelica.Media.Water.IF97_Utilities.T_props_ph` to provide in combination with common subexpression elimination the automatic caching of function calls.
 Furthermore, it is used in order that a tool is able to propagate specific enthalpy over connectors in the `Modelica.Fluid` library.
 
-InlineAfterIndexReduction Annotation::
+[[inline-after-index-reduction]]
+InlineAfterIndexReduction::
 +
 [source,modelica]
 ----
@@ -1627,7 +1635,7 @@ The default is to not perform this specific inlining.
 This annotation cannot be combined with annotations `Inline` and `LateInline`.
 
 [[generate-events]]
-GenerateEvents Annotation::
+GenerateEvents::
 +
 [source,modelica]
 ----
@@ -1728,14 +1736,15 @@ Protected variables (i.e., temporaries) are passed in the same way as outputs, w
 
 Arguments of *simple* types are by default mapped as follows for C:
 
-[cols="l,l,l",options="header"]
+[cols="a,a,a",options=autowidth]
 |===
-|Modelica |C Input |C Output
-|`Real` |`double` |`double *`
-|`Integer` |`int` |`int *`
-|`Boolean` |`int` |`int *`
-|`String` |`const char *` |`const char **`
-|Enumeration type |`int` |`int *`
+|Modelica         |C Input        |C Output
+
+|`Real`           |`double`       |`double *`
+|`Integer`        |`int`          |`int *`
+|`Boolean`        |`int`          |`int *`
+|`String`         |`const char *` |`const char **`
+|Enumeration type |`int`          |`int *`
 |===
 
 An exception is made when the argument is of the form `size(..., ...)`.
@@ -1761,14 +1770,15 @@ It is recommended that the C function should interpret any non-zero value as tru
 
 Arguments of simple types are by default mapped as follows for FORTRAN 77:
 
-[cols="l,l,l",options="header"]
+[cols="a,a,a",options=autowidth]
 |===
-|Modelica |FORTRAN 77 Input |FORTRAN 77 Output
-|`Real` |`DOUBLE PRECISION` |`DOUBLE PRECISION`
-|`Integer` |`INTEGER` |`INTEGER`
-|`Boolean` |`LOGICAL` |`LOGICAL`
-|`String` |Special |Not available
-|Enumeration type |`INTEGER` |`INTEGER`
+|Modelica         |FORTRAN 77 Input   |FORTRAN 77 Output
+
+|`Real`           |`DOUBLE PRECISION` |`DOUBLE PRECISION`
+|`Integer`        |`INTEGER`          |`INTEGER`
+|`Boolean`        |`LOGICAL`          |`LOGICAL`
+|`String`         |Special            |Not available
+|Enumeration type |`INTEGER`          |`INTEGER`
 |===
 
 Sending string literals to FORTRAN 77 subroutines/functions is supported for LAPACK/BLAS-routines, and the strings are NUL-terminated for compatibility with C.
@@ -1794,23 +1804,25 @@ The table below shows the mapping of an array argument in the absence of an expl
 The type `T` is allowed to be any of the simple types which can be passed to C as defined in <<simple-types>> or a record type as defined in <<records>> and it is mapped to the type T' as defined in these sections for input arguments.
 Array inputs to C-functions are const-pointers, indicating that the arrays shall not be changed.
 
-[cols="l,l,l",options="header"]
+[cols="a,a,a",options=autowidth]
 |===
-|Modelica |C Input |C Output
-|`T[dim1]` |`const T' *, size_t dim1` |`T' *, size_t dim1`
+|Modelica        |C Input                                |C Output
+
+|`T[dim1]`       |`const T' *, size_t dim1`              |`T' *, size_t dim1`
 |`T[dim1, dim2]` |`const T' *, size_t dim1, size_t dim2` |`T' *, size_t dim1, size_t dim2`
-|`T[..., dimn]` |`const T' *, ..., size_t dimn` |`T' *, ..., size_t dimn`
+|`T[..., dimn]`  |`const T' *, ..., size_t dimn`         |`T' *, ..., size_t dimn`
 |===
 
 The method used to pass array arguments to FORTRAN 77 functions in the absence of an explicit external function call is similar to the one defined above for C: first the address of the array, then the dimension sizes as integers.
 See the table below.
 The type `T` is allowed to be any of the simple types which can be passed to FORTRAN 77 as defined in <<simple-types>> and it is mapped to the type T' as defined in that section.
 
-[cols="l,l",options="header"]
+[cols="a,a",options=autowidth]
 |===
-|Modelica |FORTRAN 77 Input and output
-|`T[dim1]` |`T', INTEGER dim1`
-|`T[dim1, dim2]` |`T', INTEGER dim1, INTEGER dim2`
+|Modelica             |FORTRAN 77 Input and output
+
+|`T[dim1]`            |`T', INTEGER dim1`
+|`T[dim1, dim2]`      |`T', INTEGER dim1, INTEGER dim2`
 |`T[dim1, ..., dimn]` |`T', INTEGER dim1, ..., INTEGER dimn`
 |===
 
@@ -1937,16 +1949,17 @@ In the case of an external function not returning anything, argument type mappin
 
 Return types are by default mapped as follows for C and FORTRAN 77:
 
-[cols="l,l,l",options="header"]
+[cols="a,a,a",options=autowidth]
 |===
-|Modelica |C |FORTRAN 77
-|`Real`    |`double`      |`DOUBLE PRECISION`
-|`Integer` |`int`         |`INTEGER`
-|`Boolean` |`int`         |`LOGICAL`
-|`String`  |`const char*` |Not allowed
-|`T[dim1, ..., dimn]` |Not allowed |Not allowed
-|Enumeration type    |`int`         |`INTEGER`
-|Record              |See <<records>> |Not allowed
+|Modelica             |C               |FORTRAN 77
+
+|`Real`               |`double`        |`DOUBLE PRECISION`
+|`Integer`            |`int`           |`INTEGER`
+|`Boolean`            |`int`           |`LOGICAL`
+|`String`             |`const char*`   |Not allowed
+|`T[dim1, ..., dimn]` |Not allowed     |Not allowed
+|Enumeration type     |`int`           |`INTEGER`
+|Record               |See <<records>> |Not allowed
 |===
 
 The element type `T` of an array can be any simple type as defined in <<simple-types>> or, for C, a record type is returned as a value of the record type defined in <<records>>.
@@ -2325,18 +2338,19 @@ Instead, an external library project may contain its own instance of ModelicaUti
 
 The functions listed below produce a message in different ways.
 
-[cols="l,l,l",options="header"]
+[cols="a,a,a",options=autowidth]
 |===
-|Expression |Description |Details
-|`ModelicaMessage(string)` |Message with fixed string |<<modelica:ModelicaMessage-et-al>>
-|`ModelicaWarning(string)` |Warning with fixed string |<<modelica:ModelicaMessage-et-al>>
-|`ModelicaError(string)` |Error with fixed string |<<modelica:ModelicaMessage-et-al>>
-|`ModelicaFormatMessage(format, ...)` |Message with printf style formatting |<<modelica:ModelicaFormatMessage-et-al>>
-|`ModelicaFormatWarning(format, ...)` |Warning with printf style formatting |<<modelica:ModelicaFormatMessage-et-al>>
-|`ModelicaFormatError(format, ...)` |Error with printf style formatting |<<modelica:ModelicaFormatMessage-et-al>>
+|Expression                           |Description                           |Details
+
+|`ModelicaMessage(string)`            |Message with fixed string             |<<modelica:ModelicaMessage-et-al>>
+|`ModelicaWarning(string)`            |Warning with fixed string             |<<modelica:ModelicaMessage-et-al>>
+|`ModelicaError(string)`              |Error with fixed string               |<<modelica:ModelicaMessage-et-al>>
+|`ModelicaFormatMessage(format, ...)` |Message with printf style formatting  |<<modelica:ModelicaFormatMessage-et-al>>
+|`ModelicaFormatWarning(format, ...)` |Warning with printf style formatting  |<<modelica:ModelicaFormatMessage-et-al>>
+|`ModelicaFormatError(format, ...)`   |Error with printf style formatting    |<<modelica:ModelicaFormatMessage-et-al>>
 |`ModelicaVFormatMessage(format, ap)` |Message with vprintf style formatting |<<modelica:ModelicaVFormatMessage-et-al>>
 |`ModelicaVFormatWarning(format, ap)` |Warning with vprintf style formatting |<<modelica:ModelicaVFormatMessage-et-al>>
-|`ModelicaVFormatError(format, ap)` |Error with vprintf style formatting |<<modelica:ModelicaVFormatMessage-et-al>>
+|`ModelicaVFormatError(format, ap)`   |Error with vprintf style formatting   |<<modelica:ModelicaVFormatMessage-et-al>>
 |===
 
 The *Message*-functions only produce the message, but the *Warning*- and *Error*-functions combine this with error handling as follows.
@@ -2345,6 +2359,7 @@ The *Warning*-functions view the message as a warning and can skip duplicated me
 
 The *Error*-functions never return to the calling function, but handle the error similarly to an `assert` with `level = AssertionLevel.Error` in the Modelica code.
 
+[[modelica:ModelicaMessage-et-al]]
 .Functions
 [source,c]
 ----
@@ -2355,6 +2370,7 @@ void ModelicaError(const char* string);
 
 Output the fixed message string (no format control).
 
+[[modelica:ModelicaFormatMessage-et-al]]
 .Functions
 [source,c]
 ----
@@ -2365,6 +2381,7 @@ void ModelicaFormatError(const char* format, ...);
 
 Output the message under the same format control as the C function `printf`.
 
+[[modelica:ModelicaVFormatMessage-et-al]]
 .Functions
 [source,c]
 ----
@@ -2379,13 +2396,13 @@ Output the message under the same format control as the C function `vprintf`.
 
 The functions listed below are related to string allocation.
 
-[cols="l,l,l",options="header"]
+[cols="a,a,a",options=autowidth]
 |===
-|Expression |Description |Details
-|`ModelicaAllocateString(len)` |Allocate or error |<<modelica:ModelicaAllocateString>>
-|`ModelicaAllocateStringWithErrorReturn(len)` |Allocate or null |<<modelica:ModelicaAllocateStringWithErrorReturn>>
-|`ModelicaDuplicateString(str)` |Duplicate or error |<<modelica:ModelicaDuplicateString>>
-|`ModelicaDuplicateStringWithErrorReturn(str)` |Duplicate or null |<<modelica:ModelicaDuplicateStringWithErrorReturn>>
+|Expression                                    |Description        |Details
+|`ModelicaAllocateString(len)`                 |Allocate or error  |<<modelica:ModelicaAllocateString>>
+|`ModelicaAllocateStringWithErrorReturn(len)`  |Allocate or null   |<<modelica:ModelicaAllocateStringWithErrorReturn>>
+|`ModelicaDuplicateString(str)`                |Duplicate or error |<<modelica:ModelicaDuplicateString>>
+|`ModelicaDuplicateStringWithErrorReturn(str)` |Duplicate or null  |<<modelica:ModelicaDuplicateStringWithErrorReturn>>
 |===
 
 As described in <<simple-types>>, an external function wanting to return a newly constructed string must allocate this string with one of the string allocation functions in this section.
@@ -2396,6 +2413,7 @@ The string allocation functions can also be used to allocate temporary strings t
 [NOTE]
 Memory that is not passed to the Modelica simulation environment, such as memory that is freed before leaving the function, or in an `ExternalObject`, see <<external-objects>>, may be allocated with the standard C mechanisms, like `malloc`.
 
+[[modelica:ModelicaAllocateString]]
 .Function
 [source,c]
 ----
@@ -2405,6 +2423,7 @@ char* ModelicaAllocateString(size_t len);
 Allocates len+1 characters, and sets the last one to NUL.
 If an error occurs, this function does not return, but calls `ModelicaError`.
 
+[[modelica:ModelicaAllocateStringWithErrorReturn]]
 .Function
 [source,c]
 ----
@@ -2415,6 +2434,7 @@ Same as `ModelicaAllocateString`, except that in case of error, the function ret
 This allows the external function to close files and free other open resources in case of error.
 After cleaning up resources, use `ModelicaError` or `ModelicaFormatError` to signal the error.
 
+[[modelica:ModelicaDuplicateString]]
 .Function
 [source,c]
 ----
@@ -2424,6 +2444,7 @@ char* ModelicaDuplicateString(const char* str);
 Returns a writeable duplicate of the NUL-terminated string str.
 If an error occurs, this function does not return, but calls `ModelicaError`.
 
+[[modelica:ModelicaDuplicateStringWithErrorReturn]]
 .Function
 [source,c]
 ----

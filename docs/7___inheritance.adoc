@@ -120,9 +120,10 @@ The eventual headings `protected` and `public` from the base class do not affect
 
 Since specialized classes of different kinds have different properties, see <<specialized-classes>>, only specialized classes that are _in some sense compatible_ to each other can be derived from each other via inheritance.
 
-[cols="1,1,1,1,1,1,1,1,1,1,1,1,1",options="header"]
+[cols="13*^a",options=autowidth]
 |===
-|Derived Class |package |operator |function |operator function |type |record |operator record |expandable connector |connector |block |model |class
+|Derived Class |pack-age |oper-ator |func-tion |opera-tor func-tion |type |re-cord |opera-tor record |expan-dable con-nector |con-nector |block |mo-del |class
+
 |package |yes | | | | | | | | | | |yes
 |operator | |yes | | | | | | | | | |yes
 |function | | |yes | | | | | | | | |yes
@@ -344,18 +345,19 @@ This is known as merging of modifications: merge((b = 66), (b = 6)) becomes (b =
 
 A flattening of class `C4` will give an object with the following variables:
 
-[cols="1,1",options="header"]
+[cols="a,a",options=autowidth]
 |===
 |Variable |Default value
-|x1 |none
-|x2 |22
-|x3.a |33
-|x4.b |4
-|x4.c |44
-|x5.a |x3.a
-|a |55
-|b |66
-|c |77
+
+|`x1`       |`none`
+|`x2`       |`22`
+|`x3.a`     |`33`
+|`x4.b`     |`4`
+|`x4.c`     |`44`
+|`x5.a`     |`x3.a`
+|`a`        |`55`
+|`b`        |`66`
+|`c`        |`77`
 |===
 
 ==== Single Modification

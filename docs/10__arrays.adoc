@@ -49,7 +49,7 @@ An array indexed by `Boolean` or enumeration type can only be used in the follow
 * Binding equations of the form `x1 = x2` are allowed for arrays independent of whether the index types of dimensions are subtypes of `Integer`, `Boolean`, or enumeration types.
 
 .General forms of declaration of arrays. The notation `EB` stands for an enumeration type or `Boolean`. The general array can have one or more dimensions (latexmath:[k \geq 1]).
-[cols="~,~,^~,~,~"]
+[cols="a,a,^a,a,a",options=autowidth]
 |===
 |Modelica form 1         |Modelica form 2         |# dims  |Designation |Explanation
 
@@ -93,14 +93,14 @@ Zero-valued dimensions are allowed, so: `C x[0];` declares an empty vector, and:
 Some examples of array dimensions of size one are given in the following table.
 
 .Special cases of declaration of arrays as 1-vectors, row-vectors, or column-vectors of arrays
-[cols="~,~,^~,~,~"]
+[cols="a,a,^a,a,a",options=autowidth]
 |===
 |Modelica form 1 |Modelica form 2 |# dims |Designation |Explanation
 
-|`C[1] x;`      |`C x[1];`      |1 |Vector |1-vector, representing a scalar
-|`C[1, 1] x;`   |`C x[1, 1];`   |2 |Matrix |(1 x 1)-matrix, representing a scalar
-|`C[n, 1] x;`   |`C x[n, 1];`   |2 |Matrix |(n x 1)-matrix, representing a column
-|`C[1, n] x;`   |`C x[1, n];`   |2 |Matrix |(1 x n)-matrix, representing a row
+|`C[1] x;`       |`C x[1];`       |1      |Vector      |1-vector, representing a scalar
+|`C[1, 1] x;`    |`C x[1, 1];`    |2      |Matrix      |(1 x 1)-matrix, representing a scalar
+|`C[n, 1] x;`    |`C x[n, 1];`    |2      |Matrix      |(n x 1)-matrix, representing a column
+|`C[1, n] x;`    |`C x[1, n];`    |2      |Matrix      |(1 x n)-matrix, representing a row
 |===
 
 The type of an array of array is the multidimensional array which is constructed by taking the first dimensions from the component declaration and subsequent dimensions from the maximally expanded component type.
@@ -150,9 +150,10 @@ Modelica provides a number of built-in functions that are applicable to arrays.
 
 The `promote` function listed below is utilized to define other array operators and functions.
 
-[cols="1,2,2",options="header"]
+[cols="a,a,a",options=autowidth]
 |===
-|Expression |Description |Details
+|Expression      |Description                 |Details
+
 |`promote(A, n)` |Append dimensions of size 1 |<<modelica:promote>>
 |===
 
@@ -186,12 +187,13 @@ Boolean check[3, 4] = fill(true, 3, 4);
 
 ==== Dimension and Size Functions
 
-[cols="1,2,2",options="header"]
+[cols="a,a,a",options=autowidth]
 |===
-|Expression |Description |Details
-|`ndims(A)` |Number of dimensions |<<modelica:ndims>>
+|Expression   |Description                    |Details
+
+|`ndims(A)`   |Number of dimensions           |<<modelica:ndims>>
 |`size(A, i)` |Size of single array dimension |<<modelica:size-of-dim>>
-|`size(A)` |Sizes of all array dimensions |<<modelica:size-vector>>
+|`size(A)`    |Sizes of all array dimensions  |<<modelica:size-vector>>
 |===
 
 [[modelica:ndims]]
@@ -224,12 +226,13 @@ If A refers to a component of an expandable connector, then the component must b
 
 ==== Dimensionality Conversion Functions
 
-[cols="1,2,2",options="header"]
+[cols="a,a,a",options=autowidth]
 |===
-|Expression |Description |Details
-|`scalar(A)` |Extract only element |<<modelica:scalar>>
+|Expression  |Description            |Details
+
+|`scalar(A)` |Extract only element   |<<modelica:scalar>>
 |`vector(A)` |Vector of all elements |<<modelica:vector>>
-|`matrix(A)` |Two-dimensional array |<<modelica:matrix>>
+|`matrix(A)` |Two-dimensional array  |<<modelica:matrix>>
 |===
 
 [[modelica:scalar]]
@@ -260,7 +263,7 @@ size(A, i) = 1 is required for 2 < i <= ndims(A).
 
 ==== Specialized Array Constructor Functions
 
-[cols="~,~,~"]
+[cols="a,a,a",options=autowidth]
 |===
 |Expression                 |Description                         |Details
 
@@ -351,19 +354,20 @@ The reduction functions listed below "reduce" an array (or several scalars) to o
 Note that none of these operators (particularly `min` and `max`) generate events themselves (but arguments could generate events).
 The restriction on the type of the input in <<reduction-expressions>> for reduction expressions also applies to the array elements/scalar inputs for the reduction operator with the same name.
 
-[cols="1,2,2",options="header"]
+[cols="a,a,a",options=autowidth]
 |===
-|Expression |Description |Details
-|`min(A)` |Least element of array |<<modelica:min-of-array>>
-|`min(x, y)` |Least of two scalars |<<modelica:min-binary>>
-|`min(... for ...)` |Reduction to least value |<<modelica:min-reduction>>
-|`max(A)` |Greatest element of array |<<modelica:max-of-array>>
-|`max(x, y)` |Greatest of two scalars |<<modelica:max-binary>>
-|`max(... for ...)` |Reduction to greatest value |<<modelica:max-reduction>>
-|`sum(A)` |Sum of scalar array elements |<<modelica:sum-of-array>>
-|`sum(... for ...)` |Sum reduction |<<modelica:sum-reduction>>
-|`product(A)` |Product of scalar array elements |<<modelica:product-of-array>>
-|`product(... for ...)` |Product reduction |<<modelica:product-reduction>>
+|Expression             |Description                      |Details
+
+|`min(A)`               |Least element of array           |<<modelica:min-of-array>>
+|`min(x, y)`            |Least of two scalars             |<<modelica:min-binary>>
+|`min(... for ...)`     |Reduction to least value         |<<modelica:min-reduction>>
+|`max(A)`               |Greatest element of array        |<<modelica:max-of-array>>
+|`max(x, y)`            |Greatest of two scalars          |<<modelica:max-binary>>
+|`max(... for ...)`     |Reduction to greatest value      |<<modelica:max-reduction>>
+|`sum(A)`               |Sum of scalar array elements     |<<modelica:sum-of-array>>
+|`sum(... for ...)`     |Sum reduction                    |<<modelica:sum-reduction>>
+|`product(A)`           |Product of scalar array elements |<<modelica:product-of-array>>
+|`product(... for ...)` |Product reduction                |<<modelica:product-reduction>>
 |===
 
 [[modelica:min-of-array]]
@@ -494,13 +498,14 @@ If function-name is `sum`, `product`, `min`, or `max` the result is of the same 
 For deduction of ranges, see <<implicit-iteration-ranges>>; and for using types as ranges see <<types-as-iteration-ranges>>.
 
 .Reduction expressions with iterators
-[cols="1,2,2",options="header"]
+[cols="a,a,a",options=autowidth]
 |===
-|Reduction |Restriction on expression1 |Result for empty expression2
-|`sum` |Integer or Real |`zeros(...)`
-|`product` |Scalar Integer or Real |1
-|`min` |Scalar enumeration, Boolean, Integer or Real |Greatest value of type
-|`max` |Scalar enumeration, Boolean, Integer or Real |Least value of type
+|Reduction |Restriction on expression1                   |Result for empty expression2
+
+|`sum`     |Integer or Real                              |`zeros(...)`
+|`product` |Scalar Integer or Real                       |1
+|`min`     |Scalar enumeration, Boolean, Integer or Real |Greatest value of type
+|`max`     |Scalar enumeration, Boolean, Integer or Real |Least value of type
 |===
 
 The least and greatest values of Real are the minimum and maximum representable finite floating point numbers of the underlying type (see also <<real-type>>).
@@ -520,14 +525,14 @@ Functions for matrix and vector algebra are listed below.
 The function `transpose` can be applied to any matrix.
 The functions `outerProduct`,  `symmetric`, `cross` and `skew` require Real vector(s) or matrix as input(s) and return a Real vector or matrix.
 
-[cols="1,2,2",options="header"]
+[cols="a,a,a",options=autowidth]
 |===
-|Expression |Description |Details
-|`transpose(A)` |Matrix transpose |<<modelica:transpose>>
-|`outerProduct(x, y)` |Vector outer product |<<modelica:outerProduct>>
-|`symmetric(A)` |Symmetric matrix, keeping upper part |<<modelica:symmetric>>
-|`cross(x, y)` |Cross product |<<modelica:cross>>
-|`skew(x)` |Skew symmetric matrix associated with vector |<<modelica:skew>>
+|Expression           |Description                                  |Details
+|`transpose(A)`       |Matrix transpose                             |<<modelica:transpose>>
+|`outerProduct(x, y)` |Vector outer product                         |<<modelica:outerProduct>>
+|`symmetric(A)`       |Symmetric matrix, keeping upper part         |<<modelica:symmetric>>
+|`cross(x, y)`        |Cross product                                |<<modelica:cross>>
+|`skew(x)`            |Skew symmetric matrix associated with vector |<<modelica:skew>>
 |===
 
 transpose::
@@ -817,21 +822,22 @@ v[{1, 1}] := {2, 3}; // Same as: v[1] := 3;
 If x is a vector, x[1] is a scalar, but the slice x[1:5] is a vector
 (a vector-valued or colon index expression causes a vector to be returned).
 
-.Examples of scalars vs. array slices created with the colon index
-[cols="1,1,2",options="header"]
+.Examples of scalars vs. array slices created with the colon index. The examples make use of the array variables `x[n, m]`,  `v[k]`, and  `z[i, j, p]`.
+[cols="a,^a,a",options=autowidth]
 |===
-|Expression |# dims |Description
-|`x[1, 1]`                     |0 |Scalar
-|`x[:, 1]`                     |1 |n-vector
-|`x[1, :]` or `x[1]`           |1 |m-vector
-|`v[1:p]`                      |1 |p-vector
-|`x[1:p, :]`                   |2 |p x m matrix
-|`x[1:1, :]`                   |2 |1 x m "row" matrix
-|`x[{1, 3, 5}, :]`             |2 |3 x m matrix
-|`x[:, v]`                     |2 |n x k matrix
-|`z[:, 3, :]`                  |2 |i x p matrix
-|`x[scalar([1]), :]`           |1 |m-vector
-|`x[vector([1]), :]`           |2 |1 x m "row" matrix
+|Expression                    |# dims |Description
+
+|`x[1, 1]`                     |0      |Scalar
+|`x[:, 1]`                     |1      |n-vector
+|`x[1, :]` or `x[1]`           |1      |m-vector
+|`v[1:p]`                      |1      |p-vector
+|`x[1:p, :]`                   |2      |p x m matrix
+|`x[1:1, :]`                   |2      |1 x m "row" matrix
+|`x[{1, 3, 5}, :]`             |2      |3 x m matrix
+|`x[:, v]`                     |2      |n x k matrix
+|`z[:, 3, :]`                  |2      |i x p matrix
+|`x[scalar([1]), :]`           |1      |m-vector
+|`x[vector([1]), :]`           |2      |1 x m "row" matrix
 |===
 
 ==== Boolean or Enumeration Indices
@@ -886,13 +892,14 @@ The operands need to be type equivalent.
 This is legal for the simple types and all types satisfying the requirements for a record, and is in the latter case applied to each component-element of the records.
 
 .Equality and assignment of arrays and scalars
-[cols="1,1,1,2",options="header"]
+[cols="a,a,a,a",options=autowidth]
 |===
-|Size of a |Size of b |Size of a = b |Operation
-|Scalar |Scalar |Scalar |`a = b`
-|n-vector |n-vector |n-vector |`a[j] = b[j]`
-|n x m matrix |n x m matrix |n x m matrix |`a[j, k] = b[j, k]`
-|n x m x ... |n x m x ... |n x m x ... |`a[j, k, ...] = b[j, k, ...]`
+|Size of a    |Size of b    |Size of a = b |Operation
+
+|Scalar       |Scalar       |Scalar        |`a = b`
+|n-vector     |n-vector     |n-vector      |`a[j] = b[j]`
+|n x m matrix |n x m matrix |n x m matrix  |`a[j, k] = b[j, k]`
+|n x m x ...  |n x m x ...  |n x m x ...   |`a[j, k, ...] = b[j, k, ...]`
 |===
 
 ==== Addition, Subtraction, and String Concatenation
@@ -902,33 +909,36 @@ Unary plus and minus are defined element-wise.
 Addition `a + b` of string scalars, vectors, matrices, and arrays is defined as element-wise string concatenation of corresponding elements from a and b, and require size(a) = size(b).
 
 .Array addition, subtraction, and string concatenation
-[cols="1,1,1,2",options="header"]
+[cols="a,a,a,a",options=autowidth]
 |===
-|Size of a |Size of b |Size of a ± b |Operation c := a ± b
-|Scalar |Scalar |Scalar |`c := a ± b`
-|n-vector |n-vector |n-vector |`c[j] := a[j] ± b[j]`
-|n x m matrix |n x m matrix |n x m matrix |`c[j, k] := a[j, k] ± b[j, k]`
-|n x m x ... |n x m x ... |n x m x ... |`c[j, k, ...] := a[j, k, ...] ± b[j, k, ...]`
+|Size of a    |Size of b    |Size of a ± b |Operation c := a ± b
+
+|Scalar       |Scalar       |Scalar        |`c := a ± b`
+|n-vector     |n-vector     |n-vector      |`c[j] := a[j] ± b[j]`
+|n x m matrix |n x m matrix |n x m matrix  |`c[j, k] := a[j, k] ± b[j, k]`
+|n x m x ...  |n x m x ...  |n x m x ...   |`c[j, k, ...] := a[j, k, ...] ± b[j, k, ...]`
 |===
 
 Element-wise addition `a .+ b` and subtraction `a .- b` of numeric scalars, vectors, matrices or arrays a and b requires a numeric type class for a and b and either size(a) = size(b) or scalar a or scalar b.
 Element-wise addition `a .+ b` of string scalars, vectors, matrices, and arrays is defined as element-wise string concatenation of corresponding elements from a and b, and require either size(a) = size(b) or scalar a or scalar b.
 
 .Array element-wise addition, subtraction, and string concatenation
-[cols="1,1,1,2",options="header"]
+[cols="a,a,a,a",options=autowidth]
 |===
-|Size of a |Size of b |Size of a .± b |Operation c := a .± b
-|Scalar |Scalar |Scalar |`c := a ± b`
-|Scalar |n x m x ... |n x m x ... |`c[j, k, ...] := a ± b[j, k, ...]`
-|n x m x ... |Scalar |n x m x ... |`c[j, k, ...] := a[j, k, ...] ± b`
-|n x m x ... |n x m x ... |n x m x ... |`c[j, k, ...] := a[j, k, ...] ± b[j, k, ...]`
+|Size of a   |Size of b   |Size of a .± b |Operation c := a .± b
+
+|Scalar      |Scalar      |Scalar         |`c := a ± b`
+|Scalar      |n x m x ... |n x m x ...    |`c[j, k, ...] := a ± b[j, k, ...]`
+|n x m x ... |Scalar      |n x m x ...    |`c[j, k, ...] := a[j, k, ...] ± b`
+|n x m x ... |n x m x ... |n x m x ...    |`c[j, k, ...] := a[j, k, ...] ± b[j, k, ...]`
 |===
 
 .Unary operators
-[cols="1,1,2",options="header"]
+[cols="a,a,a",options=autowidth]
 |===
-|Size of a |Size of ± a |Operation c := ± a
-|Scalar |Scalar |`c := ± a`
+|Size of a   |Size of ± a |Operation c := ± a
+
+|Scalar      |Scalar      |`c := ± a`
 |n x m x ... |n x m x ... |`c[j, k, ...] := ± a[j, k, ...]`
 |===
 
@@ -937,26 +947,28 @@ Element-wise addition `a .+ b` of string scalars, vectors, matrices, and arrays 
 Scalar multiplication `s * a` or `a * s` with numeric scalar s and numeric scalar, vector, matrix or array a is defined element-wise:
 
 .Scalar and scalar to array multiplication of numeric elements
-[cols="1,1,1,2",options="header"]
+[cols="a,a,a,a",options=autowidth]
 |===
-|Size of s |Size of a |Size of s * a and a * s |Operation c := s * a or c := a * s
-|Scalar |Scalar |Scalar |`c := s * a`
-|Scalar |n-vector |n-vector |`c[j] := s * a[j]`
-|Scalar |n x m matrix |n x m matrix |`c[j, k] := s * a[j, k]`
-|Scalar |n x m x ... |n x m x ... |`c[j, k, ...] := s * a[j, k, ...]`
+|Size of s |Size of a    |Size of s * a and a * s |Operation c := s * a or c := a * s
+
+|Scalar    |Scalar       |Scalar                  |`c := s * a`
+|Scalar    |n-vector     |n-vector                |`c[j] := s * a[j]`
+|Scalar    |n x m matrix |n x m matrix            |`c[j, k] := s * a[j, k]`
+|Scalar    |n x m x ...  |n x m x ...             |`c[j, k, ...] := s * a[j, k, ...]`
 |===
 
 Element-wise multiplication `a .* b` of numeric scalars, vectors, matrices or arrays a and b requires a numeric type class for a and b and either size(a) = size(b) or scalar a or scalar b.
 
 [[tab:product]]
 .Array element-wise multiplication
-[cols="1,1,1,2",options="header"]
+[cols="a,a,a,a",options=autowidth]
 |===
-|Size of a |Size of b |Size of a .* b |Operation c := a .* b
-|Scalar |Scalar |Scalar |`c := a * b`
-|Scalar |n x m x ... |n x m x ... |`c[j, k, ...] := a * b[j, k, ...]`
-|n x m x ... |Scalar |n x m x ... |`c[j, k, ...] := a[j, k, ...] * b`
-|n x m x ... |n x m x ... |n x m x ... |`c[j, k, ...] := a[j, k, ...] * b[j, k, ...]`
+|Size of a   |Size of b   |Size of a .* b |Operation c := a .* b
+
+|Scalar      |Scalar      |Scalar         |`c := a * b`
+|Scalar      |n x m x ... |n x m x ...    |`c[j, k, ...] := a * b[j, k, ...]`
+|n x m x ... |Scalar      |n x m x ...    |`c[j, k, ...] := a[j, k, ...] * b`
+|n x m x ... |n x m x ... |n x m x ...    |`c[j, k, ...] := a[j, k, ...] * b[j, k, ...]`
 |===
 
 ==== Multiplication of Matrices and Vectors
@@ -964,13 +976,14 @@ Element-wise multiplication `a .* b` of numeric scalars, vectors, matrices or ar
 Multiplication `a * b` of numeric vectors and matrices is defined only for the following combinations:
 
 .Matrix and vector multiplication of arrays with numeric elements
-[cols="1,1,1,2",options="header"]
+[cols="a,a,a,a",options=autowidth]
 |===
-|Size of a |Size of b |Size of a * b |Operation c := a * b
-|m-vector |m-vector |Scalar |`c := sum_{k} a[k] * b[k]`
-|m-vector |m x n matrix |n-vector |`c[j] := sum_{k} a[k] * b[k, j]`
-|l x m matrix |m-vector |l-vector |`c[i] := sum_{k} a[i, k] * b[k]`
-|l x m matrix |m x n matrix |l x n matrix |`c[i, j] := sum_{k} a[i, k] * b[k, j]`
+|Size of a    |Size of b    |Size of a * b |Operation c := a * b
+
+|m-vector     |m-vector     |Scalar        |`c := sum_{k} a[k] * b[k]`
+|m-vector     |m x n matrix |n-vector      |`c[j] := sum_{k} a[k] * b[k, j]`
+|l x m matrix |m-vector     |l-vector      |`c[i] := sum_{k} a[i, k] * b[k]`
+|l x m matrix |m x n matrix |l x n matrix  |`c[i, j] := sum_{k} a[i, k] * b[k, j]`
 |===
 
 .Examples
@@ -991,13 +1004,14 @@ The result is always of Real type.
 In order to get integer division with truncation, use the function `div`.
 
 .Division of scalars and arrays by numeric elements
-[cols="1,1,1,2",options="header"]
+[cols="a,a,a,a",options=autowidth]
 |===
-|Size of a |Size of s |Size of a / s |Operation c := a / s
-|Scalar |Scalar |Scalar |`c := a / s`
-|n-vector |Scalar |n-vector |`c[k] := a[k] / s`
-|n x m matrix |Scalar |n x m matrix |`c[j, k] := a[j, k] / s`
-|n x m x ... |Scalar |n x m x ... |`c[j, k, ...] := a[j, k, ...] / s`
+|Size of a    |Size of s |Size of a / s |Operation c := a / s
+
+|Scalar       |Scalar    |Scalar        |`c := a / s`
+|n-vector     |Scalar    |n-vector      |`c[k] := a[k] / s`
+|n x m matrix |Scalar    |n x m matrix  |`c[j, k] := a[j, k] / s`
+|n x m x ...  |Scalar    |n x m x ...   |`c[j, k, ...] := a[j, k, ...] / s`
 |===
 
 ==== Element-wise Division
@@ -1007,13 +1021,14 @@ The result is always of Real type.
 In order to get integer division with truncation, use the function `div`.
 
 .Element-wise division of arrays
-[cols="1,1,1,2",options="header"]
+[cols="a,a,a,a",options=autowidth]
 |===
-|Size of a |Size of b |Size of a ./ b |Operation c := a ./ b
-|Scalar |Scalar |Scalar |`c := a / b`
-|Scalar |n x m x ... |n x m x ... |`c[j, k, ...] := a / b[j, k, ...]`
-|n x m x ... |Scalar |n x m x ... |`c[j, k, ...] := a[j, k, ...] / b`
-|n x m x ... |n x m x ... |n x m x ... |`c[j, k, ...] := a[j, k, ...] / b[j, k, ...]`
+|Size of a   |Size of b   |Size of a ./ b |Operation c := a ./ b
+
+|Scalar      |Scalar      |Scalar         |`c := a / b`
+|Scalar      |n x m x ... |n x m x ...    |`c[j, k, ...] := a / b[j, k, ...]`
+|n x m x ... |Scalar      |n x m x ...    |`c[j, k, ...] := a[j, k, ...] / b`
+|n x m x ... |n x m x ... |n x m x ...    |`c[j, k, ...] := a[j, k, ...] / b[j, k, ...]`
 |===
 
 .Example
@@ -1046,13 +1061,14 @@ The special treatment of Integer exponents makes it possible to use x^n in a pow
 Element-wise exponentiation `a .^ b` of numeric scalars, vectors, matrices, or arrays a and b requires a numeric type class for a and b and either size(a) = size(b) or scalar a or scalar b.
 
 .Element-wise exponentiation of arrays
-[cols="1,1,1,2",options="header"]
+[cols="a,a,a,a",options=autowidth]
 |===
-|Size of a |Size of b |Size of a .^ b |Operation c := a .^ b
-|Scalar |Scalar |Scalar |`c := a ^ b`
-|Scalar |n x m x ... |n x m x ... |`c[j, k, ...] := a ^ b[j, k, ...]`
-|n x m x ... |Scalar |n x m x ... |`c[j, k, ...] := a[j, k, ...] ^ b`
-|n x m x ... |n x m x ... |n x m x ... |`c[j, k, ...] := a[j, k, ...] ^ b[j, k, ...]`
+|Size of a   |Size of b   |Size of a .^ b |Operation c := a .^ b
+
+|Scalar      |Scalar      |Scalar         |`c := a ^ b`
+|Scalar      |n x m x ... |n x m x ...    |`c[j, k, ...] := a ^ b[j, k, ...]`
+|n x m x ... |Scalar      |n x m x ...    |`c[j, k, ...] := a[j, k, ...] ^ b`
+|n x m x ... |n x m x ... |n x m x ...    |`c[j, k, ...] := a[j, k, ...] ^ b[j, k, ...]`
 |===
 
 .Example

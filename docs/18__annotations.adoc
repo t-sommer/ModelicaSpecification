@@ -384,11 +384,12 @@ These escape sequences are applied after the application of other markup, and ar
 The percent character `%` shall be encoded `%%`.
 The following are all the recognized escape sequences:
 
-[cols="c,c,l",options="header"]
+[cols="a,a,a",options=autowidth]
 |===
 |Sequence |Encoded character |Comment
-|`%%` |`%` |Only way to encode character.
-|`%]` |`]`  |Prevents termination of markup delimited by `[$\ldots$]`.
+
+|`%%`     |`%`               |Only way to encode character.
+|`%]`     |`]`               |Prevents termination of markup delimited by `[...]`.
 |===
 
 [NOTE]
@@ -411,7 +412,7 @@ This is similar to the `Text` graphical primitive in <<text>>.
 
 [[attributes-with-variable-replacements]]
 .Attributes that can use variable replacements.
-[cols="l,l",options="header"]
+[cols="a,a",options=autowidth]
 |===
 |Attribute |Annotation
 |`title`   |`Figure` and `Plot`
@@ -527,9 +528,9 @@ This is an example where the vendor-specific markup could make use of the text (
 
 The annotation listed below, in addition to annotations described in <<derivatives-and-inverses-of-functions>> through <<function-inlining-and-event-generation>>, can influence the symbolic processing.
 
-[cols="1,2,1"]
+[cols="a,a,a",options=autowidth]
 |===
-|Annotation |Description |Details
+|Annotation |Description                                 |Details
 
 |`Evaluate` |Use parameter value for symbolic processing |<<modelica:Evaluate>>
 |===
@@ -599,16 +600,16 @@ end M_non_evaluable;
 
 The annotations listed below define how models can be checked, translated, and simulated.
 
-[cols="1,2,1"]
+[cols="a,a,a",options=autowidth]
 |===
-|Annotation |Description |Details
+|Annotation   |Description |Details
 
-|`experiment` |Simulation experiment settings |<<modelica:experiment>>
+|`experiment` |Simulation experiment settings           |<<modelica:experiment>>
 |`HideResult` |Don't show component's simulation result |<<modelica:HideResult>>
-|`TestCase` |Information for model used as test case |<<modelica:TestCase>>
+|`TestCase`   |Information for model used as test case  |<<modelica:TestCase>>
 |===
 
-[#modelica:experiment]
+[[modelica:experiment]]
 .experiment
 ====
 *Synopsis*
@@ -638,7 +639,7 @@ If `StopTime` is set in a non-partial model, it is required to be a simulation m
 Tools can allow users to override these settings without modifying the model.
 ====
 
-[#modelica:HideResult]
+[[modelica:HideResult]]
 .HideResult
 ====
 *Synopsis*
@@ -663,7 +664,7 @@ By setting `HideResult = false`, the modeler would like to have the variable in 
 ====
 ====
 
-[#modelica:TestCase]
+[[modelica:TestCase]]
 .TestCase
 ====
 *Synopsis*
@@ -695,16 +696,16 @@ This annotation can both be used for models intended as test-cases for implement
 
 The annotations listed below are used to restrict the ways in which classes and instances of classes may be used.
 
-[cols="1,2,1"]
+[cols="a,a,a",options=autowidth]
 |===
-|Annotation |Description |Details
+|Annotation           |Description                               |Details
 
-|`singleInstance` |Allow at most one instance |<<modelica:singleInstance>>
-|`mustBeConnected` |Connector must be connected at least once |<<modelica:mustBeConnected>>
-|`mayOnlyConnectOnce` |Connector may at most be connected once |<<modelica:mayOnlyConnectOnce>>
+|`singleInstance`     |Allow at most one instance                |<<modelica:singleInstance>>
+|`mustBeConnected`    |Connector must be connected at least once |<<modelica:mustBeConnected>>
+|`mayOnlyConnectOnce` |Connector may at most be connected once   |<<modelica:mayOnlyConnectOnce>>
 |===
 
-[#modelica:singleInstance]
+[[modelica:singleInstance]]
 .singleInstance
 ====
 *Synopsis*
@@ -725,7 +726,7 @@ This is useful for the local classes of state machines.
 ====
 ====
 
-[#modelica:mustBeConnected]
+[[modelica:mustBeConnected]]
 .mustBeConnected
 ====
 *Synopsis*
@@ -762,7 +763,7 @@ end PartialWithSupport;
 The protected components and connections needed to internally handle the support-connector is omitted.
 ====
 
-[#modelica:mayOnlyConnectOnce]
+[[modelica:mayOnlyConnectOnce]]
 .mayOnlyConnectOnce
 ====
 *Synopsis*
@@ -1513,23 +1514,23 @@ end OnMouseDownEditString;
 
 The annotations listed below define properties for use in graphical user interfaces.
 
-[cols="1,2,1"]
+[cols="a,a,a",options=autowidth]
 |===
-|Annotation |Description |Details
+|Annotation                                  |Description                              |Details
 
-|`preferredView` |Default view when opening class |<<modelica:preferredView>>
-|`DocumentationClass` |Purpose of class is documentation |<<modelica:DocumentationClass>>
-|`defaultComponentName` |Default name for new components |<<modelica:defaultComponentName>>
-|`defaultComponentPrefixes` |Default type prefixes for new components |<<modelica:defaultComponentPrefixes>>
-|`missingInnerMessage` |Message for unresolved `outer` |<<modelica:missingInnerMessage>>
-|`absoluteValue` |Quantity is absolute |<<modelica:absoluteValue>>
-|`defaultConnectionStructurallyInconsistent` |Suppress certain verification errors |<<modelica:defaultConnectionStructurallyInconsistent>>
-|`obsolete` |Message when using obsolete class |<<modelica:obsolete>>
-|`unassignedMessage` |Hint for unmatched variable |<<modelica:unassignedMessage>>
-|`Dialog` |Setup for modifications |<<modelica:Dialog>>
+|`preferredView`                             |Default view when opening class          |<<modelica:preferredView>>
+|`DocumentationClass`                        |Purpose of class is documentation        |<<modelica:DocumentationClass>>
+|`defaultComponentName`                      |Default name for new components          |<<modelica:defaultComponentName>>
+|`defaultComponentPrefixes`                  |Default type prefixes for new components |<<modelica:defaultComponentPrefixes>>
+|`missingInnerMessage`                       |Message for unresolved `outer`           |<<modelica:missingInnerMessage>>
+|`absoluteValue`                             |Quantity is absolute                     |<<modelica:absoluteValue>>
+|`defaultConnectionStructurallyInconsistent` |Suppress certain verification errors     |<<modelica:defaultConnectionStructurallyInconsistent>>
+|`obsolete`                                  |Message when using obsolete class        |<<modelica:obsolete>>
+|`unassignedMessage`                         |Hint for unmatched variable              |<<modelica:unassignedMessage>>
+|`Dialog`                                    |Setup for modifications                  |<<modelica:Dialog>>
 |===
 
-[#modelica:preferredView]
+[[modelica:preferredView]]
 .preferredView
 ====
 *Synopsis*
@@ -1545,7 +1546,7 @@ The value `"info"` means class documentation ("information"), `"diagram"` means 
 If not specified the default view is tool-specific.
 ====
 
-[#modelica:DocumentationClass]
+[[modelica:DocumentationClass]]
 .DocumentationClass
 ====
 *Synopsis*
@@ -1566,7 +1567,7 @@ For example, the description texts of the classes might be displayed instead of 
 ====
 ====
 
-[#modelica:defaultComponentName]
+[[modelica:defaultComponentName]]
 .defaultComponentName
 ====
 *Synopsis*
@@ -1584,7 +1585,7 @@ When automatically deriving a name, any trailing '`1`' in the `defaultComponentN
 If not specified, the names of new components are tool-specific.
 ====
 
-[#modelica:defaultComponentPrefixes]
+[[modelica:defaultComponentPrefixes]]
 .defaultComponentPrefixes
 ====
 *Synopsis*
@@ -1612,7 +1613,7 @@ If the type prefixes contain `inner` or `outer` and the default name cannot be u
 ====
 ====
 
-[#modelica:missingInnerMessage]
+[[modelica:missingInnerMessage]]
 .missingInnerMessage
 ====
 *Synopsis*
@@ -1646,7 +1647,7 @@ inner replaceable World world;
 ----
 ====
 
-[#modelica:absoluteValue]
+[[modelica:absoluteValue]]
 .absoluteValue
 ====
 *Synopsis*
@@ -1674,7 +1675,7 @@ Example applications of this annotation can be found among the type definitions 
 ====
 ====
 
-[#modelica:defaultConnectionStructurallyInconsistent]
+[[modelica:defaultConnectionStructurallyInconsistent]]
 .defaultConnectionStructurallyInconsistent
 ====
 *Synopsis*
@@ -1699,7 +1700,7 @@ This annotation avoids then to show a wrong error message.
 ====
 ====
 
-[#modelica:obsolete]
+[[modelica:obsolete]]
 .obsolete
 ====
 *Synopsis*
@@ -1717,7 +1718,7 @@ This annotation is not inherited, the assumption is that if a class uses an obso
 If that is not possible the current class can have also have an `obsolete` annotation.
 ====
 
-[#modelica:unassignedMessage]
+[[modelica:unassignedMessage]]
 .unassignedMessage
 ====
 *Synopsis*
@@ -1754,7 +1755,7 @@ end Frame;
 ----
 ====
 
-[#modelica:Dialog]
+[[modelica:Dialog]]
 .Dialog
 ====
 *Synopsis*
