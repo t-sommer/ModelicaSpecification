@@ -254,20 +254,21 @@ Any character in the Modelica language character set (see <<lexical-conventions>
 Certain characters in string literals can be represented using escape sequences, i.e., the character is preceded by a backslash (`\`) within the string.
 Those characters are:
 
-[cols="1,2",options="header"]
+[cols="^a,a",options=autowidth]
 |===
 |Character |Description
-|\' |Single quote, may also appear without backslash in string constants
-|\" |Double quote
-|\? |Question-mark, may also appear without backslash in string constants
-|\\ |Backslash itself
-|\a |Alert (bell, code 7, ctrl-G)
-|\b |Backspace (code 8, ctrl-H)
-|\f |Form feed (code 12, ctrl-L)
-|\n |Newline (code 10, ctrl-J), same as literal newline
-|\r |Carriage return (code 13, ctrl-M)
-|\t |Horizontal tab (code 9, ctrl-I)
-|\v |Vertical tab (code 11, ctrl-K)
+
+|`\'` |Single quote, may also appear without backslash in string constants
+|`\"` |Double quote
+|`\?` |Question-mark, may also appear without backslash in string constants
+|`\\` |Backslash itself
+|`\a` |Alert (bell, code 7, ctrl-G)
+|`\b` |Backspace (code 8, ctrl-H)
+|`\f` |Form feed (code 12, ctrl-L)
+|`\n` |Newline (code 10, ctrl-J), same as literal newline
+|`\r` |Carriage return (code 13, ctrl-M)
+|`\t` |Horizontal tab (code 9, ctrl-I)
+|`\v` |Vertical tab (code 11, ctrl-K)
 |===
 
 For example, a string literal containing a tab, the words: _This is_, double quote, space, the word: _between_, double quote, space, the word: _us_, and new-line, would appear as follows:
