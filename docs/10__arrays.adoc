@@ -1126,7 +1126,7 @@ For short-circuit evaluation of `and` and `or`, see <<evaluation-order>>.
 
 ==== Vectorized Calls of Functions
 
-See <<scalar-functions-applied-to-array-arguments>>.
+See <<automatic-vectorization>>.
 
 ==== Standard Type Coercion
 

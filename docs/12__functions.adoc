@@ -337,7 +337,7 @@ The list of filled slots is used as the argument list for the call (it is an err
 Special purpose operators with function syntax defined in the specification shall not be called with named arguments, unless otherwise noted.
 
 The type of each argument must agree with the type of the corresponding parameter, except where the standard type coercion (see <<standard-type-coercion>>) can be used to make the types agree.
-(See also <<scalar-functions-applied-to-array-arguments>> on applying scalar functions to arrays.)
+(See also <<automatic-vectorization>> on applying scalar functions to arrays.)
 
 .Example
 Assume a function `RealToString` is defined as follows to convert a `Real` number to a `String`:
@@ -898,7 +898,7 @@ A nested record component of `R` is handled as follows, if the corresponding com
 If the corresponding component of `R` in `M` is a conditional component, it is an error.
 The instance `m` is given as single (un-named) argument to the record constructor of `R`.
 The interpretation is that `R(m)` is replaced by a record constructor of type `R` where all public components of `M` that are present in `R` are assigned to the corresponding components of `R`.
-The record cast can be used in vectorized form according to <<scalar-functions-applied-to-array-arguments>>.
+The record cast can be used in vectorized form according to <<automatic-vectorization>>.
 
 [NOTE]
 The problem if `R` would be a conditional component is that the corresponding binding would be illegal since it is not a `connect`-equation.

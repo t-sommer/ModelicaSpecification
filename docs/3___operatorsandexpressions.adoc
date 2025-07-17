@@ -382,7 +382,7 @@ The mathematical functions and conversion operators listed below do not generate
 |`String(...)` |Conversion to `String` |<<modelica:to-String>>
 |===
 
-Except for the `min`, `max` and the `String` conversion operator they are vectorizable according to <<scalar-functions-applied-to-array-arguments>>.
+Except for the `min`, `max` and the `String` conversion operator they are vectorizable according to <<automatic-vectorization>>.
 The `min` and `max` functions have array-specific variants which perform array reduction operations described in <<reduction-functions-and-operators>>.
 
 Additional non-event generating mathematical functions are described in <<built-in-mathematical-functions-and-external-built-in-functions>>, whereas the event-triggering mathematical functions are described in <<event-triggering-mathematical-functions>>.
@@ -731,7 +731,7 @@ A Modelica translator should map this operator into either of the two forms:
 +
 The solution must fulfill the equations for `homotopy` returning `actual`.
 
-For non-scalar arguments the function is vectorized according to <<scalar-functions-applied-to-array-arguments>>.
+For non-scalar arguments the function is vectorized according to <<automatic-vectorization>>.
 
 ===== semiLinear
 [source,modelica]
@@ -780,7 +780,7 @@ Returns a string with the name of the model/block that is simulated, appended wi
 ==== Event-Related Operators with Function Syntax
 
 The operators listed below are event-related operators with function syntax.
-The operators `noEvent`, `pre`, `edge`, and `change`, are vectorizable according to <<scalar-functions-applied-to-array-arguments>>.
+The operators `noEvent`, `pre`, `edge`, and `change`, are vectorizable according to <<automatic-vectorization>>.
 
 [cols="a,a,a"]
 |===
