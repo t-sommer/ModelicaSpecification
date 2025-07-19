@@ -2099,78 +2099,75 @@ Another alternative is to use the old version of the library during the conversi
 The invalid but previously used form `convertElement("OldClass", "OldName", "")` should be handled as `convertModifiers("OldClass", {"OldName"}, fill("", 0))` without any conversion applied to equations.
 ====
 
-====== convertClass("OldClass", "NewClass")
-:id: convertclassoldclassnewclass
-
+convertClass("OldClass", "NewClass")::
++
 Convert class `OldClass` to `NewClass`.
-
++
 Match longer path first, so if converting both `A` to `C` and `A.B` to `D` then `A.F` is converted to `C.F` and `A.B.E` to `D.E`.
 This is considered before `convertMessage` for the same `OldClass`.
-
++
 .Example
 Consider the following as part of a conversion script:
-
++
 [source,modelica]
 ----
 convertClass("Modelica.SIunits", "Modelica.Units.SI");
 convertClass("Modelica.SIunits.Icons", "Modelica.Units.Icons");
 ----
-
++
 This ensures that for example `Modelica.SIunits.Length` is converted to `Modelica.Units.SI.Length` and `Modelica.SIunits.Icons` is converted to `Modelica.Units.Icons`.
 
-====== convertClassIf("OldClass", "oldElement", "whenValue", "NewClass")
-:id: convertclassifoldclass-oldelement-whenvalue-newclass
-
+convertClassIf("OldClass", "oldElement", "whenValue", "NewClass")::
++
 Convert class `OldClass` to `NewClass` if the literal modifier for `oldElement` has the value `whenValue`, and also remove the modifier for `oldElement`.
-
++
 These are considered before `convertClass` and `convertMessage` for the same `OldClass`.
-
++
 The old element should be of a `Boolean`, `Integer`, `String`, or enumeration type and the match is based on the literal value of the modifier.
 For string elements the value argument to `convertClassIf` shall be up-quoted, e.g., `"\"My String\""`, and for enumeration literals only the enumeration literal part of the old value matters, e.g., `red` for `"Colors.red"`.
 
-====== convertElement("OldClass", "OldName", "NewName")
-:id: convertelementoldclassoldnamenewname
-
+convertElement("OldClass", "OldName", "NewName")::
++
 In `OldClass`, convert element `OldName` to `NewName`.
 Both `OldName` and `NewName` normally refer to components, but they may also refer to class-parameters, or hierarchical names.
 For hierarchical names, the longest match is used first.
-
++
 For replaceable classes in packages (and replaceable classes in other classes) `convertElement` shall be used if the class is renamed within the package (or class), whereas `convertClass` shall only be used if the class is placed outside of the package (or class).
-
++
 [NOTE]
 ====
 The latter case indicates a problem with overuse of replaceable classes in the previous design of the library.
 ====
-
++
 .Example
 Consider the following as part of a conversion script:
-
++
 [source,modelica]
 ----
 convertElement({"Modelica.Mechanics.MultiBody.World",
                 "Modelica.Mechanics.MultiBody.World.gravityAcceleration"},
                 "mue", "mu");
 ----
-
++
 This implies that
-
++
 [source,modelica]
 ----
 Modelica.Mechanics.MultiBody.World world(mue=2);
 function f=Modelica.Mechanics.MultiBody.World.gravityAcceleration(mue=4);
 ----
-
++
 is converted to:
-
++
 [source,modelica]
 ----
 Modelica.Mechanics.MultiBody.World world(mu=2);
 function f=Modelica.Mechanics.MultiBody.World.gravityAcceleration(mu=4);
 ----
 
-====== convertModifiers
-:id: convertmodifiers
-
+[[convertModifiers]]
+convertModifiers::
++
 [source,modelica]
 ----
 convertModifiers("OldClass",
@@ -2178,54 +2175,54 @@ convertModifiers("OldClass",
   {"NewModifier1=…%OldModifier2%…", "NewModifier2=…", …}
   [, simplify=true]);
 ----
-
++
 Normal case; if any modifier among `OldModifier` exist then replace all of them with the list of `NewModifiers`.
 The `…%OldModifier2%…` indicate an expression that may involve the values of the old modifiers (tools are responsible for adding parentheses if needed).
 The lists of old and new modifiers can have different lengths.
 The defaults (if present) are used if there are multiple `OldModifier` and not all are set in the component instance.
 The defaults are optional if there is at most one `OldModifier` element, and should otherwise be provided.
-
++
 If `simplify` is specified and true then perform obvious simplifications to clean up the new modifier; otherwise leave as is.
-
++
 The old and new modifiers shall be component references, except for the `cardinality` cases listed below.
-
++
 [NOTE]
 ====
 Note: `simplify` is primarily intended for converting enumerations and emulated enumerations that naturally lead to large nested `if`-expressions.
 The simplifications may also simplify parts of the original expression.
 ====
-
++
 If the modifiers contain literal string values they must be quoted.
-
++
 Behaviour in unusual cases:
-
++
 * If `NewModifier` list is empty then the modifier is just removed.
 * If `OldModifer` list is empty it is added for all uses of the class.
 * If `OldModifierᵢ` is `cardinality(a) = 0` the conversion will only be applied for a component comp if there are no inside connections to `comp.a`.
 This can be combined with other modifiers that are handled in the usual way.
 * If `OldModifierᵢ` is `cardinality(a) = 1` the conversion will only be applied for a component comp if there are any inside connections to `comp.a`.
-
++
 The converted modifiers and existing modifiers are merged such that the existing modifiers take precedence over the result of `convertModifiers`.
 A diagnostic is recommended if this merging removes some modifiers unless those modifiers are identical or it is the special case of an empty `OldModifier` list.
-
++
 [NOTE]
 ====
 This can be used to handle the case where the default value was changed.
 ====
-
++
 Converting modifiers with cardinality is used to remove the deprecated operator `cardinality` from model libraries, and replace tests on cardinality in models by parameters explicitly enabling the different cases.
 The case where the old class is used as a base class, and there exist outside connections to `a`, and there is `convertModifiers` involving the cardinality of `a` is not handled.
-
++
 [NOTE]
 ====
 Having a parameter for explicitly enabling the different cases means that instead of model `A` internally testing if its connector `B` is connected, there will be a parameter for enabling connector `B`, and the conversion ensures that each component of model `A` will have this parameter set accordingly.
 
 In case a parameter is simply renamed it is preferable to use `convertElement`, since that also handles, e.g., binding equations using the parameter.
 ====
-
++
 .Example
 The conversion
-
++
 [source,modelica]
 ----
 convertClass("Modelica.Thermal.FluidHeatFlow.Components.IsolatedPipe",
@@ -2251,9 +2248,9 @@ convertElement("My.Library.BadPackage.PartialBase",
 convertElement("My.Library.BadPackage.ActualClass",
                "bad", "correct");
 ----
-
++
 converts
-
++
 [source,modelica]
 ----
 Modelica.Thermal.FluidHeatFlow.Components.IsolatedPipe pipe1;
@@ -2269,9 +2266,9 @@ model B
   Boolean b = bad;
 end B;
 ----
-
++
 to
-
++
 [source,modelica]
 ----
 Modelica.Thermal.FluidHeatFlow.Components.Pipe pipe1(useHeatPort = false);
@@ -2287,31 +2284,29 @@ model B
   Boolean b = correct;
 end B;
 ----
-
++
 The `convertElement` call for `ActualClass` is needed to avoid relying on base classes in the original library where `ActualClass` inherits from `PartialBase`.
 However, the inheritance among the models to convert (in this case `B` inherits from `A`) should be handled.
 Note that conversion works regardless of the import of `My.Library`.
 
-====== convertMessage("OldClass", "Failed Message")
-:id: convertmessageoldclass-failed-message
-
+convertMessage("OldClass", "Failed Message")::
++
 For any use of `OldClass` report that conversion could not be applied with the given message.
-
++
 [NOTE]
 ====
 This may be useful if there is no possibility to convert a specific class.
 An alternative is to construct `ObsoleteLibraryA` for problematic cases, which may be more work but allows users to directly run the models after the conversion and later convert them.
 ====
 
-====== convertMessage("OldClass", "Failed Message", "oldElement")
-:id: convertmessageoldclass-failed-message2
-
+convertMessage("OldClass", "Failed Message", "oldElement")::
++
 For any use of `oldElement` in `OldClass` report that conversion could not be applied with the given message.
-
++
 [NOTE]
 ====
 This is useful if there is no possibility to convert a specific parameter (or other element), especially if it rarely modified.
-If the parameter had no impact on the model it can be removed using `convertModifiers`, see <<convertmodifiers>>.
+If the parameter had no impact on the model it can be removed using `convertModifiers`, see <<convertModifiers>>.
 ====
 
 ==== Versions in the File System

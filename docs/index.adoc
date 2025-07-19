@@ -30,7 +30,15 @@
 
 }
 
+/* scrollspy styles */
+.active {
+    color: #BD0023;
+    background-color: rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+}
 </style>
+
+<script src="common/js/scrollspy.js" defer></script>
 ++++
 
 

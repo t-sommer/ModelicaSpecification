@@ -388,45 +388,46 @@ References in modifications and equations are resolved later (during generation 
 
 ===== Steps of Instantiation
 
-====== The element itself
-
+The element itself::
++
 A partially instantiated class or component is an element that is ready to be instantiated; a partially instantiated element (i.e., class or component) is comprised of a reference to the original element (from the class tree) and the modifiers for that element (including a possible redeclaration).
-
++
 The possible redeclaration of the element itself takes effect.
-
++
 The class of a partially instantiated component is found in the instance tree (using the redeclaration if any), modifiers merged to that class forming a new partially instantiated class that is instantiated as below.
 
-====== The local contents of the element
-
+The local contents of the element::
++
 For local classes and components in the current class, instance nodes are created and inserted into the current instance.
 Modifiers (including class redeclarations) are merged and associated with the instance and the element is partially instantiated.
-
++
 [NOTE]
 The partially instantiated elements are used later for lookup during the generation of the flat equation system and are instantiated fully, if necessary, using the stored modification environment.
-
++
 Equations, algorithms, and annotations of the class and the component declaration are copied to the instance without merging.
-
++
 [NOTE]
 The annotations can be relevant for simulations, e.g., annotations for symbolic processing (<<modelica:Evaluate>>), simulation experiments (<<modelica:experiment>>) or functions (<<derivatives-and-inverses-of-functions>> and <<external-function-interface>>).
-
++
 The `extends`-clauses are not looked up, but empty `extends`-clause nodes are created and inserted into the current instance (to be able to preserve the declaration order of components).
 
-====== The inherited contents of the element
-
+[[the-inherited-contents-of-the-element]]
+The inherited contents of the element::
++
 Classes of `extends`-clauses of the current class are looked up in the instance tree, modifiers (including redeclarations) are merged, the contents of these classes are partially instantiated using the new modification environment, and are inserted into an `extends`-clause node, which is an unnamed node in the current instance that only contains the inherited contents from that base class.
-
++
 The classes of `extends`-clauses are looked up before and after handling `extends`-clauses; and it is an error if those lookups generate different results.
-
++
 At the end, the current instance is checked whether their children (including children of `extends`-clauses) with the same name are identical and only the first one of them is kept.
 It is an error if they are not identical.
-
++
 [NOTE]
 Only keeping the first among the children with the same name is important for function arguments where the order matters.
 
-====== Recursive instantiation of components
-
+Recursive instantiation of components::
++
 Components (local and inherited) are recursively instantiated.
-
++
 .Example
 As an example, consider:
 [source,modelica]
@@ -451,9 +452,9 @@ model M
   type E = Real;
 end M;
 ----
-
++
 To recursively instantiate `M` allowing the generation of flat equation system we have the following steps (not including checks):
-
++
 . Instantiate `M`, which partially instantiates `B`, `b`, `C`, `D`, and `E`.
 . Instantiate `M.b`:
   .. First find the class `B` in `M` (the partially instantiated elements have correct name allowing lookup)
@@ -478,9 +479,9 @@ To recursively instantiate `M` allowing the generation of flat equation system w
   .. First the class `E` in `M.b.a` finding `E` class inheriting from `Integer`.
   .. Instantiate the `M.b.a.p` using the class `E` inheriting from `Integer` with modifier `=1`.
   .. Instantiate the base class `Integer` with modifier `=1`, and insert as unnamed node in `M.b.a.p`.
-
++
 An implementation can use different heuristics to be more efficient by re-using instantiated elements as long as the resulting flat equation system is identical.
-
++
 Note that if `D` was consistently replaced by `A` in the example above the result would be identical (but harder to read due to two different classes called `A`).
 
 ==== Generation of the Flat Equation System
