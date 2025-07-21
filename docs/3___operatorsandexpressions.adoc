@@ -215,7 +215,7 @@ Modelica supports the standard set of relational and logical operators, all of w
 |`>`      |Greater than
 |`>=`     |Greater than or equal
 |`<`      |Less than
-|`<=`     |Less than or equal to
+|`+<=+`   |Less than or equal to
 |`==`     |Equality within expressions
 |`<>`     |Inequality
 |===

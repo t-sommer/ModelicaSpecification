@@ -14,6 +14,7 @@
 :nofooter:
 :favicon: images/favicon.svg
 // :icons: font
+:subs=none
 
 ++++
 <style>
@@ -40,6 +41,8 @@
     --ma-success-bg-subtle: #d1e7dd;
     --ma-success-border-subtle: #a3cfbb;
 
+    --ma-light-bg-subtle: #fcfcfd;
+    --ma-light-border-subtle: #e9ecef;
 
     --ma-example-bg: #cff4fc;
     --ma-example-border-color: #0dcaf0;
@@ -70,6 +73,9 @@
     --ma-border-color: #495057;
     --ma-pre-bg: #1b1f22;
 
+    --ma-light-bg-subtle: #313335;
+    --ma-light-border-subtle: #606467;
+
     pre.pygments {
         background: var(--ma-pre-bg);
     }
@@ -80,7 +86,9 @@
 }
 
 .admonitionblock {
-    border-left: 4px solid var(--ma-success-border-subtle);
+    border-left: 4px solid var(--ma-light-border-subtle);
+    background: var(--ma-light-bg-subtle);
+    font-style: italic;
 }
 
 .admonitionblock > table td.icon {
@@ -88,18 +96,18 @@
 }
 
 .note {
-    background: var(--ma-success-bg-subtle);
 }
 
-.exampleblock>.content {
-    background: var(--ma-primary-bg-subtle);
+.exampleblock > .content {
+    background: var(--ma-light-bg-subtle);
     border-color: #e0e0dc;
     box-shadow: none;
-    border-left-color: var(--ma-primary-border-subtle);
+    border-left-color: var(--ma-light-border-subtle);
     border-left-style: solid;
     border-right: none;
     border-width: 0 0 0 4px;
     border-radius: 0;
+    font-style: italic;
 }
 
 table {
@@ -203,6 +211,7 @@ h1, h2, h3, #toctitle, .sidebarblock>.content>.title, h4, h5, h6 {
 
 .admonitionblock>table td.content {
     color: var(--ma-body-color);
+    border-left: none;
 }
 
 /*
@@ -257,6 +266,10 @@ h1, h2, h3, #toctitle, .sidebarblock>.content>.title, h4, h5, h6 {
     width: 100%;
     height: 100%;
 }
+
+#header > h1, #header > .details {
+    display: none;
+}
 </style>
 
 <script>
@@ -274,20 +287,33 @@ function toggleTOC() {
   }
 }
 
+/*
+window.addEventListener('DOMContentLoaded', () => {
+    
+    var theme = localStorage.getItem('theme');  
+    
+    if (theme != 'light' && theme != 'dark') {
+        theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        localStorage.setItem('theme', theme);
+    }
+    
+    document.documentElement.setAttribute('data-ma-theme', theme);
+})
+
 function toggleTheme() {
 
-    document.documentElement.setAttribute("data-ma-theme", "dark");
-
-    /*
-    var r = document.querySelector(':root');
-    r.style.setProperty('--ma-body-color', '#dee2e6');
-    r.style.setProperty('--ma-body-bg', '#212529');
-    r.style.setProperty('--ma-secondary-bg', '#343a40');
-    r.style.setProperty('--ma-blue', '#488ad0');
-    */
+    var currentTheme = document.documentElement.getAttribute('data-ma-theme');
+    
+    var newTheme = currentTheme == 'dark' ? 'light' : 'dark';
+    
+    localStorage.setItem('theme', newTheme);
+    
+    document.documentElement.setAttribute('data-ma-theme', newTheme);
 }
+*/
 </script>
 
+<script src="common/js/color-theme.js" defer></script>
 <script src="common/js/scrollspy.js" defer></script>
 
 <div class="ma-header" style="display: flex; padding: 0 5px; align-items: center;">
@@ -307,7 +333,13 @@ function toggleTheme() {
 </div>
 
 <div style="text-align: center">
-    <img src="media/Modelica_Language.svg" alt="Modelica Language" style="width: 20em; margin: 4em;"/>
+
+    <picture>
+        <source media="(prefers-color-scheme: light)" srcset="images/light/Modelica-Language.svg">
+        <source media="(prefers-color-scheme: dark)" srcset="images/dark/Modelica-Language.svg">
+        <img src="images/light/Modelica-Language.svg" alt="Modelica Language" style="width: 20em; margin: 4em;">
+    </picture>
+
     <p style="font-size: 1.5em;">Modelica&reg; - A Unified Object-Oriented Language for Systems Modeling</p>
     <p style="font-size: 1.5em;">Language Specification</p>
     <p style="font-size: 1em;">Modelica Association</p>
