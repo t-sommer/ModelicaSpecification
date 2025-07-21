@@ -12,11 +12,200 @@
 :stem: latexmath
 :source-highlighter: pygments
 :nofooter:
-// :favicon: images/favicon.ico
+:favicon: images/favicon.svg
 // :icons: font
 
 ++++
 <style>
+/*
+:root {
+  --ma-bg-color: #1b1b1b;
+  --ma-fg-color: #fff;
+  --ma-blue: #0062cc;
+  --ma-red: #dc3545;
+}
+*/
+
+:root,[data-ma-theme="light"] {
+
+    --ma-body-color: #212529;
+    --ma-body-bg: #fff;
+    --ma-secondary-bg: rgba(240, 240, 240, 1);
+    --ma-tertiary-color: rgba(33, 37, 41, 0.5);
+    --ma-tertiary-bg: #f8f9fa;
+
+    --ma-primary-bg-subtle: #cfe2ff;
+    --ma-primary-border-subtle: #9ec5fe;
+
+    --ma-success-bg-subtle: #d1e7dd;
+    --ma-success-border-subtle: #a3cfbb;
+
+
+    --ma-example-bg: #cff4fc;
+    --ma-example-border-color: #0dcaf0;
+
+
+
+    --ma-border-color: #dee2e6;
+
+    --ma-pre-bg: #f8f9fa;
+
+    --ma-font-sans-serif: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", "Noto Sans", "Liberation Sans", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+    --ma-font-monospace: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+
+    --ma-blue: #0062cc;
+    /*--ma-blue: #5ea9f0;*/
+    --ma-red: #dc3545;
+
+    .content img {
+        filter: none;
+    }
+}
+
+[data-ma-theme="dark"] {
+    --ma-body-color: #dee2e6;
+    --ma-body-bg: #212529;
+    --ma-secondary-bg: #343a40;
+    --ma-blue: #488ad0;
+    --ma-border-color: #495057;
+    --ma-pre-bg: #1b1f22;
+
+    pre.pygments {
+        background: var(--ma-pre-bg);
+    }
+
+    .content img {
+        filter: brightness(90%);
+    }
+}
+
+.admonitionblock {
+    border-left: 4px solid var(--ma-success-border-subtle);
+}
+
+.admonitionblock > table td.icon {
+    display: none;
+}
+
+.note {
+    background: var(--ma-success-bg-subtle);
+}
+
+.exampleblock>.content {
+    background: var(--ma-primary-bg-subtle);
+    border-color: #e0e0dc;
+    box-shadow: none;
+    border-left-color: var(--ma-primary-border-subtle);
+    border-left-style: solid;
+    border-right: none;
+    border-width: 0 0 0 4px;
+    border-radius: 0;
+}
+
+table {
+    background: var(--ma-body-bg);
+}
+
+table thead, table tfoot {
+    background: var(--ma-secondary-bg);
+}
+
+table thead tr th, table thead tr td, table tfoot tr th, table tfoot tr td {
+    /*color: rgba(0, 0, 0, .8);*/
+    color: var(--ma-body-color);
+}
+
+table.tableblock, th.tableblock, td.tableblock {
+    border: 0 solid var(--ma-border-color);
+}
+
+body {
+    font-family: var(--ma-font-sans-serif);
+    background: var(--ma-body-bg);
+    color: var(--ma-body-color);
+    scrollbar-color: #9F9F9F #0000;
+    scrollbar-width: thin;
+}
+
+table tr th, table tr td {
+    color: var(--ma-body-color);
+}
+
+.content img {
+    background: #fff;
+    border-radius: 8px;
+    padding: 16px;
+    /*filter: brightness(90%);*/
+}
+
+pre code, pre pre {
+    color: var(--ma-body-color);
+}
+
+:not(pre):not([class^=L])>code {
+    font-size: .9375em;
+    font-style: normal !important;
+    font-family: var(--ma-font-monospace);
+    letter-spacing: 0;
+    padding: .1em .5ex;
+    word-spacing: -.15em;
+    color: var(--ma-body-color);
+    /*background: #f7f7f8;*/
+    background: var(--ma-secondary-bg);
+    border-radius: 4px;
+    line-height: 1.45;
+    text-rendering: optimizeSpeed;
+}
+
+.literalblock pre, .listingblock > .content > pre {
+    border: 1px solid var(--ma-border-color);
+}
+
+::-webkit-scrollbar-thumb {
+  background: #ff00ae;
+}
+
+a {
+    color: var(--ma-blue);
+    text-decoration: none;
+}
+
+a:hover,a:focus{
+    color: var(--ma-blue);
+}
+
+body.toc2 { 
+    padding-top: 60px;
+}
+
+#toc.toc2 {
+    background: var(--ma-body-bg);
+    border-right: none;
+    top: 60px;
+    height: calc(100% - 60px);
+}
+
+#toc.toc2 a {
+    color: var(--ma-body-color);
+}
+
+#toctitle {
+    color: var(--ma-body-color);
+}
+
+#header>h1:first-child {
+    color: var(--ma-body-color);
+}
+
+h1, h2, h3, #toctitle, .sidebarblock>.content>.title, h4, h5, h6 {
+    color: var(--ma-body-color);
+}
+
+.admonitionblock>table td.content {
+    color: var(--ma-body-color);
+}
+
+/*
 @media screen and (min-width: 1280px) {
 
     #toc.toc2 {
@@ -29,6 +218,7 @@
     }
 
 }
+*/
 
 /* scrollspy styles */
 .active {
@@ -36,13 +226,86 @@
     background-color: rgba(0, 0, 0, 0.1);
     border-radius: 5px;
 }
+
+/* header styles */
+.ma-header {
+    background-color: #014376;
+    position: fixed;
+    top: 0;
+    left: 0; 
+    height: 60px; 
+    width: 100%; 
+    z-index: 2000;
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 0.2rem, rgba(0, 0, 0, 0.2) 0px 0.2rem 0.4rem;
+    transition: transform 0.25s cubic-bezier(0.1, 0.7, 0.1, 1), box-shadow 0.25s;
+}
+
+.ma-header-content {
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 61rem;
+    border: 1px solid red
+}
+
+.nav-button {
+    color: #fff;
+    width: 30px;
+    height: 30px;
+}
+
+.nav-button svg {
+    width: 100%;
+    height: 100%;
+}
 </style>
 
+<script>
+// hide / show the Table of Contents (TOC)
+function toggleTOC() {
+  var toc = document.getElementById("toc");
+  var body = document.getElementsByTagName("body")[0];
+
+  if (toc.style.display === "none") {
+      toc.style.display = "block";
+      body.classList.remove("toc-hidden");
+  } else {
+      toc.style.display = "none";
+      body.classList.add("toc-hidden");
+  }
+}
+
+function toggleTheme() {
+
+    document.documentElement.setAttribute("data-ma-theme", "dark");
+
+    /*
+    var r = document.querySelector(':root');
+    r.style.setProperty('--ma-body-color', '#dee2e6');
+    r.style.setProperty('--ma-body-bg', '#212529');
+    r.style.setProperty('--ma-secondary-bg', '#343a40');
+    r.style.setProperty('--ma-blue', '#488ad0');
+    */
+}
+</script>
+
 <script src="common/js/scrollspy.js" defer></script>
-++++
 
+<div class="ma-header" style="display: flex; padding: 0 5px; align-items: center;">
+  <a href="https://modelica.org/"><img src="images/m-ball.svg" style="padding: 10px; height: 50px; align-self: flex-start;"/></a>
+  <span style="flex-grow: 1;"></span>
+  <a href="#" onclick="toggleTOC()" class="nav-button" style="padding: 5px;">
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-list-columns-reverse" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M0 .5A.5.5 0 0 1 .5 0h2a.5.5 0 0 1 0 1h-2A.5.5 0 0 1 0 .5m4 0a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1h-10A.5.5 0 0 1 4 .5m-4 2A.5.5 0 0 1 .5 2h2a.5.5 0 0 1 0 1h-2a.5.5 0 0 1-.5-.5m4 0a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5m-4 2A.5.5 0 0 1 .5 4h2a.5.5 0 0 1 0 1h-2a.5.5 0 0 1-.5-.5m4 0a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5m-4 2A.5.5 0 0 1 .5 6h2a.5.5 0 0 1 0 1h-2a.5.5 0 0 1-.5-.5m4 0a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 0 1h-8a.5.5 0 0 1-.5-.5m-4 2A.5.5 0 0 1 .5 8h2a.5.5 0 0 1 0 1h-2a.5.5 0 0 1-.5-.5m4 0a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 0 1h-8a.5.5 0 0 1-.5-.5m-4 2a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 0 1h-2a.5.5 0 0 1-.5-.5m4 0a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1h-10a.5.5 0 0 1-.5-.5m-4 2a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 0 1h-2a.5.5 0 0 1-.5-.5m4 0a.5.5 0 0 1 .5-.5h6a.5.5 0 0 1 0 1h-6a.5.5 0 0 1-.5-.5m-4 2a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 0 1h-2a.5.5 0 0 1-.5-.5m4 0a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5"/></svg>
+  </a>
 
-++++
+  <a onclick="toggleTheme()" class="nav-button" style="padding: 5px;">
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-circle-half" viewBox="0 0 16 16"><path d="M8 15A7 7 0 1 0 8 1zm0 1A8 8 0 1 1 8 0a8 8 0 0 1 0 16"/></svg>
+  </a>
+  <!--
+  <a href="#" class="nav-button"><img src="images/circle-half.svg" class="e"/></a>
+  <a href="#" class="nav-button"><img src="images/tag.svg" class="e"/> 3.7-dev</a>
+  -->
+</div>
+
 <div style="text-align: center">
     <img src="media/Modelica_Language.svg" alt="Modelica Language" style="width: 20em; margin: 4em;"/>
     <p style="font-size: 1.5em;">Modelica&reg; - A Unified Object-Oriented Language for Systems Modeling</p>
