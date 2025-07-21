@@ -342,6 +342,16 @@ function toggleTheme() {
 
     <p style="font-size: 1.5em;">Modelica&reg; - A Unified Object-Oriented Language for Systems Modeling</p>
     <p style="font-size: 1.5em;">Language Specification</p>
+    <p style="font-size: 1.5em;">Version 
+++++
+{revnumber}
+++++
+    </p>
+    <p style="font-size: 1em;">
+++++
+{revdate}
+++++
+    </p>
     <p style="font-size: 1em;">Modelica Association</p>
 </div>
 ++++
