@@ -150,6 +150,7 @@ table tr th, table tr td {
 
 pre code, pre pre {
     color: var(--ma-body-color);
+    font-style: normal !important;
 }
 
 :not(pre):not([class^=L]) > code {
@@ -203,8 +204,9 @@ body.toc2 {
     color: var(--ma-body-color);
 }
 
-h2, h3 {
-  scroll-margin-top: var(--ma-nav-height);
+h2, h3, h4, h5 {
+    color: var(--ma-body-color);
+    scroll-margin-top: var(--ma-nav-height);
 }
 
 #header>h1:first-child {

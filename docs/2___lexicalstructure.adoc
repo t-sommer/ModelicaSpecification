@@ -18,7 +18,7 @@ The character set of the Modelica language is Unicode, but restricted to the Uni
 === Comments
 
 There are two kinds of comments in Modelica which are not lexical units in the language and therefore are treated as white-space by a Modelica translator.
-The white-space characters are space, tabulator, and line separators (carriage return and line feed); and white-space cannot occur inside tokens, e.g., `<=` must be written as two characters without space or comments between them.
+The white-space characters are space, tabulator, and line separators (carriage return and line feed); and white-space cannot occur inside tokens, e.g., `+<=+` must be written as two characters without space or comments between them.
 The following comment variants are available:
 
 [source,modelica]
@@ -32,7 +32,7 @@ The following comment variants are available:
 [NOTE]
 The comment syntax is identical to that of C++.
 
-Delimited Modelica comments do not nest, i.e., `/* */` cannot be embedded within `/* ... */`.
+Delimited Modelica comments do not nest, i.e., `+/* */+` cannot be embedded within `+/* ... */+`.
 The following is _invalid_:
 
 [source,modelica]
@@ -68,18 +68,18 @@ end TempResistor;
 
 === Identifiers, Names, and Keywords
 
-Identifiers are sequences of letters, digits, and other characters such as underscore, which are used for _naming_ various items in the language.
-Certain combinations of letters are keywords represented as _reserved_ words in the Modelica grammar and are therefore not available as identifiers.
+_Identifiers_ are sequences of letters, digits, and other characters such as underscore, which are used for _naming_ various items in the language.
+Certain combinations of letters are _keywords_ represented as _reserved_ words in the Modelica grammar and are therefore not available as identifiers.
 
 ==== Identifiers
 
-Modelica identifiers, used for naming classes, variables, constants, and other items, are of two forms.
+Modelica _identifiers_, used for naming classes, variables, constants, and other items, are of two forms.
 The first form always starts with a letter or underscore (`_`), followed by any number of letters, digits, or underscores.
 Case is significant, i.e., the identifiers `Inductor` and `inductor` are different.
-The second form (`Q-IDENT`) starts with a single quote, followed by a sequence of any printable ASCII character, where single-quote must be preceded by backslash, and terminated by a single quote, e.g., `'12H'`, `'13\'H'`, `'+foo'`.
+The second form (`Q-IDENT`) starts with a single quote, followed by a sequence of any printable ASCII character, where single-quote must be preceded by backslash, and terminated by a single quote, e.g., `'12H'`, `+'13\'H'+`, `'+foo'`.
 Control characters in quoted identifiers have to use string escapes.
 The single quotes are part of the identifier, i.e., `'x'` and `x` are distinct identifiers.
-The redundant escapes (`'\?'` and `'\"'`) are the same as the corresponding non-escaped variants (`'?'` and `'"'`), but are only for use in Modelica source code.
+The redundant escapes (`'\?'` and `+'"'+`) are the same as the corresponding non-escaped variants (`'?'` and `'"'`), but are only for use in Modelica source code.
 A full BNF definition of the Modelica syntax and lexical units is available in <<modelica-concrete-syntax>>.
 
 [source,grammar]
@@ -97,106 +97,48 @@ S-ESCAPE = "\'" | "\"" | "\?" | "\\"
 
 ==== Names
 
-A name is an identifier with a certain interpretation or meaning.
+A _name_ is an identifier with a certain interpretation or meaning.
 For example, a name may denote an `Integer` variable, a `Real` variable, a function, a type, etc.
 A name may have different meanings in different parts of the code, i.e., different scopes.
 The interpretation of identifiers as names is described in more detail in <<scoping-name-lookup-and-flattening>>.
 The meaning of package names is described in more detail in <<packages>>.
 
-.Example
-A name: `Ele.Resistor`
+[example]
+Example: A name: `Ele.Resistor`
 
-A component reference is an expression containing a sequence of identifiers and indices.
+A _component reference_ is an expression containing a sequence of identifiers and indices.
 A component reference is equivalent to the referenced object, which must be a component.
 A component reference is resolved (evaluated) in the scope of a class (see <<component-declarations>>), or expression for the case of a local iterator variable (see <<slice-operation>>).
 
-.Example
-A component reference: `Ele.Resistor.u[21].r`
+[example]
+Example: A component reference: `Ele.Resistor.u[21].r`
 
 ==== Modelica Keywords
 
-The following Modelica keywords are reserved words that cannot be used where `IDENT` is expected in the language grammar (see <<modelica-concrete-syntax>>):
+The following Modelica _keywords_ are reserved words that cannot be used where `IDENT` is expected in the language grammar (see <<modelica-concrete-syntax>>):
 
 [cols="5*a",options=autowidth]
 |===
-|`algorithm`
-|`discrete`
-|`false`
-|`loop`
-|`pure`
-
-|`and`
-|`each`
-|`final`
-|`model`
-|`record`
-
-|`annotation`
-|`else`
-|`flow`
-|`not`
-|`redeclare`
-
-|
-|`elseif`
-|`for`
-|`operator`
-|`replaceable`
-
-|`block`
-|`elsewhen`
-|`function`
-|`or`
-|`return`
-
-|`break`
-|`encapsulated`
-|`if`
-|`outer`
-|`stream`
-
-|`class`
-|`end`
-|`import`
-|`output`
-|`then`
-
-|`connect`
-|`enumeration`
-|`impure`
-|`package`
-|`true`
-
-|`connector`
-|`equation`
-|`in`
-|`parameter`
-|`type`
-
-|`constant`
-|`expandable`
-|`initial`
-|`partial`
-|`when`
-
-|`constrainedby`
-|`extends`
-|`inner`
-|`protected`
-|`while`
-
-|`der`
-|`external`
-|`input`
-|`public`
-|`within`
+|`algorithm`     |`discrete`     |`false`    |`loop`      |`pure`
+|`and`           |`each`         |`final`    |`model`     |`record`
+|`annotation`    |`else`         |`flow`     |`not`       |`redeclare`
+|                |`elseif`       |`for`      |`operator`  |`replaceable`
+|`block`         |`elsewhen`     |`function` |`or`        |`return`
+|`break`         |`encapsulated` |`if`       |`outer`     |`stream`
+|`class`         |`end`          |`import`   |`output`    |`then` 
+|`connect`       |`enumeration`  |`impure`   |`package`   |`true` 
+|`connector`     |`equation`     |`in`       |`parameter` |`type` 
+|`constant`      |`expandable`   |`initial`  |`partial`   |`when` 
+|`constrainedby` |`extends`      |`inner`    |`protected` |`while` 
+|`der`           |`external`     |`input`    |`public`    |`within`
 |===
 
 In particular, it is not allowed to declare an element or enumeration literal with these names.
 This also applies to the identifiers that name the predefined types `Real`, `Integer`, `Boolean`, and `String`, see <<predefined-types-and-classes>>.
 
-.Example
-Not all predefined types have names with restrictions:
+[example]
+====
+Example: Not all predefined types have names with restrictions:
 [source,modelica]
 ----
 type StateSelect = enumeration(one, two);
@@ -205,10 +147,11 @@ Real x(stateSelect = StateSelect.never);  // Error: 'never' is not a literal
                                           // of StateSelect.
 Real y(stateSelect = .StateSelect.never); // OK, using predefined StateSelect.
 ----
+====
 
 === Literals
 
-Literals are unnamed constants used to build expressions, and have different forms depending on their type.
+_Literals_ are unnamed constants used to build expressions, and have different forms depending on their type.
 Each of the predefined types in Modelica has a way of expressing unnamed constants of the corresponding type, which is presented in the ensuing subsections.
 Additionally, array literals and record literals can be expressed.
 
@@ -216,7 +159,7 @@ Additionally, array literals and record literals can be expressed.
 
 A floating point number is expressed as a decimal number in the form of a sequence of decimal digits followed by a decimal point, followed by decimal digits, followed by an exponent indicated by `E` or `e` followed by a sign and one or more decimal digits.
 The various parts can be omitted, see `UNSIGNED-REAL` in <<lexical-conventions>> for details and also the examples below.
-The minimal recommended range is that of IEEE double precision floating point numbers, for which the largest representable positive number is 1.7976931348623157×10^308 and the smallest positive number is 2.2250738585072014×10^-308.
+The minimal recommended range is that of IEEE double precision floating point numbers, for which the largest representable positive number is 1.7976931348623157{nbsp}&times;{nbsp}10^308^ and the smallest positive number is 2.2250738585072014{nbsp}&times;{nbsp}10^-308^.
 For example, the following are floating point number literals:
 
 [source,modelica]
@@ -278,7 +221,7 @@ For example, a string literal containing a tab, the words: _This is_, double quo
 "\tThis is\" between\" us\n"
 ----
 
-Concatenation of string literals in certain situations (see the Modelica grammar) is denoted by the + operator in Modelica, e.g., `"a"` + `"b"` becomes `"ab"`.
+Concatenation of string literals in certain situations (see the Modelica grammar) is denoted by the `+` operator in Modelica, e.g., `"a" + "b"` becomes `"ab"`.
 This is useful for expressing long string literals that need to be written on several lines.
 
 The `"\n"` character is used to conceptually indicate the end of a line within a Modelica string.
@@ -289,6 +232,7 @@ It is the responsibility of a Modelica implementation to make any necessary tran
 For example, a `"\n"` is written and read as-is in a Unix or Linux implementation, but written as `"\r\n"` pair, and converted back to `"\n"` when read in a Windows implementation.
 
 [NOTE]
+====
 For long string comments, e.g., the `info` annotation to store the documentation of a model, it would be very inconvenient, if the string concatenation operator would have to be used for every line of documentation.
 It is assumed that a Modelica tool supports the non-printable newline character when browsing or editing a string literal.
 For example, the following statement defines one string that contains (non-printable) newline characters:
@@ -304,7 +248,8 @@ set to s_small, although it is smaller, to avoid a division by zero
 when computing the direction of the line force.",
        level = AssertionLevel.warning);
 ----
+====
 
 === Operator Symbols
 
-The predefined operator symbols are formally defined on page <<lexical-conventions>> and summarized in the table of operators in <<operator-precedence-and-associativity>>.
+The predefined operator symbols are formally defined in <<lexical-conventions>> and summarized in the table of operators in <<operator-precedence-and-associativity>>.
