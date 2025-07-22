@@ -29,6 +29,8 @@
 
 :root,[data-ma-theme="light"] {
 
+    --ma-nav-height: 60px;
+
     --ma-body-color: #212529;
     --ma-body-bg: #fff;
     --ma-secondary-bg: rgba(240, 240, 240, 1);
@@ -150,7 +152,7 @@ pre code, pre pre {
     color: var(--ma-body-color);
 }
 
-:not(pre):not([class^=L])>code {
+:not(pre):not([class^=L]) > code {
     font-size: .9375em;
     font-style: normal !important;
     font-family: var(--ma-font-monospace);
@@ -170,7 +172,7 @@ pre code, pre pre {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #ff00ae;
+    background: #ff00ae;
 }
 
 a {
@@ -183,14 +185,14 @@ a:hover,a:focus{
 }
 
 body.toc2 { 
-    padding-top: 60px;
+    padding-top: var(--ma-nav-height);
 }
 
 #toc.toc2 {
     background: var(--ma-body-bg);
     border-right: none;
-    top: 60px;
-    height: calc(100% - 60px);
+    top: var(--ma-nav-height);
+    height: calc(100% - var(--ma-nav-height));
 }
 
 #toc.toc2 a {
@@ -199,6 +201,10 @@ body.toc2 {
 
 #toctitle {
     color: var(--ma-body-color);
+}
+
+h2, h3 {
+  scroll-margin-top: var(--ma-nav-height);
 }
 
 #header>h1:first-child {
@@ -242,7 +248,7 @@ h1, h2, h3, #toctitle, .sidebarblock>.content>.title, h4, h5, h6 {
     position: fixed;
     top: 0;
     left: 0; 
-    height: 60px; 
+    height: var(--ma-nav-height); 
     width: 100%; 
     z-index: 2000;
     box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 0.2rem, rgba(0, 0, 0, 0.2) 0px 0.2rem 0.4rem;
@@ -355,8 +361,6 @@ function toggleTheme() {
     <p style="font-size: 1em;">Modelica Association</p>
 </div>
 ++++
-
-include::docs/0___preamble.adoc[]
 
 include::docs/0___preface.adoc[]
 
