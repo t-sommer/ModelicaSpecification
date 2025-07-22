@@ -206,7 +206,10 @@ body.toc2 {
 
 h2, h3, h4, h5 {
     color: var(--ma-body-color);
-    scroll-margin-top: var(--ma-nav-height);
+}
+
+h2, h3, h4, h5, table {
+    scroll-margin-top: calc(var(--ma-nav-height) + 10px);
 }
 
 #header>h1:first-child {
@@ -220,6 +223,17 @@ h1, h2, h3, #toctitle, .sidebarblock>.content>.title, h4, h5, h6 {
 .admonitionblock>table td.content {
     color: var(--ma-body-color);
     border-left: none;
+}
+
+/* table captions */
+table.tableblock.fit-content > caption.title {
+    white-space: normal;
+    width: auto;
+}
+
+/* captions */
+.subheader, .admonitionblock td.content>.title, .audioblock>.title, .exampleblock>.title, .imageblock>.title, .listingblock>.title, .literalblock>.title, .stemblock>.title, .openblock>.title, .paragraph>.title, .quoteblock>.title, table.tableblock>.title, .verseblock>.title, .videoblock>.title, .dlist>.title, .olist>.title, .ulist>.title, .qlist>.title, .hdlist>.title {
+    color: var(--ma-body-color);
 }
 
 /*
