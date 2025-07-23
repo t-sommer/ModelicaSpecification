@@ -606,7 +606,7 @@ The restriction that discrete-valued variables (of type `Boolean`, etc) cannot b
 
 A continuous-time variable (defined in <<component-variability>>) `vn` may have a non-vanishing time derivative (provided `der(vn)` is allowed this can be expressed as `der(vn) <> 0`) and may also change its value discontinuously at any time during transient analysis (see <<events-and-synchronization>>).
 It may also contain a combination of these effects.
-Regarding existence of `der(vn)`, see <<der>>.
+Regarding existence of `der(vn)`, see <<operator:der>>.
 
 ==== Variability of Structured Entities
 
