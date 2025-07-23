@@ -910,6 +910,452 @@ getInstanceName()
 ----
 Returns a string with the name of the model/block that is simulated, appended with the fully qualified name of the instance in which this function is called.
 
+===== delay
+:id: delay
+
+[NOTE]
+====
+`delay` allows a numerical sound implementation by interpolating in the (internal) integrator polynomials, as well as a more simple realization by interpolating linearly in a buffer containing past values of expression _expr_.
+Without further information, the complete time history of the delayed signals needs to be stored, because the delay time may change during simulation.
+To avoid excessive storage requirements and to enhance efficiency, the maximum allowed delay time has to be given via _delayMax_.
+This gives an upper bound on the values of the delayed signals which have to be stored.
+For real-time simulation where fixed step size integrators are used, this information is sufficient to allocate the necessary storage for the internal buffer before the simulation starts.
+For variable step size integrators, the buffer size is dynamic during integration.
+
+In principle, `delay` could break algebraic loops.
+For simplicity, this is not supported because the minimum delay time has to be given as additional argument to be fixed at compile time.
+Furthermore, the maximum step size of the integrator is limited by this minimum delay time in order to avoid extrapolation in the delay buffer.
+====
+
+===== spatialDistribution
+:id: spatialdistribution
+
+[NOTE]
+====
+Many applications involve the modelling of variable-speed transport of properties.
+One option to model this infinite-dimensional system is to approximate it by an ODE, but this requires a large number of state variables and might introduce either numerical diffusion or numerical oscillations.
+Another option is to use a built-in operator that keeps track of the spatial distribution of z(ξ, t), by suitable sampling, interpolation, and shifting of the stored distribution.
+In this case, the internal state of the operator is hidden from the ODE solver.
+====
+
+`spatialDistribution` allows the infinite-dimensional problem below to be solved efficiently with good accuracy
+
+[stem]
+++++
+\frac{\partial z(\xi, t)}{\partial t} + v(t) \frac{\partial z(\xi, t)}{\partial \xi} = 0\\
+z(0, t) = \mathrm{in}_{0}(t) \quad \text{if $v(t) \geq 0$}\\
+z(1, t) = \mathrm{in}_{1}(t) \quad \text{if $v(t) < 0$}
+++++
+
+where z(ξ, t) is the transported quantity, ξ is the normalized spatial coordinate (0 ≤ ξ ≤ 1), t is the time, v(t) is the normalized transport velocity and the boundary conditions are set at either ξ = 0 or ξ = 1, depending on the sign of the velocity.
+
+The calling syntax is:
+
+[source,modelica]
+----
+(out0, out1) = spatialDistribution(in0, in1, x, positiveVelocity,
+                                   initialPoints = {0.0, 1.0},
+                                   initialValues = {0.0, 0.0});
+----
+
+where `in0`, `in1`, `out0`, `out1`, and `x` are all subtypes of `Real`, `positiveVelocity` is a `Boolean`, and `initialPoints` and `initialValues` are arrays of subtypes of `Real`.
+The position `x` is the integral of the transport velocity v, where the constant of integration does not matter.
+The arrays `initialPoints` and `initialValues` shall be parameter expressions of equal size, containing the ξ coordinates and the z values of a finite set of points describing the initial distribution of z(ξ, t₀).
+The `out0` and `out1` are given by the solutions at z(0, t) and z(1, t); and `in0` and `in1` are the boundary conditions at z(0, t) and z(1, t) (at each point in time only one of `in0` and `in1` is used).
+The `initialPoints` array shall span the entire range from 0 to 1, and must be sorted in non-descending order.
+The operator can not be vectorized according to the vectorization rules described in <<automatic-vectorization>>.
+The operator can be vectorized only with respect to the arguments `in0` and `in1` (which must have the same size), returning vectorized outputs `out0` and `out1` of the same size; the arguments `initialPoints` and `initialValues` are vectorized accordingly.
+
+The solution, z, can be described in terms of characteristics:
+
+[stem]
+++++
+z(\xi+\int_{t}^{t+\beta}\! v(\alpha) \mathrm{d}\alpha,\, t+\beta) = z(\xi, t), \quad\text{for all $\beta$ as long as staying inside the domain}
+++++
+
+This allows the direct computation of the solution based on interpolating the boundary conditions.
+
+`spatialDistribution` can be described in terms of the pseudo-code given as a block:
+
+[source,modelica]
+----
+block spatialDistribution
+  input Real in0;
+  input Real in1;
+  input Real x;
+  input Boolean positiveVelocity;
+  parameter Real initialPoints(each min=0, each max=1)[:] = {0.0, 1.0};
+  parameter Real initialValues[:] = {0.0, 0.0};
+  output Real out0;
+  output Real out1;
+protected
+  Real points[:];
+  Real values[:];
+  Real x0;
+  Integer m;
+algorithm
+  /* The notation
+   *   x <and then> y
+   * is used below as a shorthand for
+   *   if x then y else false
+   * also known as "short-circuit evaluation of x and y".
+   */
+  if positiveVelocity then
+    out1 := interpolate(points, values, 1 - (x - x0));
+    out0 := values[1]; // Similar to in0 but avoiding algebraic loop.
+  else
+    out0 := interpolate(points, values, 0 - (x - x0));
+    out1 := values[end]; // Similar to in1 but avoiding algebraic loop.
+  end if;
+  when <acceptedStep> then
+    if x > x0 then
+      m := size(points, 1);
+      while m > 0 <and then> points[m] + (x - x0) >= 1 loop
+        m := m - 1;
+      end while;
+      values := cat(1,
+                    {in0},
+                    values[1:m],
+                    {interpolate(points, values, 1 - (x - x0))});
+      points := cat(1, {0}, points[1:m] .+ (x-x0), {1});
+    elseif x < x0 then
+      m := 1;
+      while m < size(points, 1) <and then> points[m] + (x - x0) <= 0 loop
+        m := m + 1;
+      end while;
+      values := cat(1,
+                    {interpolate(points, values, 0 - (x - x0))},
+                    values[m:end],
+                    {in1});
+      points := cat(1, {0}, points[m:end] .+ (x - x0), {1});
+    end if;
+    x0 := x;
+  end when;
+initial algorithm
+  x0 := x;
+  points := initialPoints;
+  values := initialValues;
+end spatialDistribution;
+----
+
+[NOTE]
+====
+Note that the implementation has an internal state and thus cannot be described as a function in Modelica; `initialPoints` and `initialValues` are declared as parameters to indicate that they are only used during initialization.
+
+The infinite-dimensional problem stated above can then be formulated in the following way:
+
+[source,modelica]
+----
+der(x) = v;
+(out0, out1) = spatialDistribution(in0, in1, x, v >= 0,
+                                   initialPoints, initialValues);
+----
+
+Events are generated at the exact instants when the velocity changes sign -- if this is not needed, `noEvent` can be used to suppress event generation.
+
+If the velocity is known to be always positive, then `out0` can be omitted, e.g.:
+
+[source,modelica]
+----
+der(x) = v;
+(, out1) = spatialDistribution(in0, 0, x, true, initialPoints, initialValues);
+----
+
+Technically relevant use cases for the use of `spatialDistribution` are modeling of electrical transmission lines, pipelines and pipeline networks for gas, water and district heating, sprinkler systems, impulse propagation in elongated bodies, conveyor belts, and hydraulic systems.
+Vectorization is needed for pipelines where more than one quantity is transported with velocity `v` in the example above.
+====
+
+===== cardinality (deprecated)
+:id: cardinality-deprecated
+
+[NOTE]
+====
+`cardinality` is deprecated for the following reasons and will be removed in a future release:
+
+* Reflective operator may make early type checking more difficult.
+* Almost always abused in strange ways
+* Not used for Bond graphs even though it was originally introduced for that purpose.
+====
+
+[NOTE]
+====
+`cardinality` allows the definition of connection dependent equations in a model, for example:
+
+[source,modelica]
+----
+connector Pin
+  Real v;
+  flow Real i;
+end Pin;
+model Resistor
+  Pin p, n;
+equation
+  assert(cardinality(p) > 0 and cardinality(n) > 0,
+         "Connectors p and n of Resistor must be connected");
+  // Equations of resistor
+  ...
+end Resistor;
+----
+====
+
+The cardinality is counted after removing conditional components, and shall not be applied to expandable connectors, elements in expandable connectors, or to arrays of connectors (but can be applied to the scalar elements of array of connectors).
+`cardinality` should only be used in the condition of assert and `if`-statements that do not contain `connect` and similar operators, see <<connect-equations>>.
+
+===== homotopy
+:id: homotopy
+
+[NOTE]
+====
+During the initialization phase of a dynamic simulation problem, it often happens that large nonlinear systems of equations must be solved by means of an iterative solver.
+The convergence of such solvers critically depends on the choice of initial guesses for the unknown variables.
+The process can be made more robust by providing an alternative, simplified version of the model, such that convergence is possible even without accurate initial guess values, and then by continuously transforming the simplified model into the actual model.
+This transformation can be formulated using expressions of this kind:
+
+[stem]
+++++
+\lambda\cdot\text{actual} + (1-\lambda)\cdot\text{simplified}
+++++
+
+in the formulation of the system equations, and is usually called a homotopy transformation.
+If the simplified expression is chosen carefully, the solution of the problem changes continuously with λ, so by taking small enough steps it is possible to eventually obtain the solution of the actual problem.
+
+The operator can be called with ordered arguments or preferably with named arguments for improved readability.
+
+It is recommended to perform (conceptually) one homotopy iteration over the whole model, and not several homotopy iterations over the respective non-linear algebraic equation systems.
+The reason is that the following structure can be present:
+
+[source,modelica]
+----
+w = f₁(x) // has homotopy
+0 = f₂(der(x), x, z, w)
+----
+
+Here, a non-linear equation system f₂ is present.
+`homotopy` is, however used on a variable that is an "input" to the non-linear algebraic equation system, and modifies the characteristics of the non-linear algebraic equation system.
+The only useful way is to perform the homotopy iteration over f₁ and f₂ together.
+
+The suggested approach is "conceptual", because more efficient implementations are possible, e.g., by determining the smallest iteration loop, that contains the equations of the first BLT block in which `homotopy` is present and all equations up to the last BLT block that describes a non-linear algebraic equation system.
+
+A trivial implementation of `homotopy` is obtained by defining the following function in the global scope:
+
+[source,modelica]
+----
+function homotopy
+  input Real actual;
+  input Real simplified;
+  output Real y;
+algorithm
+  y := actual;
+  annotation(Inline = true);
+end homotopy;
+----
+====
+
+[example]
+====
+Example 1: In electrical systems it is often difficult to solve non-linear algebraic equations if switches are part of the algebraic loop.
+An idealized diode model might be implemented in the following way, by starting with a "flat" diode characteristic and then move with `homotopy` to the desired "steep" characteristic:
+
+[source,modelica]
+----
+model IdealDiode
+  ...
+  parameter Real Goff = 1e-5;
+protected
+  Real Goff_flat = max(0.01, Goff);
+  Real Goff2;
+equation
+  off = s < 0;
+  Goff2 = homotopy(actual = Goff, simplified = Goff_flat);
+  u = s * (if off then 1 else Ron2) + Vknee;
+  i = s * (if off then Goff2 else 1 ) + Goff2*Vknee;
+  ...
+end IdealDiode;
+----
+====
+
+[example]
+====
+Example 2: In electrical systems it is often useful that all voltage sources start with zero voltage and all current sources with zero current, since steady state initialization with zero sources can be easily obtained.
+A typical voltage source would then be defined as:
+
+[source,modelica]
+----
+model ConstantVoltageSource
+  extends Modelica.Electrical.Analog.Interfaces.OnePort;
+  parameter Modelica.Units.SI.Voltage V;
+equation
+  v = homotopy(actual = V, simplified = 0.0);
+end ConstantVoltageSource;
+----
+====
+
+[example]
+====
+Example 3: In fluid system modelling, the pressure/flowrate relationships are highly nonlinear due to the quadratic terms and due to the dependency on fluid properties.
+A simplified linear model, tuned on the nominal operating point, can be used to make the overall model less nonlinear and thus easier to solve without accurate start values.
+Named arguments are used here in order to further improve the readability.
+
+[source,modelica]
+----
+model PressureLoss
+  import Modelica.Units.SI;
+  ...
+  parameter SI.MassFlowRate m_flow_nominal "Nominal mass flow rate";
+  parameter SI.Pressure dp_nominal "Nominal pressure drop";
+  SI.Density rho "Upstream density";
+  SI.DynamicViscosity lambda "Upstream viscosity";
+equation
+  ...
+  m_flow = homotopy(actual = turbulentFlow_dp(dp, rho, lambda),
+                    simplified = dp/dp_nominal*m_flow_nominal);
+  ...
+end PressureLoss;
+----
+====
+
+[example]
+====
+Example 4: Note that `homotopy` _shall not_ be used to combine unrelated expressions, since this can generate singular systems from combining two well-defined systems.
+
+[source,modelica]
+----
+model DoNotUse
+  Real x;
+  parameter Real x0 = 0;
+equation
+  der(x) = 1-x;
+initial equation
+  0 = homotopy(der(x), x - x0);
+end DoNotUse;
+----
+
+The initial equation is expanded into
+
+[stem]
+++++
+0 = \lambda*\mathrm{der}(x)+(1-\lambda)(x-x_0)
+++++
+
+and you can solve the two equations to give
+
+[stem]
+++++
+x = \frac{\lambda+(\lambda-1)x_0}{2\lambda-1}
+++++
+
+which has the correct value of x₀ at λ = 0 and of 1 at λ = 1, but unfortunately has a singularity at λ = 0.5.
+====
+
+===== semiLinear
+:id: semilinear
+
+(See definition of `semiLinear` in <<derivative-and-special-purpose-operators-with-function-syntax>>).
+In some situations, equations with `semiLinear` become underdetermined if the first argument (`x`) becomes zero, i.e., there are an infinite number of solutions.
+It is recommended that the following rules are used to transform the equations during the translation phase in order to select one meaningful solution in such cases:
+
+* The equations
++
+[source,modelica]
+----
+y = semiLinear(x, sa, s1);
+y = semiLinear(x, s1, s2);
+y = semiLinear(x, s2, s3);
+...
+y = semiLinear(x, sN, sb);
+...
+----
++
+may be replaced by
++
+[source,modelica]
+----
+s1 = if x >= 0 then sa else sb
+s2 = s1;
+s3 = s2;
+...
+sN = sN-1;
+y = semiLinear(x, sa, sb);
+----
+
+* The equations
++
+[source,modelica]
+----
+x = 0;
+y = 0;
+y = semiLinear(x, sa, sb);
+----
++
+may be replaced by
++
+[source,modelica]
+----
+x = 0
+y = 0;
+sa = sb;
+----
+
+[NOTE]
+====
+For symbolic transformations, the following property is useful (this follows from the definition):
+
+[source,modelica]
+----
+semiLinear(m_flow, port_h, h);
+----
+
+is identical to:
+
+[source,modelica]
+----
+-semiLinear(-m_flow, h, port_h);
+----
+
+The `semiLinear` function is designed to handle reversing flow in fluid systems, such as
+
+[source,modelica]
+----
+H_flow = semiLinear(m_flow, port.h, h);
+----
+
+i.e., the enthalpy flow rate `H_flow` is computed from the mass flow rate `m_flow` and the upstream specific enthalpy depending on the flow direction.
+====
+
+===== getInstanceName
+:id: getinstancename
+
+Returns a string with the name of the model/block that is simulated, appended with the fully qualified name of the instance in which this function is called.
+
+[example]
+====
+Example:
+
+[source,modelica]
+----
+package MyLib
+  model Vehicle
+    Engine engine;
+    ...
+  end Vehicle;
+  model Engine
+    Controller controller;
+    ...
+  end Engine;
+  model Controller
+  equation
+    Modelica.Utilities.Streams.print("Info from: " + getInstanceName());
+  end Controller;
+end MyLib;
+----
+
+If `MyLib.Vehicle` is simulated, the call of `getInstanceName()` returns `"Vehicle.engine.controller"`.
+====
+
+If this function is not called inside a model or block (e.g., the function is called in a function or in a constant of a package), the return value is not specified.
+
+The simulation result should not depend on the return value of this function.
+
 ==== Event-Related Operators with Function Syntax
 
 The operators listed below are event-related operators with function syntax.
