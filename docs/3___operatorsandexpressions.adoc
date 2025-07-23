@@ -1564,14 +1564,13 @@ There are four levels of variability of expressions, starting from the least var
 
 While many invalid models can be rejected based on the declared variabilities of variables alone (without the concept of expression variability), the following rules both help enforcing compliance of computed solutions to declared variability, and impose additional restrictions that simplify reasoning and reporting of errors:
 
-* For an assignment `v := expr` or binding equation `v = expr`, v must be declared to be at least as variable as expr.
-* For multiple return assignment `(x1, ..., xn) := expr` (see <<assignments-from-called-functions-with-multiple-results>>), all of x1, ..., xn must be declared to be at least as variable as expr.
-* When determining whether an equation can contribute to solving for a variable v (for instance, when applying the perfect matching rule, see <<synchronous-data-flow-principle-and-single-assignment-rule>>), the equation can only be considered contributing if the resulting solution would be at most as variable as v.
+* For an assignment `v := expr` or binding equation `v = expr`, v must be declared to be at least as variable as `expr`.
+* For multiple return assignment `(x1, ..., xn) := expr` (see <<assignments-from-called-functions-with-multiple-results>>), all of x1, ..., xn must be declared to be at least as variable as `expr`.
+* When determining whether an equation can contribute to solving for a variable v (for instance, when applying the perfect matching rule, see <<synchronous-data-flow-principle-and-single-assignment-rule>>), the equation can only be considered contributing if the resulting solution would be at most as variable as `v`.
 
-.Example
+[example]
 ====
-
-The (underdetermined) model `Test` below illustrates two kinds of consequences due to variability constraints.
+Example: The (underdetermined) model `Test` below illustrates two kinds of consequences due to variability constraints.
 First, it contains variability errors for declaration equations and assignments.
 Second, it illustrates the impact of variability on the matching of equations to variables, which can lead to violation of the perfect matching rule.
 Details of how variabilities are determined are given in the sections below.
@@ -1641,7 +1640,7 @@ Evaluable expressions are:
 * Except for the special built-in operators `initial`, `terminal`, `der`, `edge`, `change`, `sample`, and `pre`, a function or operator with evaluable subexpressions is an evaluable expression.
 * The sub-expression `end` used in `A[... end ...]` if `A` is a variable declared in a non-`function` class.
 * Some function calls are evaluable expressions even if the arguments are not:
-** `cardinality(c)`, see restrictions for use in <<operator:cardinality>>.
+** `cardinality(c)`, see restrictions for use in <<cardinality-deprecated>>.
 ** `size(A)` (including `size(A, j)` where `j` is an evaluable expression) if `A` is variable declared in a non-function class.
 ** `Connections.isRoot(A.R)`
 ** `Connections.rooted(A.R)`
@@ -1661,17 +1660,26 @@ Parameter expressions are:
 Discrete-time expressions are:
 
 * Parameter expressions.
+
 * Discrete-time variables, see <<component-variability>>.
+
 * Function calls where all input arguments of the function are discrete-time expressions.
+
 * Expressions where all the subexpressions are discrete-time expressions.
+
 * Expressions in the body of a `when`-clause, `initial equation`, or `initial algorithm`.
+
 * Expressions in a clocked discrete-time partition, see <<discrete-time-and-discretized-sub-partitions>>.
-* Unless inside `noEvent`: Ordered relations (`>`, `<`, `>=`, `<=`) and the event generating functions `ceil`, `floor`, `div`, and `integer`, if at least one argument is non-discrete-time expression and subtype of `Real`.
-  [NOTE]
-  These will generate events, see <<events-and-synchronization>>.
-  Note that `rem` and `mod` generate events but are not discrete-time expressions.
-  In other words, relations inside `noEvent`, such as `noEvent(x>1)`, are not discrete-time expressions.
+
+* Unless inside `noEvent`: Ordered relations (`>`, `<`, `>=`, `+<=+`) and the event generating functions `ceil`, `floor`, `div`, and `integer`, if at least one argument is non-discrete-time expression and subtype of `Real`.
++
+[NOTE]
+These will generate events, see <<events-and-synchronization>>.
+Note that `rem` and `mod` generate events but are not discrete-time expressions.
+In other words, relations inside `noEvent`, such as `noEvent(x>1)`, are not discrete-time expressions.
+
 * The functions `pre`, `edge`, and `change` result in discrete-time expressions.
+
 * Expressions in functions behave as though they were discrete-time expressions.
 
 Inside an `if`-expression, `if`-clause, `while`-statement or `for`-clause, that is controlled by a non-discrete-time (that is continuous-time, but not discrete-time) switching expression and not in the body of a `when`-clause, it is not legal to have assignments to discrete-time variables, equations between discrete-time expressions, or real elementary relations/functions that should generate events.
@@ -1681,7 +1689,7 @@ The restriction above is necessary in order to guarantee that all equations for 
 
 For a scalar or array equation `expr1 = expr2` where neither expression is of base type `Real`, both expressions must be discrete-time expressions.
 For a record equation, the rule applies recursively to each of the components of the record.
-This is called the discrete-valued equation variability rule.
+This is called the _discrete-valued equation variability rule_.
 
 [NOTE]
 ====
@@ -1701,9 +1709,9 @@ For a record equation, the components of the record have independent types, and 
 In order to support records with components of mixed variability, a record equation with sides given by either record variables or record constructors is conceptually split before variability is determined.
 ====
 
-.Example
+[example]
 ====
-Discrete-valued equation variability rule applied to record equations.
+Example: Discrete-valued equation variability rule applied to record equations.
 In the first of the equations below, having a record constructor on both sides of the equation, the equation is conceptually split, and variabilities of `time` and `true` are considered separately.
 In the second equation, the `makeR` function call -- regardless of inlining -- means that the equation cannot be conceptually split into individual components of the record.
 The variability of the `makeR` call is continuous-time due to the `time` argument, which also becomes the variability of the `b` member of the call.
@@ -1734,6 +1742,6 @@ end Test;
 ==== Continuous-Time and Non-Discrete-Time Expressions
 
 All expressions are continuous-time expressions including constant, parameter and discrete-time expressions.
-The term non-discrete-time expression refers to expressions that are neither constant, parameter nor discrete-time expressions.
+The term _non-discrete-time expression_ refers to expressions that are neither constant, parameter nor discrete-time expressions.
 For example, `time` is a continuous-time built-in variable (see <<component-variability>>) and `time + 1` is a non-discrete-time expression.
 Note that plain `time` may, depending on context, refer to the continuous-time variable or the non-discrete-time expression.

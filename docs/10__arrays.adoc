@@ -1140,7 +1140,7 @@ Member access slicing:
 
 ==== Relational Operators
 
-Relational operators `<`, `<=`, `>`, `>=`, `==`, `<>`, are only defined for scalar operands of simple types, not for arrays (see <<equality-relational-and-logical-operators>>).
+Relational operators `<`, `+<=+`, `>`, `>=`, `==`, `<>`, are only defined for scalar operands of simple types, not for arrays (see <<equality-relational-and-logical-operators>>).
 
 ==== Boolean Operators
 
