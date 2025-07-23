@@ -1661,22 +1661,30 @@ type E = enumeration([enum-list]);
 defines an enumeration type `E` and the associated enumeration literals of the enum-list.
 The enumeration literals shall be distinct within the enumeration type.
 The names of the enumeration literals are defined inside the scope of `E`.
-Each enumeration literal in the enum-list has type `E`.
+Each enumeration literal in the `enum-list` has type `E`.
 
-.Example
+[example]
+====
+Example:
+
 [source,modelica]
 ----
 type Size = enumeration(small, medium, large, xlarge);
 Size t_shirt_size = Size.medium;
 ----
+====
 
 An optional description string can be specified with each enumeration literal.
 
-.Example
+[example]
+====
+Example:
+
 [source,modelica]
 ----
 type Size2 = enumeration(small "1st", medium "2nd", large "3rd", xlarge "4th");
 ----
+====
 
 An enumeration type is a simple type and the attributes are defined in <<attributes-of-enumeration-types>>.
 The `Boolean` type name or an enumeration type name can be used to specify the dimension range for a dimension in an array declaration and to specify the range in a `for`-loop range expression; see <<types-as-iteration-ranges>>.
@@ -1685,19 +1693,30 @@ An element of an enumeration type can be accessed in an expression.
 [NOTE]
 Uses of elements of enumeration type in expressions include indexing into an array.
 
-.Example
+[example]
+====
+Example:
+
 [source,modelica]
 ----
 type DigitalCurrentChoices = enumeration(zero, one);
 // Similar to Real, Integer
+----
 
-// Setting attributes:
+Setting attributes:
+
+[source,modelica]
+----
 type DigitalCurrent = DigitalCurrentChoices(quantity="Current",
                                start = DigitalCurrentChoices.one, fixed = true);
 DigitalCurrent c(start = DigitalCurrent.one, fixed = true);
 DigitalCurrentChoices c(start = DigitalCurrentChoices.one, fixed = true);
+----
 
-// Using enumeration types as expressions:
+Using enumeration types as expressions:
+
+[source,modelica]
+----
 Real x[DigitalCurrentChoices];
 
 // Example using the type name to represent the range
@@ -1742,6 +1761,7 @@ equation
   zeros(n) = mdot1*cc1 + mdot2*cc2 + mdot3*cc3
 end Mixing2;
 ----
+====
 
 ===== Attributes of Enumeration Types
 :id: attributes-of-enumeration-types
@@ -1757,7 +1777,7 @@ a new simple type is conceptually defined as
 
 [source,modelica]
 ----
-type E
+type E // Note : Defined with Modelica syntax although predefined
   EnumType <value>; // Not an attribute; only accessed without dot-notation
   parameter StringType quantity = "";
   parameter EnumType min = e1, max = en;
@@ -1789,8 +1809,10 @@ The type conversion function `Integer(<expression of enumeration type>)` returns
 
 `String(E.enumvalue)` gives the `String` representation of the enumeration value.
 
-.Example
-`String(E.Small)` gives `"Small"`.
+[example]
+====
+Example: `String(E.Small)` gives `"Small"`.
+====
 
 See also <<numeric-functions-and-conversion-operators>>.
 
@@ -1805,15 +1827,23 @@ For an enumeration type named `EnumTypeName`, the expression `EnumTypeName(<Inte
 
 Attempting to convert an integer argument that does not correspond to a value of the enumeration type is an error.
 
-.Example
+[example]
+====
+Example:
+
 [source,modelica]
 ----
 type Colors = enumeration ( RED, GREEN, BLUE, CYAN, MAGENTA, YELLOW );
+----
 
-// Converting from Integer to Colors:
+Converting from `Integer` to `Colors`:
+
+[source,modelica]
+----
 c = Colors(i);
 c = Colors(10); // An error
 ----
+====
 
 ===== Unspecified Enumeration
 :id: unspecified-enumeration
