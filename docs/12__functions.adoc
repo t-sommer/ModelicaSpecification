@@ -2463,7 +2463,7 @@ Within Modelica this memory is defined as instance of the predefined class `Exte
 * There is a predefined partial class `ExternalObject`.
   [NOTE]
   Since the class is partial, it is not possible to define an instance of this class.
-* An external object class shall be directly extended from `ExternalObject`, shall have exactly two function definitions, called `constructor` and `destructor`, may extend from empty classes (<<empty-class>>), but not contain any other elements.
+* An external object class shall be directly extended from `ExternalObject`, shall have exactly two function definitions, called `constructor` and `destructor`, may extend from empty classes (<<defintion:empty-class>>), but not contain any other elements.
   The functions `constructor` and `destructor` shall not be replaceable.
   It is not legal to call the `constructor` and `destructor` functions explicitly.
 * The `constructor` function is called exactly once before the first use of the object.
@@ -2486,7 +2486,7 @@ Within Modelica this memory is defined as instance of the predefined class `Exte
   The function input shall not have a default value using the constructor.
 * An external object class shall be of the specialized class `class`.
   [NOTE]
-  Apart from empty classes (<<empty-class>>), this is the only use of `class`.
+  Apart from empty classes (<<defintion:empty-class>>), this is the only use of `class`.
 * Classes derived from `ExternalObject` can neither be used in an `extends`-clause nor in a short class definition.
 * Only the constructor may return external objects and an external object can only be bound in component declarations and neither modified later nor assigned to.
   [NOTE]
