@@ -1365,28 +1365,36 @@ The operators `noEvent`, `pre`, `edge`, and `change`, are vectorizable according
 |===
 |Expression                |Description                                       |Details
 
-|`initial()`               |Predicate for the initialization phase            |<<initial>>
-|`terminal()`              |Predicate for the end of a successful analysis    |<<terminal>>
-|`noEvent(expr)`           |Evaluate expr without triggering events           |<<noEvent>>
-|`smooth(p, expr)`         |Treat expr as p times continuously differentiable |<<smooth>>
-|`sample(start, interval)` |Periodic triggering of events                     |<<sample>>
-|`pre(y)`                  |Left limit y(t-) of variable y(t)                 |<<pre>>
-|`edge(b)`                 |Expands into `(b and not pre(b))`                 |<<edge>>
-|`change(v)`               |Expands into `(v <> pre(v))`                      |<<change>>
-|`reinit(x, expr)`         |Reinitialize x with expr                          |<<reinit>>
+|`initial()`               |Predicate for the initialization phase            |<<operator:initial>>
+|`terminal()`              |Predicate for the end of a successful analysis    |<<operator:terminal>>
+|`noEvent(expr)`           |Evaluate expr without triggering events           |<<operator:noEvent>>
+|`smooth(p, expr)`         |Treat expr as p times continuously differentiable |<<operator:smooth>>
+|`sample(start, interval)` |Periodic triggering of events                     |<<operator:sample>>
+|`pre(y)`                  |Left limit y(t-) of variable y(t)                 |<<operator:pre>>
+|`edge(b)`                 |Expands into `(b and not pre(b))`                 |<<operator:edge>>
+|`change(v)`               |Expands into `(v <> pre(v))`                      |<<operator:change>>
+|`reinit(x, expr)`         |Reinitialize x with expr                          |<<operator:reinit>>
 |===
 
-===== initial
+[[operator:initial,Operator initial]]
+Operator initial::
++
+--
 [source,modelica]
 ----
 initial()
 ----
+
 Returns `true` during the initialization phase and `false` otherwise.
 
 [NOTE]
 Hereby, `initial()` triggers a time event at the beginning of a simulation.
+--
 
-===== terminal
+[[operator:terminal,Operator terminal]]
+Operator terminal::
++
+-- 
 [source,modelica]
 ----
 terminal()
@@ -1395,25 +1403,35 @@ Returns `true` at the end of a successful analysis.
 
 [NOTE]
 Hereby, `terminal()` ensures an event at the end of successful simulation.
+--
 
-===== noEvent
+[[operator:noEvent,Operator noEvent]]
+Operator noEvent::
++
+-- 
 [source,modelica]
 ----
 noEvent(expr)
 ----
-`Real` elementary relations within expr are taken literally, i.e., no state or time event is triggered.
-No zero crossing functions shall be used to monitor any of the normally event-generating subexpressions inside expr.
-Inside functions, `noEvent` only makes a difference in combination with the function annotation `GenerateEvents = true` (see <<generate-events>>).
-See also <<smooth>> and <<events-and-synchronization>>.
 
-===== smooth
+`Real` elementary relations within expr are taken literally, i.e., no state or time event is triggered.
+No zero crossing functions shall be used to monitor any of the normally event-generating subexpressions inside _expr_.
+Inside functions, `noEvent` only makes a difference in combination with the function annotation `GenerateEvents = true` (see <<generate-events>>).
+See also <<operator:smooth>> and <<events-and-synchronization>>.
+--
+
+[[operator:smooth,Operator smooth]]
+Operator smooth::
++
+--
 [source,modelica]
 ----
 smooth(p, expr)
 ----
-If latexmath:[p \geq 0] `smooth(p, expr)` returns `expr` and states that `expr` is `p` times continuously differentiable, i.e., `expr` is continuous in all `Real` variables appearing in the expression and all partial derivatives with respect to all appearing real variables exist and are continuous up to order `p`.
+
+If latexmath:[p \geq 0] `smooth(p, expr)` returns _expr_ and states that _expr_ is `p` times continuously differentiable, i.e., _expr_ is continuous in all `Real` variables appearing in the expression and all partial derivatives with respect to all appearing real variables exist and are continuous up to order `p`.
 The argument `p` should be a scalar `Integer` parameter expression.
-The only allowed types for `expr` in `smooth` are: `Real` expressions, arrays of allowed expressions, and records containing only components of allowed expressions.
+The only allowed types for _expr_ in `smooth` are: `Real` expressions, arrays of allowed expressions, and records containing only components of allowed expressions.
 
 `smooth` should be used instead of `noEvent` in order to avoid events for efficiency reasons.
 A tool is free to not generate events for expressions inside `smooth`.
@@ -1422,8 +1440,10 @@ However, `smooth` does not guarantee that no events will be generated, and thus 
 [NOTE]
 Note that `smooth` does not guarantee a smooth output if any of the occurring variables change discontinuously.
 
-.Example
+[example]
 ====
+Example:
+
 [source,modelica]
 ----
   Real x, y, z;
@@ -1434,8 +1454,12 @@ equation
         noEvent(if x < 0 then 0 else sqrt(x) * x)); // Needs noEvent.
 ----
 ====
+--
 
-===== sample
+[[operator:sample,Operator sample]]
+Operator sample::
++
+--
 [source,modelica]
 ----
 sample(start, interval)
@@ -1444,18 +1468,21 @@ Returns `true` and triggers time events at time instants `start + i * interval` 
 At event iterations after the first one at each event and during continuous integration the operator always returns `false`.
 The starting time `start` and the sample interval `interval` must be parameter expressions and need to be a subtype of `Real` or `Integer`.
 The sample interval `interval` must be a positive number.
+--
 
-===== pre
-
+[[operator:pre,Operator pre]]
+Operator pre::
++
+--
 [source,modelica]
 ----
 pre(y)
 ----
 
-Returns the left limit y(t-) of variable y(t) at a time instant t.
-At an event instant, y(t-) is the value of y after the last event iteration at time instant t.
-Any subscripts in the component expression y must be parameter expressions.
-`pre` can be applied if the following three conditions are fulfilled simultaneously: (a) variable y is either a subtype of a simple type or is a record component, (b) y is a discrete-time expression (c) the operator is not applied in a function class.
+Returns the left limit _y(t^-^)_ of variable _y(t)_ at a time instant t.
+At an event instant, _y(t^-^)_ is the value of _y_ after the last event iteration at time instant _t_ (see comment below).
+Any subscripts in the component expression _y_ must be parameter expressions.
+`pre` can be applied if the following three conditions are fulfilled simultaneously: (a) variable _y_ is either a subtype of a simple type or is a record component, (b) _y_ is a discrete-time expression (c) the operator is not applied in a `function` class.
 
 [NOTE]
 This can be applied to continuous-time variables in `when`-clauses, see <<discrete-time-expressions>> for the definition of discrete-time expression.
@@ -1476,24 +1503,35 @@ The language allows mixed algebraic systems of equations where the unknown varia
 These systems of equations can be solved by a global fix point iteration scheme, similarly to the event iteration, by fixing the `Boolean`, `Integer`, and/or enumeration unknowns during one iteration.
 Again, it is a quality of implementation to solve these systems more efficiently, e.g., by applying the fix point iteration scheme to a subset of the model equations.
 ====
+--
 
-===== edge
+[[operator:edge,Operator edge]]
+Operator edge::
++
 [source,modelica]
 ----
 edge(b)
 ----
++
 Expands into `(b and not pre(b))` for Boolean variable b.
-The same restrictions as for `pre` apply (e.g., not to be used in function classes).
+The same restrictions as for `pre` apply (e.g., not to be used in `function` classes).
 
-===== change
+[[operator:change,Operator change]]
+Operator change::
++
+-- 
 [source,modelica]
 ----
 change(v)
 ----
 Expands into `(v <> pre(v))`.
 The same restrictions as for `pre` apply.
+--
 
-===== reinit
+[[operator:reinit,Operator reinit]]
+Operator reinit::
++
+-- 
 
 [source,modelica]
 ----
@@ -1506,10 +1544,11 @@ x is a scalar or array `Real` variable that is implicitly defined to have `State
 [NOTE]
 It is an error if the variable cannot be selected as a state.
 
-`expr` needs to be type-compatible with x.
+`expr` needs to be type-compatible with `x`.
 `reinit` can only be applied once for the same variable -- either as an individual variable or as part of an array of variables.
 It can only be applied in the body of a `when`-clause in an equation section.
 See also <<reinit>>.
+--
 
 === Variability of Expressions
 
