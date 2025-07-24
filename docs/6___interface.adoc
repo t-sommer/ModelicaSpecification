@@ -12,32 +12,37 @@ In this chapter, two kinds of terminology are used for identical concepts to get
 A short summary of the terms is given in the following table.
 The details are defined in the rest of this chapter.
 
-Type or interface::
+Defintion Type or interface::
 The "essential" part of the public declaration sections of a class that is needed to decide whether `A` can be used instead of `B`.
++
 [NOTE]
 E.g., a declaration `Real x` is part of the type (also called _interface_), but `import A` is not.
 
-Class type or inheritance interface::
+Defintion Class type or inheritance interface::
 The "essential" part of the public _and protected_ declaration sections of a class that is needed to decide whether `A` can be used instead of `B`.
 The class type, also called inheritance interface, is needed when inheritance takes place, since then the protected declarations have to be taken into account.
 
-Subtype or compatible interface::
+Defintion Subtype or compatible interface::
 `A` is a subtype of `B`, or equivalently, the interface of `A` is compatible to the interface of `B`, if the "essential" part of the public declaration sections of `B` is also available in `A`.
++
 [NOTE]
 E.g., if `B` has a declaration `Real x`, this declaration must also be present in `A`.
 If `A` has a declaration `Real y`, this declaration may be present in `B`.
-
++
 If `A` is a subtype of `B`, then `B` is said to be a _supertype_ of `A`.
 
-Restricted subtype or plug compatible interface::
+Defintion Restricted subtype or plug compatible interface::
 `A` is a restricted subtype of `B`, or equivalently, the interface of `A` is plug compatible to the interface of `B`, if `A` is a subtype of `B` and if connector components in `A` that are not in `B`, are default connectable.
++
 [NOTE]
 E.g., it is not allowed that these connectors have variables with the `input` prefix, because then they must be connected.
++
 A model or block `A` cannot be used instead of `B`, if the particular situation does not allow to make a connection to these additional connectors.
 In such a case the stricter _plug compatible_ is required for a redeclaration.
 
-Function subtype or function compatible interface::
+Defintion Function subtype or function compatible interface::
 `A` is a function subtype of `B`, or equivalently, the interface of `A` is function compatible to the interface of `B`, if `A` is a subtype of `B` and if the additional arguments of function `A` that are not in function `B` are defined in such a way, that `A` can be called at places where `B` is called.
++
 [NOTE]
 E.g., an additional argument must have a default value.
 
@@ -59,8 +64,9 @@ The _type_ of the element is the set of values having the same interface, i.e., 
 
 A _subtype_ `A1` in relation to another type `A`, means that the elements of the set corresponding to `A1` is a subset of the set corresponding to `A`, characterized by the elements of that subset having additional properties.
 
-.Example
-A record `R`: `record R Boolean b; Real x; end R;`
+[example]
+====
+Example: A record `R`: `record R Boolean b; Real x; end R;`
 
 Another record called `R2`: `record R2 Boolean b; Real x; Real y; end R2;`
 
@@ -73,10 +79,9 @@ The statement that `r` has the type (or interface) `R` means that the value of `
 
 The type `R2` is a subtype of `R` since its instances fulfill the additional property of having the component `Real y;` in all its values.
 
-image::media/subtype.svg[]
-
-The type `R` can be defined as the set of record values containing `x` and `b`.
-The subtype `R2` is the subset of values that all contain `x`, `b`, and `y`.
+.The type `R` can be defined as the set of record values containing `x` and `b`. The subtype `R2` is the subset of values that all contain `x`, `b`, and `y`.
+image::media/subtype.svg[width=50%]
+====
 
 === Interface or Type
 Based on a flattened class or component we can construct an interface for that flattened class or component.
@@ -97,7 +102,9 @@ The _interface_ or _type_ (the terms _interface_ and _type_ are equivalent and c
 ** For an enumeration type or component of enumeration type the names of the enumeration literals in order.
 ** Whether it is a built-in type and the built-in type (`RealType`, `IntegerType`, `StringType` or `BooleanType`).
 * Only for an `operator record` class and classes derived from `ExternalObject`: the full name of the operator record base class (i.e., the one containing the operations), or the derived class.
-  See <<overloaded-operators>> and <<external-objects>>.
+See <<overloaded-operators>> and <<external-objects>>.
++
+The following item does not apply for an `operator record` class or class derived from `ExternalObject`, since the type is already uniquely defined by the full name.
 * For each named public element of the class or component (including both local and inherited named elements) a tuple comprised of:
 ** Name of the element.
 ** Interface or type of the element.
@@ -223,13 +230,18 @@ If a sub-component is redeclared, see <<redeclaration>>, it is impossible to con
 A connector with `input` prefix must be connected to, and since one cannot connect across hierarchies, one should not be allowed to introduce such a connector at a level where a connection is not possible.
 Therefore all public components present in the interface `A` that are not present in `B` must be connected by default.
 
-Plug-compatibility (= restricted subtyping)::
+Definition Plug-compatibility (= restricted subtyping)::
++
+--
 An interface `A` is plug-compatible with (a restricted subtype of) an interface `B` (or the constraining interface of `B`) iff:
 
 * `A` is compatible with (subtype of) `B`.
 * All public components present in `A` but not in `B` must be default-connectable (as defined below).
+--
 
-Default connectable::
+Definition Default connectable::
++
+--
 A component of an interface is default-connectable iff:
 
 * All of its components are default connectable.
@@ -240,6 +252,7 @@ Otherwise a connection to the input will be missing.
 [NOTE]
 The expandable connector does potentially have inputs.
 * A parameter, constant, or non-connector input must either have a binding equation or all of its sub-components must have binding equations.
+--
 
 Based on the above definitions, there are the following restrictions:
 
@@ -249,7 +262,10 @@ Based on the above definitions, there are the following restrictions:
 [NOTE]
 The reason for the difference is that for an inherited top-level component it is possible to connect to the additional connectors, either in this class or in a derived class.
 
-.Example
+[example]
+====
+Example:
+
 [source,modelica]
 ----
 partial model TwoFlanges
@@ -297,16 +313,18 @@ Thus any new connectors must work without being connected, i.e., the default con
 That fails for inputs (and expandable connectors may contain inputs).
 For parameters and non-connector inputs it would be possible to provide bindings in a derived class, but that would require hierarchical modifiers and it would be bad modeling practice that a hierarchical modifier must be used in order to make a model valid.
 A replaceable class might be used as the class for a sub-component, therefore plug-compatibility is required not only for replaceable sub-components, but also for replaceable classes.
+====
 
 === Function-Compatibility or Function-Subtyping for Functions
+
 [NOTE]
 Functions may be called with either named or positional arguments, and thus both the name and order is significant.
 If a function is redeclared, see <<redeclaration>>, any new arguments must have defaults (and be at the end) in order to preserve the meaning of existing calls.
 
 [[function-compatibility]]
-Function-compatibility or function-subtyping for functions::
+Definition Function-compatibility or function-subtyping for functions::
 A `function` class `A` is _function-compatible with or a function subtype of_ `function` class `B` iff (the terms _function-compatible_ and _function subtype_ of are synonyms and used interchangeably):
-
++
 * `A` is compatible to (subtype of) `B`.
 * All public input components of `B` have correspondingly named public input components of `A` in the same order and preceding any additional public input components of `A`.
 * All public output components of `B` have correspondingly named public output components of `A` in the same order and preceding any additional public output components of `A`.
@@ -321,8 +339,10 @@ Based on the above definition the following restriction holds:
 Note that variability of function calls, see <<function-variability>>, cannot be determined using just the interface of a function, as the variabilities of default argument expressions are not expressed by the interface.
 Hence a function redeclaration being function-compatible does not ensure that function calls will fulfill variability requirements, and tools must therefore check variability requirements separately.
 
-.Example
-Demonstrating a redeclaration using a function-compatible function
+[example]
+====
+Example: Demonstrating a redeclaration using a function-compatible function
+
 [source,modelica]
 ----
 function GravityInterface
@@ -360,6 +380,7 @@ Note: `PointMassGravity` is not function-compatible with `GravityInterface` (no 
 
 The constant `failed` in `planet1`, will violate variability constraints, whereas it will work in `planet2`.
 The call `gravity(frame_a.r0)` will work in both of them.
+====
 
 === Type Compatible Expressions
 Certain expressions consist of an operator applied to two or more subexpressions (`A` and `B`).
