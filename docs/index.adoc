@@ -292,6 +292,16 @@ table.tableblock.fit-content > caption.title {
 #header > h1, #header > .details {
     display: none;
 }
+
+.vertical-text {
+    transform: rotate(-90deg) translate(-11em, 0);
+    transform-origin: left top 0;
+    float: left;
+    display: inline-block;
+    white-space: nowrap;
+    width: 1em;
+    height: 11em;
+}
 </style>
 
 <script>
