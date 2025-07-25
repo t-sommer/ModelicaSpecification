@@ -56,7 +56,7 @@ An array indexed by `Boolean` or enumeration type can only be used in the follow
 |`C x;`                  |`C x;`                  |0       |Scalar      |Scalar
 |`C[n] x;`               |`C x[n];`               |1       |Vector      |n-vector
 |`C[EB] x;`              |`C x[EB];`              |1       |Vector      |Vector indexed by `EB`
-|`C[n, m] x;`            |`C x[n, m];`            |2       |Matrix      |n x m matrix
+|`C[n, m] x;`            |`C x[n, m];`            |2       |Matrix      |n &times; m matrix
 |`C[n1, n2, ..., nk] x;` |`C x[n1, n2, ..., nk];` |k       |Array       |General array
 |===
 
@@ -72,22 +72,44 @@ A component contained in an array variable is called an _array element_.
 An array element has no identifier.
 Instead they are referenced by array access expressions called indices that use enumeration values or positive integer index values.
 
-.Example
-The number of dimensions and the dimensions sizes are part of the type, and shall be checked for example at redeclarations.
+[example]
+====
+Example: The number of dimensions and the dimensions sizes are part of the type, and shall be checked for example at redeclarations.
 Declaration form 1 displays clearly the type of an array, whereas declaration form 2 is the traditional way of array declarations in languages such as Fortran, C, C++.
 
 [source,modelica]
 ----
 Real[:] v1, v2 // Vectors v1 and v2 have unknown sizes.
                // The actual sizes may be different.
+----
+
+It is possible to mix the two declaration forms although it might be confusing.
+
+[source,modelica]
+----
 Real[3, 2] x[4, 5]; // x has type Real[4, 5, 3, 2];
+----
+
+The reason for this order is given by examples such as:
+
+[source,modelica]
+----
 type R3 = Real[3];
 R3 a;
 R3 b[1] = {a};
 Real[3] c[1] = b;
+----
+
+Using a type for `a` and `b` in this way is normal, and substituting a type by its definition allows `c`.
+
+A vector `y` indexed by enumeration values
+
+[source,modelica]
+----
 type TwoEnums = enumeration(one,two);
 Real[TwoEnums] y;
 ----
+====
 
 Zero-valued dimensions are allowed, so: `C x[0];` declares an empty vector, and: `C x[0, 3];` an empty matrix.
 Some examples of array dimensions of size one are given in the following table.
@@ -98,16 +120,19 @@ Some examples of array dimensions of size one are given in the following table.
 |Modelica form 1 |Modelica form 2 |# dims |Designation |Explanation
 
 |`C[1] x;`       |`C x[1];`       |1      |Vector      |1-vector, representing a scalar
-|`C[1, 1] x;`    |`C x[1, 1];`    |2      |Matrix      |(1 x 1)-matrix, representing a scalar
-|`C[n, 1] x;`    |`C x[n, 1];`    |2      |Matrix      |(n x 1)-matrix, representing a column
-|`C[1, n] x;`    |`C x[1, n];`    |2      |Matrix      |(1 x n)-matrix, representing a row
+|`C[1, 1] x;`    |`C x[1, 1];`    |2      |Matrix      |(1 &times; 1)-matrix, representing a scalar
+|`C[n, 1] x;`    |`C x[n, 1];`    |2      |Matrix      |(n &times; 1)-matrix, representing a column
+|`C[1, n] x;`    |`C x[1, n];`    |2      |Matrix      |(1 &times; n)-matrix, representing a row
 |===
 
 The type of an array of array is the multidimensional array which is constructed by taking the first dimensions from the component declaration and subsequent dimensions from the maximally expanded component type.
 A type is maximally expanded, if it is either one of the built-in types (`Real`, `Integer`, `Boolean`, `String`, enumeration type) or it is not a type class.
 Before operator overloading is applied, a type class of a variable is maximally expanded.
 
-.Example
+[example]
+====
+Example:
+
 [source,modelica]
 ----
 type Voltage = Real(unit = "V");
@@ -121,16 +146,29 @@ MultiPin[4] p; // type class of p is MultiPin, type of p is Pin[4, 5];
 type Point = Real[3];
 Point p1[10];
 Real p2[10, 3];
+----
+
+The components `p1` and `p2` have identical types.
+
+[source,modelica]
+----
 p2[5] = p1[2] + p2[4]; // equivalent to p2[5, :] = p1[2, :] + p2[4, :]
 Real r[3] = p1[2]; // equivalent to r[3] = p1[2, :]
 ----
+====
 
 [NOTE]
+--
 Automatic assertions at simulation time:
+
 Let `A` be a declared array and `i` be the declared maximum dimension size of the di-dimension, then an `assert`-statement `assert(i >= 0, ...)` is generated provided this assertion cannot be checked at compile time.
+It is a quality of implementation issue to generate a good error message if the assertion fails.
+
 Let `A` be a declared array and `i` be an index accessing an index of the di-dimension.
-Then for every such index-access an assert statement `assert(1 <= i and i <= size(A, di), ...)` is generated, provided this assertion cannot be checked at compile time.
+Then for every such index-access an assert statement `+assert(1 <= i and i <= size(A, di), ...)+` is generated, provided this assertion cannot be checked at compile time.
+
 For efficiency reasons, these implicit `assert`-statements may be optionally suppressed.
+--
 
 ==== Lower and Upper Index Bounds
 
@@ -154,25 +192,31 @@ The `promote` function listed below is utilized to define other array operators 
 |===
 |Expression      |Description                 |Details
 
-|`promote(A, n)` |Append dimensions of size 1 |<<modelica:promote>>
+|`promote(A, n)` |Append dimensions of size 1 |<<operator:promote>>
 |===
 
-[[modelica:promote]]
-promote::
+[[operator:promote,Operator promote]]
+Operator promote::
++
+--
 [source,modelica]
 ----
 promote(A, n)
 ----
 Fills dimensions of size 1 from the right to array A up to dimension n, where n >= ndims(A) is required.
 
-Let `C = promote(A, n)`, with n_A = ndims(A), then ndims(C) = n, size(C, j) = size(A, j) for 1 <= j <= n_A, size(C, j) = 1 for n_A + 1 <= j <= n, C[i1, ..., i_nA, 1, ..., 1] = A[i1, ..., i_nA]
+Let `C = promote(A, n)`, with `n~A~ = ndims(A)`, then `+ndims(C) = n+`, `+size(C, j) = size(A, j)+` for `1 &le; j &le; n~A+~`, `size(C, j) = 1` for `n~A~ + 1 &le; j &le; n, C[i1, ..., i~nA~, 1, ..., 1] = A[i1, ..., i~nA~]`
 
 The argument n must be a constant that can be evaluated during translation, as it determines the number of dimensions of the returned array.
 
 [NOTE]
 An n that is not a constant that can be evaluated during translation for `promote` complicates matrix handling as it can change matrix-equations in subtle ways (e.g., changing inner products to matrix multiplication).
+--
 
-.Examples
+[example]
+====
+Some examples of using the functions defined in the following section <<dimension-and-size-functions>> to <<matrix-and-vector-algebra-functions>>:
+
 [source,modelica]
 ----
 Real x[4, 1, 6];
@@ -184,6 +228,7 @@ Real[3, 1] m = matrix(v1);
 Real[3] v2 = vector(m);
 Boolean check[3, 4] = fill(true, 3, 4);
 ----
+====
 
 ==== Dimension and Size Functions
 
@@ -191,37 +236,42 @@ Boolean check[3, 4] = fill(true, 3, 4);
 |===
 |Expression   |Description                    |Details
 
-|`ndims(A)`   |Number of dimensions           |<<modelica:ndims>>
-|`size(A, i)` |Size of single array dimension |<<modelica:size-of-dim>>
-|`size(A)`    |Sizes of all array dimensions  |<<modelica:size-vector>>
+|`ndims(A)`   |Number of dimensions           |<<operator:ndims>>
+|`size(A, i)` |Size of single array dimension |<<operator:size-of-dim>>
+|`size(A)`    |Sizes of all array dimensions  |<<operator:size-vector>>
 |===
 
-[[modelica:ndims]]
-ndims::
+[[operator:ndims,Operator ndims]]
+Operator ndims::
++
 [source,modelica]
 ----
 ndims(A)
 ----
-Returns the number of dimensions k of expression A, with k >= 0.
++
+Returns the number of dimensions k of expression A, with k &ge; 0.
 
-[[modelica:size-of-dim]]
-size::
+[[operator:size-of-dim,Operator size]]
+Operator size::
++
 [source,modelica]
 ----
 size(A, i)
 ----
-Returns the size of dimension i of array expression A where 1 <= i <= ndims(A).
-
+Returns the size of dimension i of array expression A where 1 &le; i &le; ndims(A).
++
 If A refers to a component of an expandable connector, then the component must be a declared component of the expandable connector, and it must not use colon (`:`) to specify the array size of dimension i.
 
-[[modelica:size-vector]]
-size::
+[[operator:size-vector,Operator size]]
+Operator size::
++
 [source,modelica]
 ----
 size(A)
 ----
++
 Returns a vector of length ndims(A) containing the dimension sizes of A.
-
++
 If A refers to a component of an expandable connector, then the component must be a declared component of the expandable connector, and it must not use colon (`:`) to specify the size of any array dimension.
 
 ==== Dimensionality Conversion Functions
@@ -230,123 +280,135 @@ If A refers to a component of an expandable connector, then the component must b
 |===
 |Expression  |Description            |Details
 
-|`scalar(A)` |Extract only element   |<<modelica:scalar>>
-|`vector(A)` |Vector of all elements |<<modelica:vector>>
-|`matrix(A)` |Two-dimensional array  |<<modelica:matrix>>
+|`scalar(A)` |Extract only element   |<<operator:scalar>>
+|`vector(A)` |Vector of all elements |<<operator:vector>>
+|`matrix(A)` |Two-dimensional array  |<<operator:matrix>>
 |===
 
-[[modelica:scalar]]
-scalar::
+[[operator:scalar,Operator scalar]]
+Operator scalar::
++
 [source,modelica]
 ----
 scalar(A)
 ----
++
 Returns the single element of array A.
-size(A, i) = 1 is required for 1 <= i <= ndims(A).
+`size(A, i) = 1` is required for 1 &le; i &le; `ndims(A)`.
 
-[[modelica:vector]]
-vector::
+[[operator:vector,Operator vector]]
+Operator vector::
++
 [source,modelica]
 ----
 vector(A)
 ----
++
 Returns a 1-vector if A is a scalar, and otherwise returns a vector containing all the elements of the array, provided there is at most one dimension size > 1.
 
-[[modelica:matrix]]
-matrix::
+[[operator:matrix,Operator matrix]]
+Operator matrix::
++
 [source,modelica]
 ----
 matrix(A)
 ----
++
 Returns promote(A, 2) if A is a scalar or vector, and otherwise returns the elements of the first two dimensions as a matrix.
-size(A, i) = 1 is required for 2 < i <= ndims(A).
+`size(A, i)` = 1 is required for 2 < i &le; `ndims(A)`.
 
 ==== Specialized Array Constructor Functions
+
+An array constructor function constructs and returns an array computed from its arguments.
+Most of the constructor functions listed below construct an array by filling in values according to a certain pattern, in several cases just giving all array elements the same value.
+The general array constructor with syntax `array(...)` or `{...}` is described in section <<vector-matrix-and-array-constructors>>.
 
 [cols="a,a,a",options=autowidth]
 |===
 |Expression                 |Description                         |Details
 
-|`identity(n)`              |Identity matrix                     |<<modelica:identity>>
-|`diagonal(v)`              |Diagonal matrix                     |<<modelica:diagonal>>
-|`zeros(n1, n2, n3, ...)`   |Array with all elements being 0     |<<modelica:zeros>>
-|`ones(n1, n2, n3, ...)`    |Array with all elements being 1     |<<modelica:ones>>
-|`fill(s, n1, n2, n3, ...)` |Array with all elements equal       |<<modelica:fill>>
-|`linspace(x1, x2, n)`      |Vector with equally spaced elements |<<modelica:linspace>>
+|`identity(n)`              |Identity matrix                     |<<operator:identity>>
+|`diagonal(v)`              |Diagonal matrix                     |<<operator:diagonal>>
+|`zeros(n1, n2, n3, ...)`   |Array with all elements being 0     |<<operator:zeros>>
+|`ones(n1, n2, n3, ...)`    |Array with all elements being 1     |<<operator:ones>>
+|`fill(s, n1, n2, n3, ...)` |Array with all elements equal       |<<operator:fill>>
+|`linspace(x1, x2, n)`      |Vector with equally spaced elements |<<operator:linspace>>
 |===
 
-[[modelica:identity]]
-identity::
+[[operator:identity,Operator identity]]
+Operator identity::
++
 [source,modelica]
 ----
 identity(n)
 ----
++
 Returns the n x n Integer identity matrix, with ones on the diagonal and zeros at the other places.
 
-[[modelica:diagonal]]
-diagonal::
+[[operator:diagonal,Operator diagonal]]
+Operator diagonal::
++
 [source,modelica]
 ----
 diagonal(v)
 ----
++
 Returns a square matrix with the elements of vector v on the diagonal and all other elements zero.
 
-[[modelica:zeros]]
-zeros::
+[[operator:zeros,Operator zeros]]
+Operator zeros::
++
 [source,modelica]
 ----
 zeros(n1, n2, n3, ...)
 ----
++
 Returns the n1 x n2 x n3 x ... Integer array with all elements equal to zero (ni >= 0).
 The function needs one or more arguments, that is, zeros() is not legal.
 
-[[modelica:ones]]
-ones::
+[[operator:ones,Operator ones]]
+Operator ones::
++
 [source,modelica]
 ----
 ones(n1, n2, n3, ...)
 ----
++
 Returns the n1 x n2 x n3 x ... Integer array with all elements equal to one (ni >= 0).
 The function needs one or more arguments, that is, ones() is not legal.
 
-[[modelica:fill]]
-fill::
+[[operator:fill,Operator fill]]
+Operator fill::
++
 [source,modelica]
 ----
 fill(s, n1, n2, n3, ...)
 ----
++
 Returns the n1 x n2 x n3 x ... array with all elements equal to scalar or array expression s (ni >= 0).
 The returned array has the same type as s.
++
+Recursive definition: latexmath:[fill(s, n_{1}, n_{2}, n_{3}, \ldots) = fill(fill(s, n_{2}, n_{3}, \ldots), n_{1}); fill(s, n) = \{s, s, \ldots, s\}].
++
+The function needs two or more arguments; that is, `fill(s)` is not legal.
 
-Recursive definition:
-fill(s, n1, n2, n3, ...) = fill(fill(s, n2, n3, ...), n1);
-fill(s, n) = {s, s, ..., s}.
-
-The function needs two or more arguments; that is, fill(s) is not legal.
-
-[[modelica:linspace]]
-linspace::
+[[operator:linspace,Operator linspace]]
+Operator linspace::
++
 [source,modelica]
 ----
 linspace(x1, x2, n)
 ----
++
 Returns a Real vector with n equally spaced elements, such that v = linspace(x1, x2, n) results in
-v[i] = x1 + (x2 - x1) * (i - 1) / (n - 1) for 1 <= i <= n
-It is required that n >= 2.
-The arguments x1 and x2 shall be numeric scalar expressions.
-
-.Examples
-[source,modelica]
-----
-Real x[4, 1, 6];
-size(x, 1) = 4;
-size(x); // vector with elements 4, 1, 6
-size(2 * x + x) = size(x);
-Real[3] v1 = fill(1.0, 3);
-Real[3, 1] m = matrix(v1);
-Real[3] v2 = vector(m);
-Boolean check[3, 4] = fill(true, 3, 4);
-----
++
+[latexmath]
+++++
+v[i] = x_{1} + (x_{2} - x_{1}) \frac{i - 1}{n - 1} \quad \text{for $1 \leq i \leq n$}
+++++
++
+It is required that n &ge; 2.
+The arguments x~1~ and x~2~ shall be numeric scalar expressions.
 
 ==== Reduction Functions and Operators
 
@@ -358,119 +420,143 @@ The restriction on the type of the input in <<reduction-expressions>> for reduct
 |===
 |Expression             |Description                      |Details
 
-|`min(A)`               |Least element of array           |<<modelica:min-of-array>>
-|`min(x, y)`            |Least of two scalars             |<<modelica:min-binary>>
-|`min(... for ...)`     |Reduction to least value         |<<modelica:min-reduction>>
-|`max(A)`               |Greatest element of array        |<<modelica:max-of-array>>
-|`max(x, y)`            |Greatest of two scalars          |<<modelica:max-binary>>
-|`max(... for ...)`     |Reduction to greatest value      |<<modelica:max-reduction>>
-|`sum(A)`               |Sum of scalar array elements     |<<modelica:sum-of-array>>
-|`sum(... for ...)`     |Sum reduction                    |<<modelica:sum-reduction>>
-|`product(A)`           |Product of scalar array elements |<<modelica:product-of-array>>
-|`product(... for ...)` |Product reduction                |<<modelica:product-reduction>>
+|`min(A)`               |Least element of array           |<<operator:min-of-array>>
+|`min(x, y)`            |Least of two scalars             |<<operator:min-binary>>
+|`min(... for ...)`     |Reduction to least value         |<<operator:min-reduction>>
+|`max(A)`               |Greatest element of array        |<<operator:max-of-array>>
+|`max(x, y)`            |Greatest of two scalars          |<<operator:max-binary>>
+|`max(... for ...)`     |Reduction to greatest value      |<<operator:max-reduction>>
+|`sum(A)`               |Sum of scalar array elements     |<<operator:sum-of-array>>
+|`sum(... for ...)`     |Sum reduction                    |<<operator:sum-reduction>>
+|`product(A)`           |Product of scalar array elements |<<operator:product-of-array>>
+|`product(... for ...)` |Product reduction                |<<operator:product-reduction>>
 |===
 
-[[modelica:min-of-array]]
-min::
+[[operator:min-of-array,Operator min]]
+Operator min::
++
 [source,modelica]
 ----
 min(A)
 ----
++
 Returns the least element of array expression A; as defined by `<`.
 
-[[modelica:min-binary]]
-min::
+[[operator:min-binary,Operator min]]
+Operator min::
++
 [source,modelica]
 ----
 min(x, y)
 ----
++
 Returns the least element of the scalars x and y; as defined by `<`.
 
-[[modelica:min-reduction]]
-min::
+[[operator:min-reduction,Operator min]]
+Operator min::
++
 [source,modelica]
 ----
 min(e(i, ..., j) for i in u, ..., j in v)
 ----
++
 Returns the least value (as defined by `<`) of the scalar expression e(i, ..., j) evaluated for all combinations of i in u, ..., j in v.
 
-[[modelica:max-of-array]]
-max::
+[[operator:max-of-array,Operator max]]
+Operator max::
++
 [source,modelica]
 ----
 max(A)
 ----
++
 Returns the greatest element of array expression A; as defined by `>`.
 
-[[modelica:max-binary]]
-max::
+[[operator:max-binary,Operator max]]
+Operator max::
++
 [source,modelica]
 ----
 max(x, y)
 ----
++
 Returns the greatest element of the scalars x and y; as defined by `>`.
 
-[[modelica:max-reduction]]
-max::
+[[operator:max-reduction,Operator max]]
+Operator max::
++
 [source,modelica]
 ----
 max(e(i, ..., j) for i in u, ..., j in v)
 ----
++
 Returns the greatest value (as defined by `>`) of the scalar expression e(i, ..., j) evaluated for all combinations of i in u, ..., j in v.
 
-[[modelica:sum-of-array]]
-sum::
+[[operator:sum-of-array,Operator sum]]
+Operator sum::
++
 [source,modelica]
 ----
 sum(A)
 ----
++
 Returns the scalar sum of all the elements of array expression A.
 Equivalent to sum reduction (see below, including application to operator records) over all array indices: sum(A[j, k, ...] for j, k, ...)
 
-[[modelica:sum-reduction]]
-sum::
+[[operator:sum-reduction,Operator sum]]
+Operator sum::
++
 [source,modelica]
 ----
 sum(e(i, ..., j) for i in u, ..., j in v)
 ----
++
 Returns the sum of the expression e(i, ..., j) evaluated for all combinations of i in u, ..., j in v.
-
++
 The sum reduction function (both variants) may be applied to an operator record, provided that the operator record defines `'0'` and `'+'`.
 It is then assumed to form an additive group.
-
++
 For Integer indexing this is
++
 [source,modelica]
 ----
 e(u[1], ..., v[1]) + e(u[2], ..., v[1]) + ... + e(u[end], ..., v[1]) + ... + e(u[end], ..., v[end])
 ----
++
 For non-Integer indexing this uses all valid indices instead of 1..end.
-
++
 The type of sum(e(i, ..., j) for i in u, ..., j in v) is the same as the type of e(i, ..., j).
 
-[[modelica:product-of-array]]
-product::
+[[operator:product-of-array,Operator product]]
+Operator product::
++
 [source,modelica]
 ----
 product(A)
 ----
++
 Returns the scalar product of all the elements of array expression A.
 Equivalent to product reduction (see below) over all array indices: product(A[j, k, ...] for j, k, ...)
 
-[[modelica:product-reduction]]
-product::
+[[operator:product-reduction,Operator product]]
+Operator product::
++
 [source,modelica]
 ----
 product(e(i, ..., j) for i in u, ..., j in v)
 ----
++
 Returns the product of the expression e(i, ..., j) evaluated for all combinations of i in u, ..., j in v.
-
++
 For Integer indexing this is
++
 [source,modelica]
 ----
 e(u[1], ..., v[1]) * e(u[2], ..., v[1]) * ... * e(u[end], ..., v[1]) * ... * e(u[end], ..., v[end])
 ----
++
 For non-Integer indexing this uses all valid indices instead of 1..end.
-
++
 The type of product(e(i, ..., j) for i in u, ..., j in v) is the same as the type of e(i, ..., j).
 
 ===== Reduction Expressions
@@ -510,14 +596,18 @@ For deduction of ranges, see <<implicit-iteration-ranges>>; and for using types 
 
 The least and greatest values of Real are the minimum and maximum representable finite floating point numbers of the underlying type (see also <<real-type>>).
 
-.Examples
+[example
+====
+Example:
+
 [source,modelica]
 ----
-sum(i for i in 1:10) // Gives sum_{i=1}^{10}i = 1 + 2 + ... + 10 = 55
-sum(i^2 for i in {1,3,7,6}) // Gives sum_{i in {1, 3, 7, 6}}i^2 = 1 + 9 + 49 + 36 = 95
+sum(i for i in 1:10) // Gives sum for i=1..10 of i = 1 + 2 + ... + 10 = 55
+sum(i^2 for i in {1,3,7,6}) // Gives sum for i={1, 3, 7, 6} of i*i = 1 + 9 + 49 + 36 = 95
 {product(j for j in 1:i) for i in 0:4} // Gives {1, 1, 2, 6, 24}
 max(i^2 for i in {3,7,6}) // Gives 49
 ----
+====
 
 ==== Matrix and Vector Algebra Functions
 
@@ -528,65 +618,88 @@ The functions `outerProduct`,  `symmetric`, `cross` and `skew` require Real vect
 [cols="a,a,a",options=autowidth]
 |===
 |Expression           |Description                                  |Details
-|`transpose(A)`       |Matrix transpose                             |<<modelica:transpose>>
-|`outerProduct(x, y)` |Vector outer product                         |<<modelica:outerProduct>>
-|`symmetric(A)`       |Symmetric matrix, keeping upper part         |<<modelica:symmetric>>
-|`cross(x, y)`        |Cross product                                |<<modelica:cross>>
-|`skew(x)`            |Skew symmetric matrix associated with vector |<<modelica:skew>>
+
+|`transpose(A)`       |Matrix transpose                             |<<operator:transpose>>
+|`outerProduct(x, y)` |Vector outer product                         |<<function:outerProduct>>
+|`symmetric(A)`       |Symmetric matrix, keeping upper part         |<<function:symmetric>>
+|`cross(x, y)`        |Cross product                                |<<function:cross>>
+|`skew(x)`            |Skew symmetric matrix associated with vector |<<function:skew>>
 |===
 
-transpose::
-[[modelica:transpose]]
+[[operator:transpose,Operator transpose]]
+Operator transpose::
++
 [source,modelica]
 ----
 transpose(A)
 ----
++
 Permutes the first two dimensions of array A.
 It is an error if array A does not have at least 2 dimensions.
 
-outerProduct::
-[[modelica:outerProduct]]
+[[function:outerProduct,Function outerProduct]]
+Function outerProduct::
++
 [source,modelica]
 ----
 outerProduct(x, y)
 ----
++
 Returns the outer product of vectors x and y, that is: matrix(x) * transpose(matrix(y))
 
-[[modelica:symmetric]]
-symetric::
+[[function:symmetric,Function symetric]]
+Function symetric::
++
 [source,modelica]
 ----
 symmetric(A)
 ----
++
 Returns a symmetric matrix which is identical to the square matrix A on and above the diagonal.
-
++
 That is, if B := symmetric(A), then B is given by:
++
+[source,modelica]
+----
 B[i, j] =
   if i <= j then A[i, j]
   else A[j, i]
+----
 
-[[modelica:cross]]
-cross::
+[[function:cross,Function cross]]
+Function cross::
++
 [source,modelica]
 ----
 cross(x, y)
 ----
++
 Returns the cross product of the 3-vectors x and y:
++
+[source,modelica]
+----
 vector([ x[2] * y[3] - x[3] * y[2] ;
          x[3] * y[1] - x[1] * y[3] ;
          x[1] * y[2] - x[2] * y[1] ])
+----
 
-[[modelica:skew]]
-skew::
+[[function:skew,Function skew]]
+Function skew::
++
 [source,modelica]
 ----
 skew(x)
 ----
++
 Returns the 3 x 3 skew symmetric matrix associated with a 3-vector, i.e., cross(x, y) = skew(x) * y.
 Equivalently, skew(x) is given by:
+
+[source,modelica]
+----
 [ 0,   -x[3], x[2] ;
   x[3], 0,   -x[1] ;
  -x[2], x[1], 0    ]
+----
 
 === Vector, Matrix and Array Constructors
 

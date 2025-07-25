@@ -411,8 +411,8 @@ The mathematical functions and conversion operators listed below do not generate
 
 |`abs(v)`          |Absolute value (event-free)              |<<abs>>
 |`sign(v)`         |Sign of argument (event-free)            |<<sign>>
-|`min(x, y)`       |Least of two scalars (event-free)        |<<modelica:min-binary>>
-|`max(x, y)`       |Greatest of two scalars (event-free)     |<<modelica:max-binary>>
+|`min(x, y)`       |Least of two scalars (event-free)        |<<operator:min-binary>>
+|`max(x, y)`       |Greatest of two scalars (event-free)     |<<operator:max-binary>>
 |`sqrt(v)`         |Square root                              |<<sqrt>>
 |`nthRoot(v, n)`   |__n__th root                               |<<nthRoot>>
 |`Integer(e)`      |Conversion from enumeration to `Integer` |<<integer-of-enumeration>>
