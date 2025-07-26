@@ -205,7 +205,7 @@ promote(A, n)
 ----
 Fills dimensions of size 1 from the right to array A up to dimension n, where n >= ndims(A) is required.
 
-Let `C = promote(A, n)`, with `n~A~ = ndims(A)`, then `+ndims(C) = n+`, `+size(C, j) = size(A, j)+` for `1 &le; j &le; n~A+~`, `size(C, j) = 1` for `n~A~ + 1 &le; j &le; n, C[i1, ..., i~nA~, 1, ..., 1] = A[i1, ..., i~nA~]`
+Let `C = promote(A, n)`, with `n~A~ = ndims(A)`, then `+ndims(C) = n+`, `+size(C, j) = size(A, j)+` for `1 &le; j &le; n~A+~`, `size(C, j) = 1` for `n~A~ + 1 &le; j &le; n, C[i~1~, ..., i~nA~, 1, ..., 1] = A[i~1~, ..., i~nA~]`
 
 The argument n must be a constant that can be evaluated during translation, as it determines the number of dimensions of the returned array.
 
@@ -249,7 +249,7 @@ Operator ndims::
 ndims(A)
 ----
 +
-Returns the number of dimensions k of expression A, with k &ge; 0.
+Returns the number of dimensions _k_ of expression _A_, with _k &ge; 0_.
 
 [[operator:size-of-dim,Operator size]]
 Operator size::
@@ -258,7 +258,7 @@ Operator size::
 ----
 size(A, i)
 ----
-Returns the size of dimension i of array expression A where 1 &le; i &le; ndims(A).
+Returns the size of dimension _i_ of array expression _A_ where _1 &le; i &le; ndims(A)_.
 +
 If A refers to a component of an expandable connector, then the component must be a declared component of the expandable connector, and it must not use colon (`:`) to specify the array size of dimension i.
 
@@ -270,9 +270,9 @@ Operator size::
 size(A)
 ----
 +
-Returns a vector of length ndims(A) containing the dimension sizes of A.
+Returns a vector of length `ndims(A)` containing the dimension sizes of _A_.
 +
-If A refers to a component of an expandable connector, then the component must be a declared component of the expandable connector, and it must not use colon (`:`) to specify the size of any array dimension.
+If _A_ refers to a component of an expandable connector, then the component must be a declared component of the expandable connector, and it must not use colon (`:`) to specify the size of any array dimension.
 
 ==== Dimensionality Conversion Functions
 
@@ -293,8 +293,8 @@ Operator scalar::
 scalar(A)
 ----
 +
-Returns the single element of array A.
-`size(A, i) = 1` is required for 1 &le; i &le; `ndims(A)`.
+Returns the single element of array _A_.
+`size(A, i) = 1` is required for 1 &le; _i_ &le; `ndims(A)`.
 
 [[operator:vector,Operator vector]]
 Operator vector::
@@ -304,7 +304,7 @@ Operator vector::
 vector(A)
 ----
 +
-Returns a 1-vector if A is a scalar, and otherwise returns a vector containing all the elements of the array, provided there is at most one dimension size > 1.
+Returns a 1-vector if _A_ is a scalar, and otherwise returns a vector containing all the elements of the array, provided there is at most one dimension size > 1.
 
 [[operator:matrix,Operator matrix]]
 Operator matrix::
@@ -314,8 +314,8 @@ Operator matrix::
 matrix(A)
 ----
 +
-Returns promote(A, 2) if A is a scalar or vector, and otherwise returns the elements of the first two dimensions as a matrix.
-`size(A, i)` = 1 is required for 2 < i &le; `ndims(A)`.
+Returns `promote(A, 2)` if _A_ is a scalar or vector, and otherwise returns the elements of the first two dimensions as a matrix.
+`size(A, i)` = 1 is required for 2 < _i_ &le; `ndims(A)`.
 
 ==== Specialized Array Constructor Functions
 
@@ -343,7 +343,7 @@ Operator identity::
 identity(n)
 ----
 +
-Returns the n x n Integer identity matrix, with ones on the diagonal and zeros at the other places.
+Returns the _n × n_ Integer identity matrix, with ones on the diagonal and zeros at the other places.
 
 [[operator:diagonal,Operator diagonal]]
 Operator diagonal::
@@ -353,42 +353,42 @@ Operator diagonal::
 diagonal(v)
 ----
 +
-Returns a square matrix with the elements of vector v on the diagonal and all other elements zero.
+Returns a square matrix with the elements of vector _v_ on the diagonal and all other elements zero.
 
 [[operator:zeros,Operator zeros]]
 Operator zeros::
 +
-[source,modelica]
+[source,subs="+quotes"]
 ----
-zeros(n1, n2, n3, ...)
+zeros(n~1~, n~2~, n~3~, ...)
 ----
 +
-Returns the n1 x n2 x n3 x ... Integer array with all elements equal to zero (ni >= 0).
-The function needs one or more arguments, that is, zeros() is not legal.
+Returns the _n~1~ × n~2~ × n~3~ × ..._ Integer array with all elements equal to zero (_n~i~_ ≥ 0).
+The function needs one or more arguments, that is, `zeros()` is not legal.
 
 [[operator:ones,Operator ones]]
 Operator ones::
 +
-[source,modelica]
+[source,subs="+quotes"]
 ----
-ones(n1, n2, n3, ...)
+ones(n~1~, n~2~, n~3~, ...)
 ----
 +
-Returns the n1 x n2 x n3 x ... Integer array with all elements equal to one (ni >= 0).
-The function needs one or more arguments, that is, ones() is not legal.
+Returns the _n~1~ × n~2~ × n~3~ × ..._ Integer array with all elements equal to one (_n~i~_ ≥ 0).
+The function needs one or more arguments, that is, `ones()` is not legal.
 
 [[operator:fill,Operator fill]]
 Operator fill::
 +
-[source,modelica]
+[source,subs="+quotes"]
 ----
-fill(s, n1, n2, n3, ...)
+fill(s, n~1~, n~2~, n~3~, ...)
 ----
 +
-Returns the n1 x n2 x n3 x ... array with all elements equal to scalar or array expression s (ni >= 0).
-The returned array has the same type as s.
+Returns the _n~1~ × n~2~ × n~3~ × ..._ array with all elements equal to scalar or array expression _s_ (_ni_ >= 0).
+The returned array has the same type as _s_.
 +
-Recursive definition: latexmath:[fill(s, n_{1}, n_{2}, n_{3}, \ldots) = fill(fill(s, n_{2}, n_{3}, \ldots), n_{1}); fill(s, n) = \{s, s, \ldots, s\}].
+Recursive definition: `fill(s, n~1~, n~2~, n~3~, ...) = fill(fill(s, n~2~, n~3~, ...), n~1~); fill(s, n) = {s, s, ..., s}`.
 +
 The function needs two or more arguments; that is, `fill(s)` is not legal.
 
@@ -400,7 +400,7 @@ Operator linspace::
 linspace(x1, x2, n)
 ----
 +
-Returns a Real vector with n equally spaced elements, such that v = linspace(x1, x2, n) results in
+Returns a Real vector with _n_ equally spaced elements, such that `v = linspace(x~1~, x~2~, n)` results in
 +
 [latexmath]
 ++++
@@ -440,7 +440,7 @@ Operator min::
 min(A)
 ----
 +
-Returns the least element of array expression A; as defined by `<`.
+Returns the least element of array expression `A`; as defined by `<`.
 
 [[operator:min-binary,Operator min]]
 Operator min::
@@ -450,7 +450,7 @@ Operator min::
 min(x, y)
 ----
 +
-Returns the least element of the scalars x and y; as defined by `<`.
+Returns the least element of the scalars `x` and `y`; as defined by `<`.
 
 [[operator:min-reduction,Operator min]]
 Operator min::
@@ -460,7 +460,7 @@ Operator min::
 min(e(i, ..., j) for i in u, ..., j in v)
 ----
 +
-Returns the least value (as defined by `<`) of the scalar expression e(i, ..., j) evaluated for all combinations of i in u, ..., j in v.
+Returns the least value (as defined by `<`) of the scalar expression `e(i, ..., j)` evaluated for all combinations of  `i` in `u, ..., j` in `v`.
 
 [[operator:max-of-array,Operator max]]
 Operator max::
@@ -470,7 +470,7 @@ Operator max::
 max(A)
 ----
 +
-Returns the greatest element of array expression A; as defined by `>`.
+Returns the greatest element of array expression `A`; as defined by `>`.
 
 [[operator:max-binary,Operator max]]
 Operator max::
@@ -480,7 +480,7 @@ Operator max::
 max(x, y)
 ----
 +
-Returns the greatest element of the scalars x and y; as defined by `>`.
+Returns the greatest element of the scalars `x` and `y`; as defined by `>`.
 
 [[operator:max-reduction,Operator max]]
 Operator max::
@@ -490,7 +490,7 @@ Operator max::
 max(e(i, ..., j) for i in u, ..., j in v)
 ----
 +
-Returns the greatest value (as defined by `>`) of the scalar expression e(i, ..., j) evaluated for all combinations of i in u, ..., j in v.
+Returns the greatest value (as defined by `>`) of the scalar `expression e(i, ..., j)` evaluated for all combinations of `i` in `u, ..., j` in `v`.
 
 [[operator:sum-of-array,Operator sum]]
 Operator sum::
@@ -500,8 +500,8 @@ Operator sum::
 sum(A)
 ----
 +
-Returns the scalar sum of all the elements of array expression A.
-Equivalent to sum reduction (see below, including application to operator records) over all array indices: sum(A[j, k, ...] for j, k, ...)
+Returns the scalar sum of all the elements of array expression `A`.
+Equivalent to sum reduction (see below, including application to operator records) over all array indices: `sum(A[j, k, ...] for j, k, ...)`
 
 [[operator:sum-reduction,Operator sum]]
 Operator sum::
@@ -511,7 +511,7 @@ Operator sum::
 sum(e(i, ..., j) for i in u, ..., j in v)
 ----
 +
-Returns the sum of the expression e(i, ..., j) evaluated for all combinations of i in u, ..., j in v.
+Also described in <<reduction-expressions>>. Returns the sum of the expression `e(i, ..., j)` evaluated for all combinations of `i` in `u, ..., j` in `v`.
 +
 The sum reduction function (both variants) may be applied to an operator record, provided that the operator record defines `'0'` and `'+'`.
 It is then assumed to form an additive group.
@@ -520,12 +520,14 @@ For Integer indexing this is
 +
 [source,modelica]
 ----
-e(u[1], ..., v[1]) + e(u[2], ..., v[1]) + ... + e(u[end], ..., v[1]) + ... + e(u[end], ..., v[end])
+e(u[1], ..., v[1]) + e(u[2], ..., v[1]) + ... 
+ + e(u[end], ..., v[1]) + ... 
+ + e(u[end], ..., v[end])
 ----
 +
-For non-Integer indexing this uses all valid indices instead of 1..end.
+For non-`Integer` indexing this uses all valid indices instead of `1..end`.
 +
-The type of sum(e(i, ..., j) for i in u, ..., j in v) is the same as the type of e(i, ..., j).
+The type of `sum(e(i, ..., j) for i in u, ..., j in v)` is the same as the type of `e(i, ..., j)`.
 
 [[operator:product-of-array,Operator product]]
 Operator product::
@@ -536,7 +538,7 @@ product(A)
 ----
 +
 Returns the scalar product of all the elements of array expression A.
-Equivalent to product reduction (see below) over all array indices: product(A[j, k, ...] for j, k, ...)
+Equivalent to product reduction (see below) over all array indices: `product(A[j, k, ...] for j, k, ...)`
 
 [[operator:product-reduction,Operator product]]
 Operator product::
@@ -546,18 +548,20 @@ Operator product::
 product(e(i, ..., j) for i in u, ..., j in v)
 ----
 +
-Returns the product of the expression e(i, ..., j) evaluated for all combinations of i in u, ..., j in v.
+Returns the product of the expression `e(i, ..., j)` evaluated for all combinations of `i` in `u, ..., j` in `v`.
 +
-For Integer indexing this is
+For `Integer` indexing this is
 +
 [source,modelica]
 ----
-e(u[1], ..., v[1]) * e(u[2], ..., v[1]) * ... * e(u[end], ..., v[1]) * ... * e(u[end], ..., v[end])
+e(u[1], ..., v[1]) * e(u[2], ..., v[1]) * ...
+ * e(u[end], ..., v[1]) * ...
+ * e(u[end], ..., v[end])
 ----
 +
-For non-Integer indexing this uses all valid indices instead of 1..end.
+For non-`Integer` indexing this uses all valid indices instead of `1..end`.
 +
-The type of product(e(i, ..., j) for i in u, ..., j in v) is the same as the type of e(i, ..., j).
+The type of `product(e(i, ..., j) for i in u, ..., j in v)` is the same as the type of `e(i, ..., j)`.
 
 ===== Reduction Expressions
 
@@ -569,18 +573,18 @@ function-name(expression1 for iterators)
 is a _reduction expression_.
 The expressions in the iterators of a reduction expression shall be vector expressions.
 They are evaluated once for each reduction expression, and are evaluated in the scope immediately enclosing the reduction expression.
-If expression1 contains event-generating expressions, the expressions inside the iterators shall be evaluable.
+If `expression1` contains event-generating expressions, the expressions inside the iterators shall be evaluable.
 
 For an iterator:
 [source,modelica]
 ----
 IDENT in expression2
 ----
-the loop-variable, IDENT, is in scope inside expression1.
-The loop-variable may hide other variables, as in for-loops.
-The result depends on the function-name, and currently the only legal function-names are the built-in operators `array`, `sum`, `product`, `min`, and `max`.
+the loop-variable, `IDENT`, is in scope inside `expression1`.
+The loop-variable may hide other variables, as in `for`-loops.
+The result depends on the `function-name`, and currently the only legal function-names are the built-in operators `array`, `sum`, `product`, `min`, and `max`.
 For array, see <<vector-matrix-and-array-constructors>>.
-If function-name is `sum`, `product`, `min`, or `max` the result is of the same type as expression1 and is constructed by evaluating expression1 for each value of the loop-variable and computing the sum, product, min, or max of the computed elements.
+If `function-name` is `sum`, `product`, `min`, or `max` the result is of the same type as expression1 and is constructed by evaluating expression1 for each value of the loop-variable and computing the sum, product, min, or max of the computed elements.
 For deduction of ranges, see <<implicit-iteration-ranges>>; and for using types as ranges see <<types-as-iteration-ranges>>.
 
 .Reduction expressions with iterators
@@ -594,9 +598,9 @@ For deduction of ranges, see <<implicit-iteration-ranges>>; and for using types 
 |`max`     |Scalar enumeration, Boolean, Integer or Real |Least value of type
 |===
 
-The least and greatest values of Real are the minimum and maximum representable finite floating point numbers of the underlying type (see also <<real-type>>).
+The least and greatest values of `Real` are the minimum and maximum representable finite floating point numbers of the underlying type (see also <<real-type>>).
 
-[example
+[example]
 ====
 Example:
 
@@ -634,8 +638,8 @@ Operator transpose::
 transpose(A)
 ----
 +
-Permutes the first two dimensions of array A.
-It is an error if array A does not have at least 2 dimensions.
+Permutes the first two dimensions of array `A`.
+It is an error if array `A` does not have at least 2 dimensions.
 
 [[function:outerProduct,Function outerProduct]]
 Function outerProduct::
@@ -645,7 +649,7 @@ Function outerProduct::
 outerProduct(x, y)
 ----
 +
-Returns the outer product of vectors x and y, that is: matrix(x) * transpose(matrix(y))
+Returns the outer product of vectors `x` and `y`, that is: `matrix(x) * transpose(matrix(y))`
 
 [[function:symmetric,Function symetric]]
 Function symetric::
@@ -655,9 +659,9 @@ Function symetric::
 symmetric(A)
 ----
 +
-Returns a symmetric matrix which is identical to the square matrix A on and above the diagonal.
+Returns a symmetric matrix which is identical to the square matrix `A` on and above the diagonal.
 +
-That is, if B := symmetric(A), then B is given by:
+That is, if `B := symmetric(A)`, then `B` is given by:
 +
 [source,modelica]
 ----
@@ -674,7 +678,7 @@ Function cross::
 cross(x, y)
 ----
 +
-Returns the cross product of the 3-vectors x and y:
+Returns the cross product of the 3-vectors `x` and `y`:
 +
 [source,modelica]
 ----
@@ -743,16 +747,16 @@ Angle[3] a = {1.0, alpha, 4}; // type of a is Real[3].
 An expression:
 [source,modelica]
 ----
-{expression for iterators}
+"{" expression for iterators "}"
 ----
 or
 [source,modelica]
 ----
-array(expression for iterators)
+array "(" expression for iterators ")"
 ----
 is an _array constructor with iterators_.
 The expressions inside the iterators of an array constructor shall be vector expressions.
-If expression contains event-generating expressions, the expressions inside the iterators shall be evaluable.
+If `expression` contains event-generating expressions, the expressions inside the iterators shall be evaluable.
 They are evaluated once for each array constructor, and are evaluated in the scope immediately enclosing the array constructor.
 
 For an iterator:
@@ -764,7 +768,7 @@ IDENT in array_expression
 
 the loop-variable, `IDENT`, is in scope inside expression in the array construction.
 The loop-variable may hide other variables, as in `for`-loops.
-The loop-variable has the same type as the type of the elements of array_expression; and can be simple type as well as a record type.
+The loop-variable has the same type as the type of the elements of `array_expression`; and can be simple type as well as a record type.
 The loop-variable will have the same type for the entire loop -- i.e., for an `array_expression {1, 3.2}` the iterator will have the type of the type-compatible expression (`Real`) for all iterations.
 For deduction of ranges, see <<implicit-iteration-ranges>>; and for using types as range see <<types-as-iteration-ranges>>.
 
@@ -809,7 +813,7 @@ Real toeplitz2[:,:] = {{i-j for i in 1:n} for j in 1:n};
 
 The function `cat(k, A, B, C, ...)` concatenates arrays `A`, `B`, `C`, ... along dimension _k_ according to the following rules:
 
-* Arrays `A`, `B`, `C`, ... must have the same number of dimensions, i.e., `ndims(A) = ndims(B)` = ...
+* Arrays `A`, `B`, `C`, ... must have the same number of dimensions, i.e., `ndims(A) = ndims(B) = ...`
 
 * Arrays `A`, `B`, `C`, ... must be type compatible expressions (see <<type-compatible-expressions>>) giving the type of the elements of the result.
   The maximally expanded types should be equivalent.
@@ -836,7 +840,7 @@ Then the size of R is given by
 
 ----
 size(R,k) = size(A,k) + size(B,k) + size(C,k) + ...
-size(R,j) = size(A,j) = size(B,j) = size(C,j) = ... for 1 <= j <= n and j != k
+size(R,j) = size(A,j) = size(B,j) = size(C,j) = ... for 1 ≤ j ≤ n and j ̸= k
 ----
 
 and the array elements of R are given by
@@ -854,7 +858,7 @@ and the array elements of R are given by
 \end{align*}
 ++++
 
-where 1 &le; ij &le; `size(R,j)` for 1 &le; `j` &le; `n`.
+where `1 ≤ i~j~ ≤ size(R,j)` for `1 ≤ j ≤ n`.
 
 ===== Concatenation along First and Second Dimensions
 
@@ -862,11 +866,11 @@ For convenience, a special syntax is supported for the concatenation along the f
 
 * Concatenation along first dimension:
   `[A; B; C; ...] = cat(1, promote(A, n), promote(B, n), promote(C, n), ...)` where `n = max(2, ndims(A), ndims(B), +ndims(C)+, ...)`.
-  If necessary, 1-sized dimensions are added to the right of A, B, C before the operation is carried out, in order that the operands have the same number of dimensions which will be at least two.
+  If necessary, 1-sized dimensions are added to the right of `A`, `B`, `C` before the operation is carried out, in order that the operands have the same number of dimensions which will be at least two.
 
 * Concatenation along second dimension:
   `[A, B, C, ...] = cat(2, promote(A, n), promote(B, n), promote(C, n), ...)` where `n = max(2, ndims(A), ndims(B), +ndims(C)+, ...)`.
-  If necessary, 1-sized dimensions are added to the right of A, B, C before the operation is carried out, especially that each operand has at least two dimensions.
+  If necessary, 1-sized dimensions are added to the right of  `A`, `B`, `C` before the operation is carried out, especially that each operand has at least two dimensions.
 
 * The two forms can be mixed.
   `[..., ...]` has higher precedence than `[...; ...]`, e.g., `[a, b; c, d]` is parsed as `+[[a, b]; [c, d]]+`.
@@ -972,14 +976,31 @@ a[:, j]      // Vector of the j'th column of a.
 a[j]         // Vector of the j'th row of a. Same as: a[j, :]
 a[j : k]     // Same as: {a[j], a[j+1], ..., a[k]}
 a[:, j : k]  // Same as: [a[:, j], a[:, j+1], ..., a[:, k]]
+----
+
+The range vector operator is just a special case of a vector expression:
+
+[source,modelica]
+----
 v[2 : 2 : 8] // Same as: v[{2, 4, 6, 8}]
+----
+
+Array indexing in assignment statements:
+
+[source,modelica]
+----
 v[{j, k}] := {2, 3}; // Same as: v[j] := 2; v[k] := 3;
 v[{1, 1}] := {2, 3}; // Same as: v[1] := 3;
+----
+
+Array indexing of general expression:
+
+[source,modelica]
+----
 (a*a)[:, j]    // Vector of the j'th column of a*a
 ----
 
-If x is a vector, x[1] is a scalar, but the slice x[1:5] is a vector
-(a vector-valued or colon index expression causes a vector to be returned).
+If `x` is a vector, `x[1]` is a scalar, but the slice `x[1:5]` is a vector (a vector-valued or colon index expression causes a vector to be returned).
 ====
 
 .Examples of scalars vs. array slices created with the colon index. The examples make use of the array variables `x[n, m]`,  `v[k]`, and  `z[i, j, p]`.
@@ -1072,9 +1093,9 @@ This is legal for the simple types and all types satisfying the requirements for
 
 ==== Addition, Subtraction, and String Concatenation
 
-Addition `a + b` and subtraction `a - b` of numeric scalars, vectors, matrices, and arrays is defined element-wise and require `size(a) = size(b)` and a numeric type for a and b.
+Addition `a + b` and subtraction `a - b` of numeric scalars, vectors, matrices, and arrays is defined element-wise and require `size(a) = size(b)` and a numeric type for `a` and `b`.
 Unary plus and minus are defined element-wise.
-Addition `a + b` of string scalars, vectors, matrices, and arrays is defined as element-wise string concatenation of corresponding elements from a and b, and require size(a) = size(b).
+Addition `a + b` of string scalars, vectors, matrices, and arrays is defined as element-wise string concatenation of corresponding elements from `a` and `b`, and require `size(a) = size(b)`.
 
 .Array addition, subtraction, and string concatenation. In this table the symbolic operator ± represents either + or -. The scalar Operation applies for all j in 1,..., n and k in 1,...,m.
 [cols="a,a,a,a",options=autowidth]
@@ -1087,7 +1108,7 @@ Addition `a + b` of string scalars, vectors, matrices, and arrays is defined as 
 |n × m × ...  |n × m × ...  |n × m × ...   |`c[j, k, ...] := a[j, k, ...] ± b[j, k, ...]`
 |===
 
-Element-wise addition `a .+ b` and subtraction `a .- b` of numeric scalars, vectors, matrices or arrays a and b requires a numeric type class for a and b and either `size(a) = size(b)` or scalar a or scalar b.
+Element-wise addition `a .+ b` and subtraction `a .- b` of numeric scalars, vectors, matrices or arrays a and b requires a numeric type class for a and b and either `size(a) = size(b)` or scalar `a` or scalar `b`.
 Element-wise addition `a .+ b` of string scalars, vectors, matrices, and arrays is defined as element-wise string concatenation of corresponding elements from a and b, and require either `size(a) = size(b)` or scalar `a` or scalar `b`.
 
 .Array element-wise addition, subtraction, and string concatenation. In this table the symbolic operator `±` represents either `+++` or `-`, and when preceded by a dot (.±), either `.+` or `.-`. The scalar Operation applies for all j in 1,...,n and k in 1,...,m.
@@ -1112,7 +1133,7 @@ Element-wise addition `a .+ b` of string scalars, vectors, matrices, and arrays 
 
 ==== Element-wise Multiplication
 
-Scalar multiplication `s * a` or `a * s` with numeric scalar s and numeric scalar, vector, matrix or array a is defined element-wise:
+Scalar multiplication `s * a` or `a * s` with numeric scalar `s` and numeric scalar, vector, matrix or array `a` is defined element-wise:
 
 .Scalar and scalar to array multiplication of numeric elements. The scalar Operation applies for all j in 1,...,n and k in 1,...,m.
 [cols="a,a,a,a",options=autowidth]
@@ -1171,8 +1192,8 @@ transpose([v]) * A * v // vector with one element
 
 ==== Division by Numeric Scalars
 
-Division `a / s` of numeric scalars, vectors, matrices, or arrays a and numeric scalars s is defined element-wise.
-The result is always of Real type.
+Division `a / s` of numeric scalars, vectors, matrices, or arrays `a` and numeric scalars `s` is defined element-wise.
+The result is always of `Real` type.
 In order to get integer division with truncation, use the function `div`.
 
 .Division of scalars and arrays by numeric elements. The scalar Operation applies for all j in 1,...,n and k in 1,...,m.
@@ -1188,8 +1209,8 @@ In order to get integer division with truncation, use the function `div`.
 
 ==== Element-wise Division
 
-Element-wise division `a ./ b` of numeric scalars, vectors, matrices or arrays a and b requires a numeric type class for a and b and either size(a) = size(b) or scalar a or scalar b.
-The result is always of Real type.
+Element-wise division `a ./ b` of numeric scalars, vectors, matrices or arrays `a` and `b` requires a numeric type class for `a` and `b` and either `size(a) = size(b)` or scalar `a` or scalar `b`.
+The result is always of `Real` type.
 In order to get integer division with truncation, use the function `div`.
 
 .Element-wise division of arrays. The scalar Operation applies for all j in 1,...,n and k in 1,...,m.
@@ -1233,9 +1254,9 @@ The result should correspond to mathematical exponentiation with the following s
   For example: `a = 0.0` and `b = 0.0` for a `Real` `b`, `a = 0.0` and `b < 0`, or `a < 0` and `b` does not have an integer value.
 
 [NOTE]
-Except for defining the special case of `0.0^0` it corresponds to `pow(double a, double b)` in the ANSI C library.
-The result is always Real as negative exponents can give non-integer results also when both operands are Integer.
-The special treatment of Integer exponents makes it possible to use x^n^ in a power series.
+Except for defining the special case of `0.0^0^` it corresponds to `pow(double a, double b)` in the ANSI C library.
+The result is always Real as negative exponents can give non-integer results also when both operands are `Integer`.
+The special treatment of `Integer` exponents makes it possible to use x^n^ in a power series.
 
 Element-wise exponentiation `a .^ b` of numeric scalars, vectors, matrices, or arrays `a` and `b` requires a numeric type class for `a` and `b` and either `size(a) = size(b)` or scalar `a` or scalar `b`.
 
@@ -1357,7 +1378,7 @@ the Integer expression is automatically converted to Real.
 This also applies to arrays of Real, and for fields of record expressions.
 There is no similar rule for sub-typing.
 
-.Example[example]
+[example]
 ====
 Example:
 
@@ -1443,5 +1464,5 @@ equation
   y = C * x + D * u
 ----
 
-Assume n = 0, p > 0, q > 0: Results in y = D * u.
+Assume `n = 0`, `p > 0`, `q > 0`: Results in `y = D * u`.
 ====
