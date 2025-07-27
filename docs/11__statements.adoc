@@ -11,7 +11,6 @@ Statements are imperative constructs allowed in algorithm sections.
 An _algorithm section_ is a part of a class definition comprised of the keyword `algorithm` followed by a sequence of statements.
 The formal syntax is as follows:
 
-.Syntax
 [source,grammar]
 ----
 algorithm-section :
@@ -35,22 +34,28 @@ An algorithm section is conceptually a code fragment that remains together and t
 Whenever an algorithm section is invoked, all variables appearing on the left hand side of the assignment operator `:=` are initialized (at least conceptually):
 
 * A continuous-time variable is initialized with the value of its `start` attribute.
+
 * A discrete-time variable `v` in a non-initial algorithm is initialized with `pre(v)`.
-* A clocked variable `v` in a discrete-time sub-partition is initialized with `previous(v)`.
+
+* A clocked variable `v` in a discrete-time sub-partition, <<discrete-time-and-discretized-sub-partitions>>, is initialized with `previous(v)`.
+
 * If at least one element of an array appears on the left hand side of the assignment operator, then the complete array is initialized in this algorithm section.
-* In an initial algorithm, any variable (including a parameter) is initialized with the value of its `start` attribute.
+
+* In an initial algorithm, <<initialization-initial-equation-and-initial-algorithm>>, any variable (including a parameter) is initialized with the value of its `start` attribute.
 
 [NOTE]
+--
 Initialization is performed so that an algorithm section cannot introduce a "memory" (except in the case of discrete-time variables assigned in the algorithm), which could invalidate the assumptions of a numerical integration algorithm.
 A Modelica tool may change the evaluation of an algorithm section, provided the result is identical to the case, as if the above conceptual processing is performed.
 
-For clocked variables it is important to skip this initialization when not needed, in order to avoid an excessive amount of clocked states.
+For clocked variables it is important to skip this initialization when not needed, in order to avoid an excessive amount of clocked states, <<clocked-state-variables>>.
 
 An algorithm section is treated as an atomic vector-equation, which is sorted together with all other equations.
 For the sorting process (BLT), every algorithm section with N different left-hand side variables is treated as an atomic N-dimensional vector-equation containing all variables appearing in the algorithm section.
 This guarantees that all N equations end up in an algebraic loop and the statements of the algorithm section remain together.
 
-.Example
+Example:
+
 [source,modelica]
 ----
 model Test // wrong Modelica model (has 4 equations for 2 unknowns)
@@ -64,6 +69,7 @@ end Test;
 
 The conceptual part indicates that if the variable is assigned unconditionally in the algorithm before it is used the initialization can be omitted.
 This is usually the case, except for algorithms with `when` statements, and especially for initial algorithms.
+--
 
 ==== The Algorithm in a Function
 
@@ -77,10 +83,13 @@ A flattened statement is identical to the corresponding nonflattened statement.
 Names in statements are found as follows:
 
 * If the name occurs inside an expression: it is first found among the lexically enclosing reduction functions (see <<reduction-functions-and-operators>>) in order starting from the inner-most, and if not found it proceeds as if it were outside an expression:
+
 * Names in a statement are first found among the lexically enclosing `for` statements in order starting from the inner-most, and if not found:
+
 * Names in a statement shall be found by looking up in the partially flattened enclosing class of the algorithm section.
 
-.Syntax
+The syntax of statements is as follows:
+
 [source,grammar]
 ----
 statement :
@@ -131,19 +140,24 @@ It is possible to omit receiving variables from this list:
 (out1, , out3) := function_name(in1, in2, in3, in4);
 ----
 
-.Example
-The function `f` called below has three results and two inputs:
+[example]
+====
+Example: The function `f` called below has three results and two inputs:
+
 [source,modelica]
 ----
 (a, b, c) := f(1.0, 2.0);
 (x[1], x[2], x[1]) := f(3, 4);
 ----
+
 In the second example above `x[1]` is assigned twice: first with the first output, and then with the third output.
 For that case the following will give the same result:
+
 [source,modelica]
 ----
 (, x[2], x[1]) := f(3,4);
 ----
+====
 
 The syntax of an assignment statement with a call to a function with multiple results is as follows:
 
@@ -196,7 +210,10 @@ If the `for` statement contains event-generating expressions, any expression in 
 [NOTE]
 In general, the same event-generating expression requires distinct crossing functions for different iterations of the `for` loop, and the restriction ensures that the number of crossing functions is known during translation time.
 
-.Example
+[example]
+====
+Example:
+
 [source,modelica]
 ----
 for i in 1 : 10 loop // i takes the values 1, 2, 3, ..., 10
@@ -218,6 +235,7 @@ equation
     x[j] = j; // Uses the loop-variable j
   end for;
 ----
+====
 
 ===== Implicit Iteration Ranges
 
@@ -227,13 +245,15 @@ If it is used to subscript several expressions, their ranges must be identical.
 There may not be assignments to the entire arrays that are subscripted with `IDENT` inside the loop, but there may be assignments to individual elements or ranges of elements.
 
 [NOTE]
-The size of an array -- the iteration range -- can be evaluated on entry to the `for` loop, since the array size cannot change during the execution of the `for` loop.
+The size of an array -- the iteration range -- can be evaluated on entry to the `for` loop, since the array size cannot change during the execution of the `for`-loop.
 
 The `IDENT` may also, inside a reduction expression, array constructor expression, `for` statement, or `for` equation, occur freely outside of subscript positions, but only as a reference to the variable `IDENT`, and not for deducing ranges.
 The `IDENT` may also be used as a subscript for an array in a component of an expandable connector but it is only seen as a reference to the variable `IDENT` and cannot be used for deducing ranges.
 
-.Example
-Implicit iterator ranges for an `Integer` subscript:
+[example]
+====
+Example: Implicit iterator ranges for an `Integer` subscript:
+
 [source,modelica]
 ----
   Real x[4];
@@ -250,10 +270,13 @@ algorithm
     xsquared3[i] := x[i]^2;
   end for;
 ----
+====
 
-.Example
-An array dimension's type of subscript does not matter for array compatibility, only the size of the array dimension matters.
+[example]
+====
+Example: An array dimension's type of subscript does not matter for array compatibility, only the size of the array dimension matters.
 This is true also for array constructor expressions with implicit iterator ranges:
+
 [source,modelica]
 ----
 type FourEnums = enumeration(one, two, three, four);
@@ -263,14 +286,18 @@ Real xsquared3[FourEnums] = {xe[i] * xe[i] for i in FourEnums};
 Real xsquared4[FourEnums] = {xe[i] * xe[i] for i};
 Real xsquared5[FourEnums] = {x[i] * x[i] for i};
 ----
+====
 
 ===== Types as Iteration Ranges
 
 The iteration range can be specified as `Boolean` or as an enumeration type.
 This means iteration over the type from min to max, i.e., for `Boolean` it is the same as `false:true` and for an enumeration `E` it is the same as `E.min:E.max`.
-This can be used for `for` loops and reduction expressions.
+This can be used for `for`-loops and reduction expressions.
 
-.Example
+[example]
+====
+Example:
+
 [source,modelica]
 ----
   type FourEnums = enumeration(one, two, three, four);
@@ -282,14 +309,18 @@ equation
     xsquared1[i] = xe[i]^2;
   end for;
 ----
+====
 
 ===== Nested For-Loops and Reduction Expressions with Multiple Iterators
 
-The notation with several iterators is a shorthand notation for nested `for` statements or `for` equations (or reduction expressions).
-For `for` statements or `for` equations it can be expanded into the usual form by replacing each `,` by `loop for` and adding extra `end for`.
+The notation with several iterators is a shorthand notation for nested `for`-statements or `for`-equations (or reduction expressions).
+For `for`-statements or `for`-equations it can be expanded into the usual form by replacing each `,` by `loop for` and adding extra `end for`.
 For reduction expressions it can be expanded into the usual form by replacing each `,` by `) for` and prepending the reduction expression with `functionName(`.
 
-.Example
+[example]
+====
+Example: 
+
 [source,modelica]
 ----
   Real x[4,3];
@@ -300,10 +331,11 @@ algorithm
     x[j,i] := j+i;
   end for;
 ----
+====
 
 ==== While-Statement
 
-The `while` statement has the following syntax:
+The `while`-statement has the following syntax:
 
 [source,grammar]
 ----
@@ -312,20 +344,20 @@ while expression loop
 end while
 ----
 
-The `expression` of a `while` statement shall be a scalar `Boolean` expression.
+The `expression` of a `while`-statement shall be a scalar `Boolean` expression.
 
-The `while` statement corresponds to while-statements in other programming languages, and is formally defined as follows:
+The `while`-statement corresponds to while-statements in other programming languages, and is formally defined as follows:
 
-. The `expression` of the `while` statement is evaluated.
-. If the `expression` of the `while` statement is false, the execution continues after the `while` statement.
-. If the `expression` of the `while` statement is true, the entire body of the `while` statement is executed (except if a `break` statement, see <<break-statement>>, or a `return` statement, see <<return-statements>>, is executed), and then execution proceeds at step 1.
+. The `expression` of the `while`-statement is evaluated.
+. If the `expression` of the `while` statement is false, the execution continues after the `while`-statement.
+. If the `expression` of the `while`-statement is true, the entire body of the `while` statement is executed (except if a `break`-statement, see <<break-statement>>, or a `return`-statement, see <<return-statements>>, is executed), and then execution proceeds at step 1.
 
 Event-generating expressions are neither allowed in the `expression` nor in the loop body statements.
-A deprecated feature is that all expressions in a `while` statement are implicitly inside `noEvent`.
+A deprecated feature is that all expressions in a `while`-statement are implicitly inside `noEvent`.
 
 ==== Break-Statement
 
-The `break` statement breaks the execution of the innermost `while` or `for` loop enclosing the `break` statement and continues execution after the `while` or `for` loop.
+The `break`-statement breaks the execution of the innermost `while` or `for` loop enclosing the `break`-statement and continues execution after the `while` or `for` loop.
 It can only be used in a `while` or `for` loop in an algorithm section.
 It has the following syntax:
 
@@ -334,8 +366,10 @@ It has the following syntax:
 break;
 ----
 
-.Example
-(Note that this could alternatively use `return`.)
+[example]
+====
+Example: (Note that this could alternatively use `return`.)
+
 [source,modelica]
 ----
 function findValue "Returns position of val or 0 if not found"
@@ -353,6 +387,7 @@ algorithm
   end while;
 end findValue;
 ----
+====
 
 ==== Return-Statements
 
@@ -360,7 +395,7 @@ Can only be used inside functions, see <<function-return-statements>>.
 
 ==== If-Statement
 
-The `if` statements have the following syntax:
+The `if`-statements have the following syntax:
 
 [source,grammar]
 ----
@@ -375,16 +410,16 @@ if expression then
 end if
 ----
 
-The `expression` of an `if` or `elseif` clause must be scalar `Boolean` expression.
-One `if` clause, and zero or more `elseif` clauses, and an optional `else` clause together form a list of branches.
-One or zero of the bodies of these `if`, `elseif`, and `else` clauses is selected, by evaluating the conditions of the `if` and `elseif` clauses sequentially until a condition that evaluates to true is found.
-If none of the conditions evaluate to true the body of the `else` clause is selected (if an `else` clause exists, otherwise no body is selected).
+The `expression` of an `if`- or `elseif`-clause must be scalar `Boolean` expression.
+One `if`-clause, and zero or more `elseif`-clauses, and an optional `else`-clause together form a list of branches.
+One or zero of the bodies of these `if`-, `elseif`-, and `else`-clauses is selected, by evaluating the conditions of the `if`- and `elseif`-clauses sequentially until a condition that evaluates to true is found.
+If none of the conditions evaluate to true the body of the `else`-clause is selected (if an `else`-clause exists, otherwise no body is selected).
 In an algorithm section, the selected body is then executed.
 The bodies that are not selected have no effect on that model evaluation.
 
 ==== When-Statements
 
-A `when` statement has the following syntax:
+A `when`-statement has the following syntax:
 
 [source,grammar]
 ----
@@ -396,11 +431,13 @@ when expression then
 end when
 ----
 
-The `expression` of a `when` statement shall be a discrete-time `Boolean` scalar or vector expression.
-The statements within a `when` statement are activated only at the instant when the scalar or any one of the elements of the vector expression becomes true.
+The `expression` of a `when`-statement shall be a discrete-time `Boolean` scalar or vector expression.
+The statements within a `when`-statement are activated only at the instant when the scalar or any one of the elements of the vector expression becomes true.
 
-.Example
-Algorithms are activated when `x` becomes > 2:
+[example]
+====
+Example: Algorithms are activated when `x` becomes > 2:
+
 [source,modelica]
 ----
 when x > 2 then
@@ -409,7 +446,8 @@ when x > 2 then
 end when;
 ----
 
-The statements inside the `when` statement are activated on the positive edge of any of the expressions `x > 2`, `sample(0, 2)`, or `x < 5`:
+The statements inside the `when`-statement are activated on the positive edge of any of the expressions `x > 2`, `sample(0, 2)`, or `x < 5`:
+
 [source,modelica]
 ----
 when {x > 2, sample(0, 2), x < 5} then
@@ -418,7 +456,8 @@ when {x > 2, sample(0, 2), x < 5} then
 end when;
 ----
 
-For `when` statements in algorithm sections the order is significant and it is advisable to have only one assignment within the `when` statement and instead use several algorithm sections having `when` statements with identical conditions, e.g.:
+For `when`-statements in algorithm sections the order is significant and it is advisable to have only one assignment within the `when`-statement and instead use several algorithm sections having `when`-statements with identical conditions, e.g.:
+
 [source,modelica]
 ----
 algorithm
@@ -433,17 +472,23 @@ algorithm
   end when;
 ----
 
-Merging the `when` statements can lead to less efficient code and different models with different behavior depending on the order of the assignment to `y1` and `y3` in the algorithm.
+Merging the `when`-statements can lead to less efficient code and different models with different behavior depending on the order of the assignment to `y1` and `y3` in the algorithm.
+====
 
 ===== Where a When-Statement May Occur
 
-* A `when` statement shall not be used within a function.
-* A `when` statement shall not occur inside an initial algorithm.
-* A `when` statement cannot be nested inside another `when` statement.
-* `when` statements shall not occur inside `while` loops, `for` loops, or `if` statements in algorithms.
+* A `when`-statement shall not be used within a function.
 
-.Example
-The following nested `when` statement is invalid:
+* A `when`-statement shall not occur inside an initial algorithm.
+
+* A `when`-statement cannot be nested inside another `when`-statement.
+
+* `when`-statements shall not occur inside `while` loops, `for` loops, or `if`-statements in algorithms.
+
+[example]
+====
+Example: The following nested `when`-statement is invalid:
+
 [source,modelica]
 ----
 when x > 2 then
@@ -452,20 +497,25 @@ when x > 2 then
   end when;
 end when;
 ----
+====
 
 ===== Statements within When-Statements
 
 [NOTE]
-In contrast to `when` equations, there are no additional restrictions within `when` statements:
+--
+In contrast to `when`-equations, <<equations-within-when-equations>> , there are no additional restrictions within `when`-statements:
 
 * In algorithms, all assignment statements are already restricted to left-hand-side variables.
-* If at least one element of an array appears on the left-hand-side of the assignment operator inside a `when` statement, it is as if the entire array appears in the left-hand-side according to <<an-algorithm-in-a-model>>.
+
+* If at least one element of an array appears on the left-hand-side of the assignment operator inside a `when`-statement, it is as if the entire array appears in the left-hand-side according to <<an-algorithm-in-a-model>>.
   Thus, there is no need to restrict the indices to parameter-expressions.
-* The `for` loops and `if` statements are not problematic inside `when` statements in algorithms, since all left-hand-side variables inside `when` statements are assigned to their pre-values before the start of the algorithm, according to <<an-algorithm-in-a-model>>.
+
+* The `for` loops and `if`-statements are not problematic inside `when`-statements in algorithms, since all left-hand-side variables inside `when`-statements are assigned to their pre-values before the start of the algorithm, according to <<an-algorithm-in-a-model>>.
+--
 
 ===== Defining When-Statements by If-Statements
 
-A `when` statement:
+A `when`-statement:
 [source,modelica]
 ----
 algorithm
@@ -475,7 +525,7 @@ algorithm
     ...
   end when;
 ----
-is similar to the following special `if` statement, where `Boolean b1[N];` and `Boolean b2;` are necessary because `edge` can only be applied to variables
+is similar to the following special `if`-statement, where `Boolean b1[N];` and `Boolean b2;` are necessary because `edge` can only be applied to variables
 
 [source,modelica]
 ----
@@ -491,8 +541,8 @@ algorithm
   end if;
 ----
 
-with `edge(A) = A and not pre(A)` and the additional guarantee, that the statements within this special `if` statement are only evaluated at event instants.
-The difference compared to the when-statements is that, e.g., `pre` may only be used on continuous-time real variables inside the body of a `when` clause and not inside these if-statements.
+with `edge(A) = A and not pre(A)` and the additional guarantee, that the statements within this special `if`-statement are only evaluated at event instants.
+The difference compared to the when-statements is that, e.g., `pre` may only be used on continuous-time real variables inside the body of a `when`-clause and not inside these if-statements.
 
 ==== Special Statements
 
@@ -501,10 +551,10 @@ These special statements have the same form and semantics as the corresponding e
 ===== Assert-Statement
 
 See <<assert>>.
-A failed `assert` statement stops the execution of the current algorithm.
+A failed `assert`-statement stops the execution of the current algorithm.
 
 ===== Terminate-Statement
 
 See <<terminate>>.
-The `terminate` statement shall not be used in functions.
+The `terminate`-statement shall not be used in functions.
 In an algorithm outside a function it does not stop the execution of the current algorithm.
