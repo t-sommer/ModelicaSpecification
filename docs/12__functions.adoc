@@ -10,8 +10,10 @@ The body of a Modelica function is an algorithm section that contains procedural
 Formal parameters are specified using the `input` keyword, whereas results are denoted using the `output` keyword.
 This makes the syntax of function definitions quite close to Modelica class definitions, but using the keyword `function` instead of `class`.
 
-[NOTE]
+[example]
+====
 The structure of a typical function declaration is sketched by the following schematic function example:
+
 [source,modelica]
 ----
 function functionname
@@ -30,18 +32,24 @@ algorithm
   ...
 end functionname;
 ----
+====
 
 Optional explicit default values can be associated with any input or output formal parameter through binding equations.
 Comment strings and annotations can be given for any formal parameter declaration, as usual in Modelica declarations.
 
+[NOTE]
 Explicit default values are shown for the third input parameter and the second output parameter in the example above.
 
+[NOTE]
+--
 All internal parts of a function are optional; i.e., the following is also a legal function:
+
 [source,modelica]
 ----
 function functionname
 end functionname;
 ----
+--
 
 ==== Ordering of Formal Parameters
 
@@ -52,7 +60,10 @@ However, the declarations of the inputs and outputs can be intermixed as long as
 [NOTE]
 Mixing declarations in this way is not recommended, however, since it makes the code hard to read.
 
-.Example
+[example]
+=====
+Example:
+
 [source,modelica]
 ----
 function functionname
@@ -65,18 +76,23 @@ function functionname
   ...
 end functionname;
 ----
+=====
 
 ==== Function Return-Statements
 
-The `return` statement terminates the current function call (see <<function-call>>).
+The `return` statement terminates the current function call, see <<function-call>>.
 It can only be used in an algorithm section of a function.
+It has the following form:
 
 [source,modelica]
 ----
 return;
 ----
 
-.Example
+[example]
+=====
+Example: (Note that this could alternatively use `break:`)
+
 [source,modelica]
 ----
 function findValue "Returns position of val or 0 if not found"
@@ -94,6 +110,7 @@ algorithm
   return;
 end findValue;
 ----
+=====
 
 ==== Inheritance of Functions
 
@@ -105,8 +122,10 @@ For example, it is possible to modify and extend a `function` class to add defau
 A special case is defining a `function` as a short-class definition with modifiers for inputs inside a model.
 These default values, unless overridden in the function call, will then be considered for variability similarly as if they were given in the function call (see <<function-variability>>).
 
-.Example
-Demonstrating the variability implications.
+[example]
+====
+Example: Demonstrating the variability implications. Note that functions cannot directly use nonconstants in enclosing scopes, so we cannot write `input Real x1 = x;` directly in `foo`.
+
 [source,modelica]
 ----
 model M
@@ -123,6 +142,7 @@ model M
   constant Real z2 = f1(x2 = 1); // Illegal, since 'x' is seen as an argument.
 end M;
 ----
+====
 
 === Function as a Specialized Class
 
@@ -135,35 +155,58 @@ A function has many of the properties of a general class, e.g., being able to in
 Modelica functions have the following restrictions compared to a general Modelica `class`:
 
 * Each public component must have the prefix `input` or `output`.
+
 * Input formal parameters are read-only after being bound to the actual arguments or default values, i.e., they shall not be assigned values in the body of the function.
+
 * A function shall _not be used in connections_, shall not have _equations_, shall not have _initial algorithms_.
+
 * A function can have at most _one algorithm_ section or _one external function interface_ (not both), which, if present, is the body of the function.
+
 * A function may only contain components of the specialized classes `type`, `record`, `operator record`, and `function`; and it must not contain, e.g., `model`, `block`, `operator` or `connector` components.
+
 * A function may not contain components of type `Clock`.
+
 * The elements of a function shall not have prefixes `inner`, or `outer`.
+
 * A function may have zero or one external function interface, which, if present, is the external definition of the function.
+
 * For a function to be called in a simulation model, the function shall not be partial, and the output variables must be assigned inside the function either in binding equations or in an algorithm section, or have an external function interface as its body, or be defined as a function partial derivative.
-  The output variables of a function should be computed.
-  [NOTE]
-  It is a quality of implementation how much analysis a tool performs in order to determine if the output variables are computed.
-  A function _cannot contain_ calls to the Modelica _built-in operators_ `der`, `initial`, `terminal`, `sample`, `pre`, `edge`, `change`, `reinit`, `delay`, `cardinality`, `inStream`, `actualStream`, to the operators of the built-in package `Connections`, to the operators defined in <<synchronous-language-elements>> and <<state-machines>>, and is not allowed to contain `when`-statements.
+The output variables of a function should be computed.
++
+[NOTE]
+It is a quality of implementation how much analysis a tool performs in order to determine if the output variables are computed.
++
+A function _cannot contain_ calls to the Modelica _built-in operators_ `der`, `initial`, `terminal`, `sample`, `pre`, `edge`, `change`, `reinit`, `delay`, `cardinality`, `inStream`, `actualStream`, to the operators of the built-in package `Connections`, to the operators defined in <<synchronous-language-elements>> and <<state-machines>>, and is not allowed to contain `when`-statements.
+
 * The dimension _sizes_ not declared with colon (`:`) of each array result or array local variable (i.e., a non-input component) of a function must be either given by the input formal parameters, or given by constant or parameter expressions, or by expressions containing combinations of those (see <<initialization-and-binding-equations>>).
+
 * For initialization of local variables of a function see <<initialization-and-binding-equations>>.
+
 * Components of a function will inside the function behave as though they had discrete-time variability.
 
 Modelica functions have the following enhancements compared to a general Modelica `class`:
 
 * Functions can be called (see <<function-call>>).
-  * The calls can use a mix of positional and named arguments (see <<positional-or-named-input-arguments>>).
-  * Instances of functions have a special meaning (see <<functional-input-arguments>>).
-  * The lookup of the `function` class to be called is extended (see <<composite-name-lookup>>).
+
+** The calls can use a mix of positional and named arguments (see <<positional-or-named-input-arguments>>).
+
+** Instances of functions have a special meaning (see <<functional-input-arguments>>).
+
+** The lookup of the `function` class to be called is extended (see <<composite-name-lookup>>).
+
 * A function can be _recursive_.
+
 * A formal parameter or local variable may be initialized through a _binding_ (=) of a default value in its declaration (see <<initialization-and-binding-equations>>).
   If a non-input component in the function uses a record class that contain one or more binding equations they are viewed as initialization of those component of the record component.
+
 * A function is dynamically instantiated when it is called rather than being statically instantiated by an instance declaration, which is the case for other kinds of classes.
+
 * A function may have an external function interface specifier as its body.
+
 * A function may have a `return` statement in its algorithm section body.
+
 * A function allows dimension sizes declared with colon (`:`) to be resized for non-input array variables (see <<flexible-array-sizes-and-resizing-of-arrays>>).
+
 * A function may be defined in a short function definition to be a function partial derivative.
 
 === Pure Modelica Functions
@@ -171,20 +214,25 @@ Modelica functions have the following enhancements compared to a general Modelic
 Modelica functions are normally _pure_ which makes it easy for humans to reason about the code since they behave as mathematical functions, and possible for compilers to optimize.
 
 * _Pure_ Modelica functions always give the same output values or errors for the same input values and only the output values influence the simulation result, i.e., is seen as equivalent to a mathematical map from input values to output values.
-  Some input values may map to errors.
-  Pure functions are thus allowed to fail by calling `assert`, or `ModelicaError` in C code, or dividing by zero.
-  Such errors will only be reported when and if the function is called.
-  _Pure_ Modelica functions are not assumed to be thread-safe.
+Some input values may map to errors.
+Pure functions are thus allowed to fail by calling `assert`, or `ModelicaError` in C code, or dividing by zero.
+Such errors will only be reported when and if the function is called.
+_Pure_ Modelica functions are not assumed to be thread-safe.
+
 * A Modelica function which does not have the _pure_ function properties is _impure_.
 
 The declaration of functions follow these rules:
 
 * Functions defined in Modelica (non-external) are _normally_ assumed to be pure (the exception is the deprecated case below), if they are impure they shall be marked with the `impure` keyword.
-  They can be explicitly marked as `pure`.
-  [NOTE]
-  However, since functions as default are pure it is not recommended to explicitly declare them as `pure`.
+They can be explicitly marked as `pure`.
++
+[NOTE]
+However, since functions as default are pure it is not recommended to explicitly declare them as `pure`.
+
 * External functions must be explicitly declared with `pure` or `impure`.
+
 * If a function is declared as `impure` any function extending from it shall be declared as `impure`.
+
 * A deprecated semantics is that external functions (and functions defined in Modelica directly or indirectly calling them) without `pure` or `impure` keyword are assumed to be impure, but without any restriction on calling them.
   Except for the function `Modelica.Utilities.Streams.print`, a diagnostic must be given if called in a simulation model.
 
@@ -210,14 +258,21 @@ Note that external functions can have side-effects as long as they do not influe
 With the prefix keyword `impure` it is stated that a Modelica function is _impure_ and it is only allowed to call such a function from within:
 
 * Another function marked with the prefix `impure`.
+
 * A `when`-equation.
+
 * A `when`-statement.
+
 * `pure(impureFunction(...))` -- which allows calling impure functions in any pure context.
   The wrapping in `pure(...)` only by-passes the purity checking of the callee `impureFunction`; the argument expressions of the function call are not affected.
+
 * Initial equations and initial algorithms.
+
 * Binding equations for components declared as parameter -- which is seen as syntactic sugar for having a parameter with `fixed=false` and the binding as an initial equation.
-  [NOTE]
-  Thus, evaluation of the same function call at a later time during simulation is not guaranteed to result in the same value as when the parameter was initialized, seemingly breaking the declaration equation.
++
+[NOTE]
+Thus, evaluation of the same function call at a later time during simulation is not guaranteed to result in the same value as when the parameter was initialized, seemingly breaking the declaration equation.
+
 * Binding equations for external objects.
 
 It is an error if an impure function call is part of a systems of equations (including linear systems), even if called in agreement with the restrictions above.
@@ -235,7 +290,10 @@ A tool is not allowed to perform any optimizations on function calls to an impur
 By <<function-compatibility-or-function-subtyping-for-functions>>, it follows that an impure function can only be passed as argument to a function formal parameter of impure type.
 A function having a formal function parameter that is `impure` must be marked `pure` or `impure`.
 
-.Example
+[example]
+====
+Example:
+
 [source,modelica]
 ----
 function evaluateLinear // pure function
@@ -256,6 +314,7 @@ end receiveRealSignal;
 ----
 
 Examples of allowed optimizations of pure functions:
+
 [source,modelica]
 ----
 model M // Assume sin, cos, asin are pure functions with normal derivatives.
@@ -271,6 +330,7 @@ A tool only needs to generate one call of the pure function `cos(w)` in the mode
 A tool may also skip the possible error for `asin(w)` and assume that `a` is zero.
 
 Examples of restrictions on optimizing pure functions:
+
 [source,modelica]
 ----
   Real x =
@@ -290,6 +350,7 @@ algorithm
   // The reason is that asin(x) may fail and someOtherFunction may hang,
   // and it might be possible to recover from this error.
 ----
+====
 
 === Function Call
 
@@ -326,7 +387,7 @@ function-argument : function-partial-application | expression
 ----
 
 The interpretation of a function call is as follows: First, a list of unfilled slots is created for all formal input parameters.
-If there are N positional arguments, they are placed in the first N slots, where the order of the parameters is given by the order of the component declarations in the function definition.
+If there are _N_ positional arguments, they are placed in the first _N_ slots, where the order of the parameters is given by the order of the component declarations in the function definition.
 Next, for each named argument `identifier = expression`, the `identifier` is used to determine the corresponding slot.
 The value of the argument is placed in the slot, filling it (it is an error if this slot is already filled).
 When all arguments have been processed, the slots that are still unfilled are filled with the corresponding default value of the function definition.
@@ -339,8 +400,10 @@ Special purpose operators with function syntax defined in the specification shal
 The type of each argument must agree with the type of the corresponding parameter, except where the standard type coercion (see <<standard-type-coercion>>) can be used to make the types agree.
 (See also <<automatic-vectorization>> on applying scalar functions to arrays.)
 
-.Example
-Assume a function `RealToString` is defined as follows to convert a `Real` number to a `String`:
+[example]
+====
+Example: Assume a function `RealToString` is defined as follows to convert a `Real` number to a `String`:
+
 [source,modelica]
 ----
 function RealToString
@@ -353,6 +416,7 @@ end RealToString;
 ----
 
 Then the following applications are equivalent:
+
 [source,modelica]
 ----
 RealToString(2.0);
@@ -362,6 +426,7 @@ RealToString(2.0, precision=6);
 RealToString(2.0, length=0);
 RealToString(2.0, 6, precision=6); // error: slot is used twice
 ----
+====
 
 ==== Functional Input Arguments
 
@@ -370,7 +435,10 @@ The declared type of such an input formal parameter in a function can be the typ
 It cannot be the type-specifier of a record or enumeration (i.e., record constructor functions and enumeration type conversions are not allowed in this context).
 Such an input formal parameter of function type can also have an optional functional default value.
 
-.Example
+[example]
+====
+Example:
+
 [source,modelica]
 ----
 function quadrature "Integrate function y = integrand(x) from x1 to x2"
@@ -388,6 +456,7 @@ partial function Integrand
   output Real y;
 end Integrand;
 ----
+====
 
 A functional argument can be provided in one of the following forms to be passed to a scalar formal parameter of function type in a function call:
 
@@ -398,8 +467,10 @@ A functional argument can be provided in one of the following forms to be passed
 
 In all cases the provided function must be function-compatible (see <<function-compatibility>>) with the corresponding formal parameter of function type.
 
-.Example
-A function as a positional input argument according to case 1 above:
+[example]
+====
+Example: A function as a positional input argument according to case 1 above:
+
 [source,modelica]
 ----
 function Parabola
@@ -424,12 +495,14 @@ algorithm
     quadrature((x1 + x2) / 2, x2, integrand);
 end quadrature2;
 ----
+====
 
 ===== Function Partial Application
 
 A function partial application is similar to a function call with certain formal parameters bound to expressions, the specific rules are specified in this section and are not identical to the ones for function call in <<positional-or-named-input-arguments>>.
 A function partial application returns a partially evaluated function that is also a function, with the remaining not bound formal parameters still present in the same order as in the original function declaration.
 A function partial application is specified by the `function` keyword followed by a function call to `func_name` giving named formal parameter associations for the formal parameters to be bound, e.g.:
+
 [source,modelica]
 ----
 function func_name(..., formal_parameter_name = expr, ...)
@@ -445,8 +518,9 @@ A partially evaluated function is function-compatible (see <<function-compatibil
 [NOTE]
 Thus, for checking function type compatibility, bound formal parameters are ignored.
 
-.Example
-Function partial application as argument, positional argument passing, according to case 2 above:
+[example]
+====
+Example: Function partial application as argument, positional argument passing, according to case 2 above:
 [source,modelica]
 ----
 model Test
@@ -469,14 +543,18 @@ end Sine;
 ----
 
 Call with function partial application as named input argument:
+
 [source,modelica]
 ----
 area :=
   area + quadrature(0, 1, integrand = function Sine(A = 2, w = i * time));
 ----
+====
 
-.Example
-Function types are matching after removing the bound arguments `A` and `w` in a function partial application:
+[example]
+====
+Example: Function types are matching after removing the bound arguments `A` and `w` in a function partial application:
+
 [source,modelica]
 ----
 function Sine2 "y = Sine2(A, w, x)"
@@ -491,9 +569,12 @@ area = quadrature(0, 1, integrand = function Sine2(A = 2, w = 3));
 ----
 
 The partially evaluated `Sine2` has only one argument: `x` -- and is thus type compatible with `Integrand`.
+====
 
-.Example
-Function partial application of a function that is a component, according to case 4 above:
+[example]
+====
+Example: Function partial application of a function that is a component, according to case 4 above:
+
 [source,modelica]
 ----
 partial function SurfaceIntegrand
@@ -527,6 +608,7 @@ algorithm
   // Case 2 and 3
 end surfaceQuadrature;
 ----
+====
 
 ==== Output Formal Parameters
 
@@ -547,8 +629,10 @@ It is possible to omit left hand side component references and/or truncate the l
 [NOTE]
 Optimizations to avoid computation of unused output results can be automatically deduced by an optimizing compiler.
 
-.Example
-Function `eigen` to compute eigenvalues and optionally eigenvectors may be called in the following ways:
+[example]
+====
+Example: Function `eigen` to compute eigenvalues and optionally eigenvectors may be called in the following ways:
+
 [source,modelica]
 ----
 ev = eigen(A); // calculate eigenvalues
@@ -576,23 +660,29 @@ algorithm
   //   compute left eigenvectors using the computed eigenvalues
 end eigen;
 ----
+====
 
 The only permissible use of an expression in the form of a list of expressions in parentheses, is when it is used as the left hand side of an equation or assignment where the right hand side is an application of a function.
 
-.Example
-The following are illegal:
+[example]
+====
+Example: The following are illegal:
+
 [source,modelica]
 ----
 (x+1, 3.0, z/y) = f(1.0, 2.0); // Not a list of component references.
 (x, y, z) + (u, v, w) // Not LHS of suitable eqn/assignment.
 ----
+====
 
 ==== Initialization and Binding Equations
 
 Components in a function can be divided into three groups:
 
 * Public components which are input formal parameters.
+
 * Public components which are output formal parameters.
+
 * Protected components which are local variables, parameters, or constants.
 
 When a function is called, components of the function do not have `start` attributes.
@@ -619,7 +709,10 @@ Flexible setting of array dimension sizes of arrays in functions is also briefly
 
 A dimension size not specified with colon (`:`) for a non-input array component of a function must be given by the inputs or be constant.
 
-.Example
+[example]
+====
+Example:
+
 [source,modelica]
 ----
 function joinThreeVectors
@@ -629,16 +722,20 @@ algorithm
   vres := cat (1,v1,v2,v3);
 end joinThreeVectors;
 ----
+====
 
 A non-input array component declared in a function with a dimension size specified by colon (`:`) and no binding equation, can change size according to these special rules:
 
 * Prior to execution of the function algorithm the dimension size is zero.
+
 * The entire array (without any subscripts) may be assigned with a corresponding array with arbitrary dimension size (the array variable is re-sized).
 
 These rules also apply if the array component is an element of a record component in a function.
 
-.Example
-A function to collect the positive elements in a vector:
+[example]
+====
+Example: A function to collect the positive elements in a vector:
+
 [source,modelica]
 ----
 function collectPositive
@@ -652,6 +749,7 @@ algorithm
   end for;
 end collectPositive;
 ----
+====
 
 ==== Automatic Vectorization
 
@@ -663,21 +761,31 @@ Potential vectorization of this call is defined as follows.
 For each passed argument, the type of the argument is checked against the type of the corresponding formal parameter of the function:
 
 . If the types match, nothing is done.
+
 . If the types do not match, and a type conversion can be applied, it is applied.
+
 . If the types do not match, and no type conversion is applicable, the passed argument type is checked to see if it is an n-dimensional array of the formal parameter type.
-  If it is not, the function call is invalid.
-  If it is, we call this a _foreach argument_.
+If it is not, the function call is invalid.
+If it is, we call this a _foreach argument_.
+
 . For all foreach arguments, the number and sizes of dimensions must match.
-  If they do not match, the function call is invalid.
+If they do not match, the function call is invalid.
+
 . If no foreach argument exists, the function is applied in the normal fashion, and the result has the type specified by the function definition.
+
 . The result of the function call expression is an n-dimensional array `e` with the same dimension sizes as the foreach arguments.
-  Each element `e[i, ..., j]` is the result of applying `f` to arguments constructed from the original arguments in the following way:
-  * If the argument is not a foreach argument, it is used as-is.
-  * If the argument is a foreach argument, the element at index `[i, ..., j]` is used.
+Each element `e[i, ..., j]` is the result of applying `f` to arguments constructed from the original arguments in the following way:
++
+* If the argument is not a foreach argument, it is used as-is.
++
+* If the argument is a foreach argument, the element at index `[i, ..., j]` is used.
 
 If more than one argument is an array, all of them have to be the same size, and they are traversed in parallel.
 
-.Example
+[example]
+====
+Example:
+
 [source,modelica]
 ----
 sin({a, b, c}) = {sin(a), sin(b), sin(c)} // argument is a vector
@@ -708,6 +816,7 @@ end add;
 
 `add(1, [1,2,3])` adds one to each of the elements of the second argument giving the result `[2,3,4]`.
 For built-in operators one can do this with `1 .+ [1,2,3]` but not with `1 + [1,2,3]`, because the rules for the built-in operators are more restrictive.
+====
 
 ==== Empty Function Calls
 
@@ -718,8 +827,10 @@ An empty call is of limited use in Modelica since a function call without result
 
 An empty call can occur either as a kind of "null equation" or "null statement".
 
-.Example
-The empty calls to `eigen()` are examples of a "null equation" and a "null statement":
+[example]
+====
+Example: The empty calls to `eigen()` are examples of a "null equation" and a "null statement":
+
 [source,modelica]
 ----
 equation
@@ -727,16 +838,20 @@ equation
 algorithm
   Modelica.Math.Matrices.eigen(A); // Empty function call as a statement
 ----
+====
 
 === Built-in Functions
 
 There are basically four groups of built-in functions in Modelica:
 
 * Intrinsic mathematical and conversion functions (see <<numeric-functions-and-conversion-operators>>).
-* Derivative and special operators with function syntax (see <<derivative-and-special-purpose-operators-with-function-syntax>>).
-* Event-related operators with function syntax (see <<event-related-operators-with-function-syntax>>).
-* Built-in array functions (see <<built-in-array-operators-and-functions>>).
 
+* Derivative and special operators with function syntax (see <<derivative-and-special-purpose-operators-with-function-syntax>>).
+
+* Event-related operators with function syntax (see <<event-related-operators-with-function-syntax>>).
+
+* Built-in array functions (see <<built-in-array-operators-and-functions>>).
++
 Note that when the specification references a function having the name of a built-in function it references the built-in function, not a user-defined function having the same name.
 
 === Record Constructor Functions
@@ -751,7 +866,9 @@ The partial flattening is performed in order to remove potentially conflicting `
 All record elements (i.e., components and local class definitions) of the partially flattened record declaration are used as declarations in the record constructor function with the following exceptions:
 
 * Component declarations which do not allow a modification (such as `final parameter Real`) are declared as protected components in the record constructor function.
+
 * Prefixes (`constant`, `parameter`, `final`, `discrete`, ...) of the remaining record components are removed.
+
 * The prefix `input` is added to the public components of the record constructor function.
 
 An instance of the record is declared as output parameter using a name not appearing in the record, together with a modification.
@@ -759,10 +876,12 @@ In the modification, all input parameters are used to set the corresponding reco
 
 A record constructor can only be called if the referenced record class is found in the global scope, and thus cannot be modified.
 
-[NOTE]
+[example]
+====
 This allows constructing an instance of a record, with an optional modification, at all places where a function call is allowed.
 
-.Example
+Examples:
+
 [source,modelica]
 ----
   record Complex "Complex number"
@@ -822,6 +941,7 @@ end Robot;
 
 Example showing most of the situations, which may occur for the implicit record constructor function creation.
 With the following record definitions:
+
 [source,modelica]
 ----
 package Demo
@@ -848,6 +968,7 @@ end Demo;
 ----
 
 The following record constructor functions are implicitly defined (the name of the output, given in italic below, is not defined; it should be chosen to not cause any conflict):
+
 [source,modelica]
 ----
 package Demo
@@ -878,6 +999,7 @@ end Demo;
 ----
 
 and can be applied in the following way
+
 [source,modelica]
 ----
 Demo.Record2 r1 =
@@ -890,6 +1012,7 @@ parameter Demo.Record2 r3 =
 ----
 
 The above example is only used to show the different variants appearing with prefixes, but it is not very meaningful, because it is simpler to just use a direct modifier.
+====
 
 ==== Casting to Record
 
@@ -906,7 +1029,10 @@ The problem if `R` would be a conditional component is that the corresponding bi
 [NOTE]
 The record cast operation is uniquely distinguished from a record constructor call, because an argument of the record constructor cannot be a `model`, `block` or `connector` instance.
 
-.Example
+[example]
+====
+Example:
+
 [source,modelica]
 ----
 connector Flange
@@ -969,6 +1095,7 @@ model ModelExpanded
   ...
 end ModelExpanded;
 ----
+====
 
 === Derivatives and Inverses of Functions
 
