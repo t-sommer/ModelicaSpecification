@@ -5,13 +5,16 @@ Packages in Modelica may contain definitions of constants and classes including 
 By the term _subpackage_ we mean that the package is declared inside another package, no inheritance relationship is implied.
 Parameters and variables cannot be declared in a package.
 The definitions in a package should typically be related in some way, which is the main reason they are placed in a particular package.
-
 Packages are useful for a number of reasons:
 
 * Definitions that are related to some particular topic are typically grouped into a package. This makes those definitions easier to find and the code more understandable.
+
 * Packages provide encapsulation and coarse-grained structuring that reduces the complexity of large systems. An important example is the use of packages for construction of (hierarchical) class libraries.
+
 * Name conflicts between definitions in different packages are eliminated since the package name is implicitly prefixed to names of definitions declared in a package.
+
 * Information hiding and encapsulation can be supported to some extent by declaring `protected` classes, types, and other definitions that are available only inside the package and therefore inaccessible to outside code.
+
 * Modelica defines a method for locating a package by providing a standard mapping of package names to storage places, typically file or directory locations in the file system.
 
 === Package as Specialized Class
@@ -24,20 +27,23 @@ The `import` clause makes public classes and other public definitions declared i
 It is the only way of referring to definitions declared in some other package for use inside an encapsulated package or class.
 
 [NOTE]
+--
 The `import` clauses in a package or class fill the following two needs:
 
 * Making definitions from other packages available for use (by shorter names) in a package or class.
+
 * Explicit declaration of usage dependences on other packages.
+--
 
 An `import` clause can occur in one of the following syntactic forms:
 
 [source,modelica]
 ----
-import definitionname;                       // qualified import of top-level definition
-import packagename.definitionname;           // qualified import
-import packagename.{def1, def2, ..., defn};  // multiple definition import
-import packagename.*;                        // unqualified import
-import shortname = definitionname;           // renaming import of top-level definition
+import definitionname;                         // qualified import of top-level definition
+import packagename.definitionname;             // qualified import
+import packagename.{def1, def2, ..., defn};    // multiple definition import
+import packagename.*;                          // unqualified import
+import shortname = definitionname;             // renaming import of top-level definition
 import shortname = packagename.definitionname; // renaming import
 ----
 
@@ -50,6 +56,7 @@ This section only defines how the imported name is looked up in the `import` cla
 For lookup in general -- including how `import` clauses are used -- see <<static-name-lookup>>.
 
 Lookup of the name of an imported package or class deviates from the normal lexical lookup.
+
 For example, consider `A.B.C` in the import clauses `import A.B.C;`, `import D = A.B.C;`, or `import A.B.C.*;`.
 Here, lookup starts with the lexical lookup of the first part of the name (`A`) at the top level.
 
@@ -59,7 +66,8 @@ Unqualified import clauses may only import from packages, i.e., in `import A.B.*
 [NOTE]
 In `import A;` the class `A` can be any class which is an element of the unnamed top-level package.
 
-[NOTE]
+[example]
+====
 For example, if the package `ComplexNumbers` would have been declared as a subpackage inside the package `Modelica.Math`, its fully qualified name would be `Modelica.Math.ComplexNumbers`.
 `definitionname` is the simple name without dot notation of a single definition that is imported.
 A `shortname` is a simple name without dot notation that can be used to refer to the package after import instead of the presumably much longer `packagename`.
@@ -74,16 +82,22 @@ import Modelica.Math.ComplexNumbers.{Add,Sub}; // Accessed by Add and Sub
 import Modelica.Math.ComplexNumbers.*;       // Accessed by Add
 import Co = Modelica.Math.ComplexNumbers;    // Accessed by Co.Add
 ----
+====
 
 ==== Rules for Import Clauses
 
 The following rules apply to `import` clauses:
 
 * The `import` clauses are _not_ inherited.
+
 * The `import` clauses are not named elements of a class or package. This means that `import` clauses cannot be changed by modifiers or redeclarations.
+
 * The _order_ of `import` clauses does not matter.
+
 * One can only import _from_ packages, not from other kinds of classes. Both packages and classes can be imported _into_, i.e., they may contain `import` clauses.
+
 * An imported package or definition should always be referred to by its fully qualified name in the `import` clause.
+
 * Multiple qualified `import` clauses shall not have the same import name (see <<simple-name-lookup>>).
 
 === The Modelica Library Path - MODELICAPATH
@@ -107,14 +121,15 @@ If `A` has been found in one of the roots, the rest of the path is located in `A
 
 If during lookup a top-level name is not found in the unnamed top-level scope, the search continues in the package hierarchies stored in these directories.
 
-.Example
-Assume `MODELICAPATH = C:\library;C:\lib1;C:\lib2`, with three directories containing the roots of the package hierarchies `Modelica`, `MyLib`, and `ComplexNumbers`.
+[example]
+====
+Example: Assume `MODELICAPATH = C:\library;C:\lib1;C:\lib2`, with three directories containing the roots of the package hierarchies `Modelica`, `MyLib`, and `ComplexNumbers`.
 The first two are represented as the subdirectories `C:\library\Modelica` and `C:\lib1\MyLib`, whereas the third is stored as the file `C:\lib2\ComplexNumbers.mo`.
 
 .Roots of package hierarchies, e.g., `Modelica`, `MyLib`, and `ComplexNumbers` in `MODELICAPATH = C:\library;C:\lib1;C:\lib2`.
 image::media/modelicapath.svg[]
 
-Assume that we want to access the package `MyLib.Pack2`, e.g., through an import clause `import MyLib.Pack2;`.
+Assume that we want to access the package `MyLib.Pack2` in the figure above, e.g., through an import clause `import MyLib.Pack2;`.
 During lookup we first try to find a package `MyLib` corresponding to the first part of the name in the import-statement.
 It is not found in the top-level scope since it has not previously been loaded into the environment.
 
@@ -128,6 +143,7 @@ In this example the name matches the subdirectory named `MyLib` in the second di
 This subdirectory must have a file `package.mo` containing a definition of the package `MyLib`, according to the Modelica rules on how to map a package hierarchy to the file system.
 The subpackage `Pack2` is stored in its own subdirectory or file in the subdirectory `MyLib`.
 In this case the search succeeds and the package `MyLib.Pack2` is loaded into the environment.
+====
 
 === File System Mapping of Package/Class
 
@@ -136,6 +152,7 @@ For classes with version information see also <<versions-in-the-file-system>>.
 The nature of such an external entity falls into one of the following two groups:
 
 * Directory in the file system.
+
 * File in the file system.
 
 Each Modelica file in the file system is stored in UTF-8 format (defined by The Unicode Consortium; https://unicode.org).
@@ -157,11 +174,15 @@ A directory may also contain one or more sub-entities (directories or files).
 The sub-entities are mapped as elements of the class defined by their enclosing structured entity.
 Two sub-entities shall not define classes with identical names.
 
-.Example
-If directory `A` contains the three files `package.mo`, `B.mo` and `C.mo`, the classes defined are `A`, `A.B`, and `A.C`.
+[example]
+====
+Example: If directory `A` contains the three files `package.mo`, `B.mo` and `C.mo`, the classes defined are `A`, `A.B`, and `A.C`.
+====
 
-.Example
-A directory shall not contain both the sub-directory `A` and the file `A.mo`.
+[example]
+====
+Example: A directory shall not contain both the sub-directory `A` and the file `A.mo`.
+====
 
 In order to preserve the order of sub-entities it is advisable to create a file `package.order` where each line contains the name of one class or constant (using its Modelica `IDENT` form).
 If a `package.order` is present when reading a structured entity the classes and constants are added in this order; if the contents does not exactly match the classes and constants in the package, the resulting order is tool specific and a warning may be given.
@@ -187,8 +208,9 @@ A top-level class may contain a `within` clause with no name.
 For a sub-entity of an enclosing structured entity, the `within` clause shall designate the class of the enclosing entity; and this class must exist and must not have been defined using a short class definition.
 See <<stored-definitions-containing-multiple-class-definitions>> regarding the use of `within` clause when a `stored-definition` does not hold exactly one class definition.
 
-.Example
-The subpackage `Rotational` declared within `Modelica.Mechanics` has the fully qualified name `Modelica.Mechanics.Rotational`, which is formed by concatenating the `packageprefixname` with the short name of the package.
+[example]
+====
+Example: The subpackage `Rotational` declared within `Modelica.Mechanics` has the fully qualified name `Modelica.Mechanics.Rotational`, which is formed by concatenating the `packageprefixname` with the short name of the package.
 The declaration of `Rotational` could be given as below:
 
 [source,modelica]
@@ -198,6 +220,7 @@ package Rotational // Modelica.Mechanics.Rotational
   ...
 end Rotational;
 ----
+====
 
 === Stored Definitions Containing Multiple Class Definitions
 
@@ -243,9 +266,11 @@ For a Modelica-package stored as a single file, `A.mo`, the resource `modelica:/
 
 In case the name of the class contains quoted identifiers, the single-quote `'` and any reserved characters (`:`, `/`, `?`, `#`, `[`, `]`, `@`, `!`, `$`, `&`, `(`, `)`, `*`, `+`, `,`, `;`, `=`) should be percent-encoded as normal in URIs.
 
-.Example
-Consider a top-level package `Modelica` and a class `Mechanics` inside it, a reference such as `modelica:/Modelica.Mechanics/C.jpg` is legal, while `modelica:/Modelica/Mechanics/C.jpg` is illegal.
+[example]
+====
+Example: Consider a top-level package `Modelica` and a class `Mechanics` inside it, a reference such as `modelica:/Modelica.Mechanics/C.jpg` is legal, while `modelica:/Modelica/Mechanics/C.jpg` is illegal.
 The references `modelica:/Modelica.Mechanics/C.jpg` and `modelica:/Modelica/C.jpg` must also refer to two distinct resources.
+====
 
 === Multilingual Descriptions
 
@@ -257,13 +282,21 @@ Translated Modelica text is provided by external files, so that no modification 
 The texts in following Modelica constructs should be translated:
 
 * description strings of component declarations and classes
+
 * strings in the following annotations:
+
 ** `Text.string`, `Text.textString`
+
 ** `missingInnerMessage`, `obsolete`, `unassignedMessage`
+
 ** `Dialog.group`, `Dialog.tab`
+
 ** `Dialog.loadSelector.caption`, `Dialog.loadSelector.filter`, `Dialog.saveSelector.caption`, `Dialog.saveSelector.filter`
+
 ** `Documentation.info`, `Documentation.revisions`
+
 ** `Figure.title`, `Figure.caption`, `Figure.group`, `Plot.title`, `Axis.label`, `Curve.legend`
+
 ** `mustBeConnected`
 
 [NOTE]
@@ -273,14 +306,18 @@ Comments (delimited as well as rest-of-line) are not translated.
 Only constructs given entirely by one or more concatenated string literals are translated, using nothing but the operator `+` for concatenation.
 In order to have parameter values as part of the texts the special substitution syntax is preferable (see <<text>> and <<variable-replacements>>), and translators need to be aware of these substrings in order to make good translations.
 
-.Example
-Consider:
+[example]
+====
+Example: Consider:
+
 [source,modelica]
 ----
 annotation(..., Text(string = "1st Frequency: %f1"),
                Text(string = "2nd Frequency: " + String(w2 / (2 * pi))), ...);
 ----
+
 In this example only `"1st Frequency: %f1"` can be translated; the second `Text.string` doesn't consist entirely of concatenated string literals, and is hence completely excluded from translation.
+====
 
 The files to support translation must be provided along with the library.
 They must be stored in the resources directory `modelica://LibraryName/Resources/Language/`.
@@ -290,6 +327,7 @@ Two kind of files in Gettext format have to be provided:
 . Template file `LibraryName.pot` (Portable Object Template), one file per library which is stored as the resource `modelica://LibraryName/Resources/Language/LibraryName.pot`.
 It describes all translatable strings in the library, but does not contain any translations.
 The pattern `LibraryName` denotes the toplevel class name of the library.
+
 . One file for each supported language with the name `LibraryName.language.po` (Portable Object), as the resource `modelica://LibraryName/Resources/Language/LibraryName.language.po`.
 This file is a copy of the associated template file, but extended with the translations in the specified language.
 The pattern `language` stands for the ISO 639-1 language code, e.g., `de` or `sv`.
@@ -307,11 +345,15 @@ msgid messageIdentifier
 msgstr messageTranslation
 ----
 
-The restriction to a few keywords makes it easier for tools to support the format without relying on the implementation from Gettext.
+The restriction to a few keywords makes it easier for tools to support the format without relying on the implementation from <<GettextManual>>.
 
 The use of `no-c-format` ensures that translation tools will not parse `"%class"` as the format specifier `%c` followed by _lass_.
 
 [NOTE]
+--
+In the remainder of this section, several facts about the gettext specification are interleaved non-normatively for easy access to some of the gettext basics.
+Always refer to the external gettext specification for full detail or in case of doubt.
+
 All text strings are in double quotes and encoded with UTF-8 characters.
 Comments start with a `#` and are continued until the end of line.
 Spaces outside strings are ignored and used as separators.
@@ -346,12 +388,14 @@ All general terms in the header should be replaced by specific information.
 Following the header, there is one translation entry for each string to be translated.
 It can start with an optional comment describing the location (file name and line number) of the text to translate.
 Multiple occurrences of the same string can be listed here, separated by space.
+--
 
 The `messageContext` following the keyword `msgctxt` shall be the full name of the Modelica class (e.g., `"Modelica.Blocks.Math.Sin"`) where the text appears.
 Short class definitions do not appear here.
 Texts in such classes belong to the enclosing full class definition.
 
 The text string which shall be translated is used as `messageIdentifier` (following the `msgid` keyword), and shall contain the original string from the Modelica code.
+Note that if a `msgid` string is given more than once in the same context, all occurrences are translated with the same (last) translation!
 
 [NOTE]
 The `messageTranslation` (following the keyword `msgstr`) is the translation of `messageIdentifier` and is typically edited using special tools for translators.
@@ -359,6 +403,7 @@ In the template file this string is empty by definition.
 If this is empty in a language specific file the `messageIdentifier` may be used instead.
 
 [NOTE]
+--
 Since in Modelica control sequences also start with a backslash and another backslash is used to use sequences literally or to hide double quotes, no change is required here.
 But Modelica allows strings to go over more than one line, gettext does not.
 Therefore, line breaks in Modelica must be encoded with `"\n"` for gettext.
@@ -374,9 +419,12 @@ B\"C" + "D\nE"
 
 evaluates to:
 
+[source,text]
+----
 A  
 B"CD  
 E
+----
 
 which in the translation entry looks like:
 
@@ -387,9 +435,11 @@ msgid ""
 "B\"CD\n"
 "E"
 ----
+--
 
-.Example
-Consider a simple sine-source:
+[example]
+====
+Example: Consider a simple sine-source:
 
 [source,modelica]
 ----
@@ -423,6 +473,7 @@ msgctxt "MyPackage.Sources.Sine"
 msgid "Frequency: %f"
 msgstr "Frekvens: %f"
 ----
+====
 
 [NOTE]
 To support the translation of these strings a number of free and commercial tools exist in context of GNU gettext.
