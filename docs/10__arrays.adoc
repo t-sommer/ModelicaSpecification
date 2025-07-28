@@ -1165,6 +1165,7 @@ Element-wise multiplication `a .* b` of numeric scalars, vectors, matrices or ar
 Multiplication `a * b` of numeric vectors and matrices is defined only for the following combinations:
 
 .Matrix and vector multiplication of arrays with numeric elements. The scalar Operation applies for all i in 1,...,l and j in 1,...,n, and the summation over k goes from 1 to m.
+[[tab:matrix-vector-multiplication]]
 [cols="a,a,a,a",options=autowidth]
 |===
 |Size of a    |Size of b    |Size of a * b |Operation c := a * b
