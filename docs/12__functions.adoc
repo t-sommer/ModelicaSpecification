@@ -1107,13 +1107,13 @@ Partial derivatives are not provided via annotations, but using a certain type o
 |===
 |Annotation    |Description                   |Details
 
-|`smoothOrder` |Function smoothness guarantee |<<modelica:smoothOrder>>
-|`derivative`  |Provide function derivative   |<<modelica:derivative>>
-|`inverse`     |Provide closed-form inverses  |<<modelica:inverse>>
+|`smoothOrder` |Function smoothness guarantee |<<annotation:smoothOrder>>
+|`derivative`  |Provide function derivative   |<<annotation:derivative>>
+|`inverse`     |Provide closed-form inverses  |<<annotation:inverse>>
 |===
 
-[[modelica:smoothOrder]]
-smoothOrder Annotation::
+[[annotation:smoothOrder,Annotation smoothOrder]]
+Annotation smoothOrder::
 +
 [source,grammar]
 ----
@@ -1131,26 +1131,30 @@ This annotation has only an effect within a function declaration.
 `smoothOrder` defines the number of differentiations of the function, in order that all of the differentiated outputs are continuous provided all input arguments and their derivatives up to order `smoothOrder` are continuous.
 +
 [NOTE]
-This means that the function is at least C^smoothOrder.
-+
+--
+This means that the function is at least C^smoothOrder^.
+
 When a tool computes the derivative of a function, e.g., for index reduction or to compute an analytic Jacobian, each differentiation of a function reduces the `smoothOrder` by 1.
 The `smoothOrder` information can then be used to infer continuity of the resulting differentiated function calls, provided the input arguments are continuous.
 This is a conservative check, however, meaning that a tool may be able to establish continuity of a function call even though the `smoothOrder` has been reduced to less than 0, and/or some input arguments are not continuous.
+--
 +
 The optional argument `normallyConstant` of `smoothOrder` defines that the function argument `IDENT` is usually constant.
 +
 [NOTE]
+--
 A tool might check whether the actual argument to `IDENT` is a parameter expression at the place where the function is called.
 If this is the case, the derivative of the function might be constructed under the assumption that the corresponding argument is constant, to enhance efficiency.
 Typically, a tool would generate at most two different derivative functions of a function:
 One, under the assumption that all `normallyConstant` arguments are actually constant.
 And one, under the assumption that all input arguments are time varying.
 Based on the actual arguments of the function call either of the two derivative functions is used.
-+
-This annotation is used by many functions of the `Modelica.Fluid` library, such as `Modelica.Fluid.Dissipation.PressureLoss.StraightPipe.dp_laminar_DP`, since geometric arguments to these functions are usually constant.
 
-[[modelica:derivative]]
-derivative Annotation::
+This annotation is used by many functions of the `Modelica.Fluid` library, such as `Modelica.Fluid.Dissipation.PressureLoss.StraightPipe.dp_laminar_DP`, since geometric arguments to these functions are usually constant.
+--
+
+[[annotation:derivative,Annotation derivative]]
+Annotation derivative::
 +
 [source,grammar]
 ----
@@ -1176,8 +1180,8 @@ Specifying `order` is only considered a restriction if `order > 1`.
 +
 For details abouts using the `derivative` annotation, see <<using-the-derivative-annotation>>.
 
-[[modelica:inverse]]
-inverse Annotation::
+[[annotation:inverse,Annotation inverse]]
+Annotation inverse::
 +
 [source,grammar]
 ----
@@ -1201,7 +1205,11 @@ When a function supplies multiple derivative-functions subject to different rest
 [NOTE]
 This means that the most restrictive derivatives should be written first.
 
-.Example
+[example]
+====
+Example: The following model illustrates the requirement that a provided derivative must be valid.
+That `fder` is a valid derivative of `f` means that it can be used safely to compute `x2` by numeric integration: the function value, `x1`, will up to numerical precision be matched by the integral of the derivative, `x2`.
+
 [source,modelica]
 ----
 function f
@@ -1221,10 +1229,13 @@ initial equation
   x2 = x1;
 end M;
 ----
-Note that tools are not required to use the provided derivative, and might solve the equations completely without numeric integration.
 
-.Example
-Use of `order` to specify a second order derivative:
+Note that tools are not required to use the provided derivative, and might solve the equations completely without numeric integration.
+====
+
+[example]
+====
+Example: Use of `order` to specify a second order derivative:
 [source,modelica]
 ----
 function foo0 annotation(derivative = foo1);
@@ -1235,26 +1246,31 @@ end foo1;
 
 function foo2 end foo2;
 ----
+====
 
 The inputs and outputs of the derivative function of `order` 1 are constructed as follows:
 
 * First are all inputs to the original function, and after all them we will in order append one derivative for each input containing reals.
   These common inputs must have the same name, type, and declaration order for the function and its derivative.
+
 * The outputs are constructed by starting with an empty list and then in order appending one derivative for each output containing reals.
   The outputs must have the same type and declaration order for the function and its derivative.
 
-If the Modelica function call is a nth derivative (n ≥ 1), i.e., this function call has been derived from an (n-1)th derivative by differentiation inside the tool, an `annotation(derivative(order=n+1) = ...)`, specifies the (n+1)th derivative, and the (n+1)th derivative call is constructed as follows:
+If the Modelica function call is a __n__th derivative (_n_ ≥ 1), i.e., this function call has been derived from an (_n_-1)th derivative by differentiation inside the tool, an `annotation(derivative(order=n+1) = ...)`, specifies the (_n_+1)th derivative, and the (_n_+1)th derivative call is constructed as follows:
 
-* The input arguments are appended with the (n+1)th derivative, which are constructed in order from the nth `order` derivatives.
-* The output arguments are similar to the output argument for the nth derivative, but each output is one higher in derivative order.
+* The input arguments are appended with the (_n_+1)th derivative, which are constructed in order from the __n__th `order` derivatives.
+
+* The output arguments are similar to the output argument for the __n__th derivative, but each output is one higher in derivative order.
   The outputs must have the same type and declaration order for the function and its derivative.
 
 [NOTE]
 The restriction that only the result of differentiation can use higher-order derivatives ensures that the derivatives `x`, `der_x`, ... are in fact derivatives of each other.
 Without that restriction we would have both `der(x)` and `x_der` as inputs (or perform advanced tests to verify that they are the same).
 
-.Example
-Given the declarations
+[example]
+====
+Example: Given the declarations
+
 [source,modelica]
 ----
 function foo0
@@ -1291,20 +1307,26 @@ function foo2
   output Real der_2_y;
   ...
 ----
+
 the equation
+
 [latexmath]
 ++++
 (\ldots,\, y(t),\, \ldots) = \text{foo0}(\ldots,\, x(t),\, b,\ldots)
 ++++
+
 implies that:
+
 [latexmath]
 ++++
 (\ldots,\, \frac{dy(t)}{dt},\, \ldots) = \text{foo1}(\ldots,\, x(t),\, b,\, \ldots,\,  \ldots,\, \frac{dx(t)}{dt},\, \ldots)
 ++++
+
 [latexmath]
 ++++
 (\ldots,\, \frac{d^2y(t)}{dt^2},\, \ldots) = \text{foo2}(\ldots,\, x(t),\, b,\, \ldots,\, \frac{dx(t)}{dt},\, \ldots,\, \ldots,\, \frac{d^2x(t)}{dt^2},\, \ldots)
 ++++
+====
 
 An input or output to the function may be any simple type (`Real`, `Boolean`, `Integer`, `String` and enumeration types) or a record.
 For a record containing `Real` values, the corresponding derivative uses a derivative record that only contains the real-predefined types and sub-records containing reals (handled recursively) from the original record.
@@ -1312,8 +1334,10 @@ When using `smoothOrder`, then the derivative record is automatically constructe
 The function must have at least one input containing reals.
 The output list of the derivative function shall not be empty.
 
-.Example
-Here is one example use case with records mixing `Real` and non-`Real` as inputs and outputs:
+[example]
+====
+Example: Here is one example use case with records mixing `Real` and non-`Real` as inputs and outputs:
+
 [source,modelica]
 ----
 record ThermodynamicState "Thermodynamic state"
@@ -1371,14 +1395,16 @@ DensityDerivative d_rho1 = der(rho1);
 Density rho2 = density(setState_ph(p=..., h=..., phase=...));
 DensityDerivative d_rho2 = der(rho2);
 ----
+====
 
-* `zeroDerivative = inputVar1, zeroDerivative = inputVar2, ...`
+* `"zeroDerivative" "=" inputVar~1~, { "," "zeroDerivative" "=" inputVar~2~ }`
 
-The derivative function is only valid if `inputVar1` (and `inputVar2` etc.) are independent of the variables the function call is differentiated with respect to (i.e., that the derivative of `inputVar1` is zero).
-The derivative of `inputVar1` (and `inputVar2` etc.) are excluded from the argument list of the derivative-function.
+The derivative function is only valid if `inputVar~1~` (and `inputVar~2~` etc.) are independent of the variables the function call is differentiated with respect to (i.e., that the derivative of `inputVar1` is zero).
+The derivative of `inputVar~1~` (and `inputVar~2~` etc.) are excluded from the argument list of the derivative-function.
 If the derivative-function also specifies a derivative the common variables should have consistent `zeroDerivative`.
 
-[NOTE]
+[example]
+====
 Assume that function `f` takes a matrix and a scalar.
 Since the matrix argument is usually a parameter expression it is then useful to define the function as follows (the additional derivative = `fGeneralDer` is optional and can be used when the derivative of the matrix or offset is non-zero).
 Note that the derivative annotation of `fDer` must specify `zeroDerivative` for both `y` and `offset` as below, but the derivative annotation of `fGeneralDer` shall not have `zeroDerivative` for either of them (it may specify `zeroDerivative` for `x_der`, `y_der`, or `offset_der`).
@@ -1433,27 +1459,34 @@ algorithm
   //annotation(derivative(order=2) = fGeneralDer2);
 end fGeneralDer;
 ----
+
 In the example above `zeroDerivative=y` and `zeroDerivative=offset` imply that
+
 [latexmath]
 ++++
+\begin{align}
 \frac{d}{dt}f(x(t),\, y(t),\, o(t))
-= \frac{\partial f}{\partial x} \frac{dx}{dt} + \frac{\partial f}{\partial y} \frac{dy}{dt} + \frac{\partial f}{\partial o} \frac{do}{dt}
-= \frac{\partial f}{\partial x} \frac{dx}{dt} + \frac{\partial f}{\partial y} \cdot 0 + \frac{\partial f}{\partial o} \cdot 0
-= \frac{\partial f}{\partial x} \frac{dx}{dt}
-= fDer \cdot \frac{dx}{dt}
+&= \frac{\partial f}{\partial x} \frac{dx}{dt} + \frac{\partial f}{\partial y} \frac{dy}{dt} + \frac{\partial f}{\partial o} \frac{do}{dt}\\
+&= \frac{\partial f}{\partial x} \frac{dx}{dt} + \frac{\partial f}{\partial y} \cdot 0 + \frac{\partial f}{\partial o} \cdot 0\\
+&= \frac{\partial f}{\partial x} \frac{dx}{dt}\\
+&= fDer \cdot \frac{dx}{dt}
+\end{align}
 ++++
+====
 
-* `noDerivative = inputVar1`
+* `"noDerivative" "=" inputVar~1~`
 
-The derivative of `inputVar1` is excluded from the argument list of the derivative-function.
+The derivative of `inputVar~1~` is excluded from the argument list of the derivative-function.
 This relies on assumptions on the arguments to the function; and the function should document these assumptions (it is not always straightforward to verify them).
 In many cases even the undifferentiated function will only behave correctly under these assumptions.
 
 The inputs excluded using `zeroDerivative` or `noDerivative` may be of any type (including types not containing reals).
 
-[NOTE]
+[example]
+====
 Assume that function `fg` is defined as a composition `f(x, g(x))`.
 When differentiating `f` it is useful to give the derivative under the assumption that the second argument is defined in this way:
+
 [source,modelica]
 ----
 function fg
@@ -1481,17 +1514,22 @@ algorithm
   ...
 end h;
 ----
+
 This is useful if `g` represents the major computational effort of `fg`.
 
 Therefore `h` indirectly includes the derivative with respect to `y` as follows:
+
 [latexmath]
 ++++
+\begin{align}
 \frac{d}{dt}fg(x(t))
-= \frac{d}{dt}f(x(t),\, g(x(t)))
-= \frac{\partial f}{\partial x} \frac{dx}{dt} + \frac{\partial f}{\partial y} \frac{\partial g}{\partial x} \frac{dx}{dt}
-= \left(\frac{\partial f}{\partial x} + \frac{\partial f}{\partial y} \frac{\partial g}{\partial x} \right) \frac{dx}{dt}
-= h(x(t),\, y(t))) \frac{dx}{dt}
+&= \frac{d}{dt}f(x(t),\, g(x(t))) \\
+&= \frac{\partial f}{\partial x} \frac{dx}{dt} + \frac{\partial f}{\partial y} \frac{\partial g}{\partial x} \frac{dx}{dt} \\
+&= \left(\frac{\partial f}{\partial x} + \frac{\partial f}{\partial y} \frac{\partial g}{\partial x} \right) \frac{dx}{dt} \\
+&= h(x(t),\, y(t))) \frac{dx}{dt}
+\end{align}
 ++++
+====
 
 ==== Partial Derivatives of Functions
 
@@ -1507,8 +1545,10 @@ Each `IDENT` must be a scalar `Real` input to the function.
 
 The comment allows a user to comment the function (in the info-layer and as one-line description, and as icon).
 
-.Example
-The specific enthalpy can be computed from a Gibbs-function as follows:
+[example]
+====
+Example: The specific enthalpy can be computed from a Gibbs-function as follows:
+
 [source,modelica]
 ----
 function Gibbs
@@ -1525,10 +1565,11 @@ algorithm
   h := Gibbs(p, T) - T * Gibbs_T(p, T);
 end specificEnthalpy;
 ----
+====
 
 ==== Using the Inverse Annotation
 
-If a function f1 with one output formal parameter y can be restricted to an informally defined domain and codomain, such that the mapping of the input formal parameter uk to y is bijective for any fixed assignment to the other input formal parameters in the domain (see examples below), then it can be given an `inverse` annotation to provide an explicit inverse f2 to this mapping, provided that the function is only applied on this domain:
+If a function `f1` with one output formal parameter `y` can be restricted to an informally defined domain and codomain, such that the mapping of the input formal parameter `uk` to `y` is bijective for any fixed assignment to the other input formal parameters in the domain (see examples below), then it can be given an `inverse` annotation to provide an explicit inverse `f2` to this mapping, provided that the function is only applied on this domain:
 
 The `inverse` annotation takes the following form in a function declaration:
 [source,modelica]
@@ -1548,20 +1589,23 @@ algorithm
 end f1;
 ----
 
-In addition to y, the formal call to f2 in the annotation shall also pass the other formal parameters (excluding uk) needed determine the inverse, see below.
-The function f2 must be an actual inverse, meaning that if uk is calculated as uk = f2(..., y, ...), then the equality y = f1(..., uk, ...) is satisfied up to a certain precision, for all values of the input arguments of f2(..., y, ...) in the range and informal domain of f1.
+In addition to `y`, the formal call to `f2` in the annotation shall also pass the other formal parameters (excluding `uk`) needed determine the inverse, see below.
+The function `f2` must be an actual inverse, meaning that if `uk` is calculated as `uk = f2(..., y, ...)`, then the equality `y = f1(..., uk, ...)` is satisfied up to a certain precision, for all values of the input arguments of `f2(..., y, ...)` in the range and informal domain of `f1`.
 
 More than one inverse can be defined within the same `inverse` annotation, separated by commas:
+
 [source,modelica]
 ----
 annotation(inverse(uk = f2(..., y, ...), ui = f3(..., y, ...), ...));
 ----
 
-Function f1 can have any number and types of formal parameters with and without default value.
-The restriction is that the number of unknown variables (see <<balanced-models>>) in the output formal parameter of both f1 and f2 must be the same and that f2 should have a union of output and formal parameters that is the same or a subset of that union for f1, but the order of the formal parameters may be permuted.
+Function `f1` can have any number and types of formal parameters with and without default value.
+The restriction is that the number of unknown variables (see <<balanced-models>>) in the output formal parameter of both `f1` and `f2` must be the same and that `f2` should have a union of output and formal parameters that is the same or a subset of that union for `f1`, but the order of the formal parameters may be permuted.
 
-.Example
-Inverse function with same union of formal parameters:
+[example]
+====
+Example: Inverse function with same union of formal parameters:
+
 [source,modelica]
 ----
 function h_pTX
@@ -1583,12 +1627,15 @@ algorithm
   ...
 end T_phX;
 ----
+====
 
-The subset case is useful if f1 computes the inverse of f2 within a region, or up to a certain tolerance.
-Then, f1 may specify f2 as inverse with fewer arguments, skipping the arguments for tolerance and/or the region.
+The subset case is useful if `f1` computes the inverse of `f2` within a region, or up to a certain tolerance.
+Then, `f1` may specify `f2` as inverse with fewer arguments, skipping the arguments for tolerance and/or the region.
 
-.Example
-Inverse function with subset of formal parameters:
+[example]
+====
+Example: Inverse function with subset of formal parameters:
+
 [source,modelica]
 ----
 function inv_sine
@@ -1609,6 +1656,7 @@ algorithm
   // Note: No inverse.
 end sine;
 ----
+====
 
 Tools are not expected to verify the bijectiveness requirement, meaning that it is the user's responsibility to ensure that this requirement is fulfilled, and that tools can rely on the requirement as an assumption for symbolic manipulations when an inverse function is provided.
 
@@ -1616,9 +1664,11 @@ There is no guarantee that a provided inverse will be used, and no rule for at w
 Inlining a function means that the possibility to apply provided inverses is lost.
 Hence, the recommended inlining annotations -- if any -- for use together with the `inverse` annotation is either `Inline = false` or `LateInline = true`.
 
-.Example
-If an inverse is provided, but the injectiveness part of the bijectiveness requirement is not fulfilled, this may introduce additional ambiguity to the solution of equations with multiple solutions.
+[example]
+====
+Example: If an inverse is provided, but the injectiveness part of the bijectiveness requirement is not fulfilled, this may introduce additional ambiguity to the solution of equations with multiple solutions.
 Consider the following invalid use of the `inverse` annotation:
+
 [source,modelica]
 ----
 model NotInjective
@@ -1636,14 +1686,18 @@ equation
   square(x) = abs(y); // Expecting continuous solution for x.
 end NotInjective;
 ----
-That the parameter y0 may have any sign means the sign of x cannot be restricted in the informal domain of square, and hence that the injectiveness requirement cannot be fulfilled.
-Without the `inverse` annotation, the nonlinear equation in x and y has an ambiguity, but it is generally expected that this is handled so that a continuous solution for x is obtained, meaning that it will keep the same sign as y throughout the simulation.
+
+That the parameter `y0` may have any sign means the sign of `x` cannot be restricted in the informal domain of `square`, and hence that the injectiveness requirement cannot be fulfilled.
+Without the `inverse` annotation, the nonlinear equation in `x` and `y` has an ambiguity, but it is generally expected that this is handled so that a continuous solution for `x` is obtained, meaning that it will keep the same sign as `y` throughout the simulation.
 The additional ambiguity introduced by the `inverse` annotation is that if the provided inverse is used to solve the nonlinear equation instead of using a generic nonlinear equation solver based on local search, then the solution with positive sign is always obtained.
 The lack of guarantees that a provided inverse will be used thus implies a worse ambiguity than what was present in the model before introducing the `inverse` annotation.
+====
 
-.Example
-If an inverse is provided, but the surjectiveness part of the bijectiveness requirement is not fulfilled, this may introduce an invalid solution to equations that do not have a solution at all.
+[example]
+====
+Example: If an inverse is provided, but the surjectiveness part of the bijectiveness requirement is not fulfilled, this may introduce an invalid solution to equations that do not have a solution at all.
 Consider the following invalid use of the `inverse` annotation:
+
 [source,modelica]
 ----
 model NotSurjective
@@ -1668,14 +1722,18 @@ equation
   annotation(experiment(StopTime = 10.0));
 end NotSurjective;
 ----
-As the value of x varies over the interval [-1, 1], but the range of cbrtPos is only (0, ∞), the informal codomain of cbrtPos cannot be restricted such that the surjectiveness is fulfilled.
-A valid solution to the equation in x and y must satisfy y > 0, and when no `inverse` annotation is given, a violation will be detected by a nonlinear solver applied directly to the equation.
+
+As the value of `x` varies over the interval `[-1, 1]`, but the range of `cbrtPos` is only `(0, ∞)`, the informal codomain of `cbrtPos` cannot be restricted such that the surjectiveness is fulfilled.
+A valid solution to the equation in `x` and `y` must satisfy `y > 0`, and when no `inverse` annotation is given, a violation will be detected by a nonlinear solver applied directly to the equation.
 When the (invalid) inverse provided by the `inverse` annotation is used, however, the equation gets transformed into
+
 [source,modelica]
 ----
   y = cube(x);
 ----
-where the requirement y > 0 can no longer be detected, resulting in a simulation result that does not fulfill the original model equations.
+
+where the requirement `y > 0` can no longer be detected, resulting in a simulation result that does not fulfill the original model equations.
+====
 
 === Function Inlining and Event Generation
 
