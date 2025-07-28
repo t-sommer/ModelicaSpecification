@@ -1744,18 +1744,18 @@ See <<notation-for-annotation-definitions>> regarding the notation used to descr
 |===
 |Annotation                  |Description                                    |Details
 
-|`Inline`                    |Inline function                                |<<inline>>
-|`LateInline`                |Inline after all symbolic transformations      |<<late-inline>>
-|`InlineAfterIndexReduction` |Inline after index reduction                   |<<inline-after-index-reduction>>
-|`GenerateEvents`            |Generate events for zero crossings in function |<<generate-events>>
+|`Inline`                    |Inline function                                |<<annotation:inline>>
+|`LateInline`                |Inline after all symbolic transformations      |<<annotation:late-inline>>
+|`InlineAfterIndexReduction` |Inline after index reduction                   |<<annotation:inline-after-index-reduction>>
+|`GenerateEvents`            |Generate events for zero crossings in function |<<annotation:generate-events>>
 |===
 
 Inlining a function makes the statements of the function body accessible to symbolic operations, potentially leading to expression simplifications and more efficient solution of equations.
 At the same time, another important consequence of inlining a function is that any annotations for derivatives or inverses are lost.
 Hence, one needs to find the right balance between inlining too early (loss of provided derivatives and inverses) and too late (earlier stages of symbolic processing cannot benefit from symbolic simplifications).
 
-[[inline]]
-Inline::
+[[annotation:inline,Annotation Inline]]
+Annotation Inline::
 +
 [source,modelica]
 ----
@@ -1768,14 +1768,13 @@ If `Inline = true`, the model developer proposes to inline the function.
 This means, that the body of the function is included at all places where the function is called.
 +
 If `Inline = false`, the model developer proposes to not inline the function.
-+
 The default for inlining is tool-specific.
 +
 [NOTE]
 `Inline = true` is for example used in `Modelica.Mechanics.MultiBody.Frames` and in functions of `Modelica.Media` to have no overhead for function calls such as resolving a vector in a different coordinate system and at the same time the function can be analytically differentiated, e.g., for index reduction needed for mechanical systems.
 
-[[late-inline]]
-LateInline::
+[[annotation:late-inline,Annotation LateInline]]
+Annotation LateInline::
 +
 [source,modelica]
 ----
@@ -1804,8 +1803,8 @@ In particular, tools may automatically delay inlining in order to take advantage
 This annotation is for example used in `Modelica.Media.Water.IF97_Utilities.T_props_ph` to provide in combination with common subexpression elimination the automatic caching of function calls.
 Furthermore, it is used in order that a tool is able to propagate specific enthalpy over connectors in the `Modelica.Fluid` library.
 
-[[inline-after-index-reduction]]
-InlineAfterIndexReduction::
+[[annotation:inline-after-index-reduction,Annotation InlineAfterIndexReduction]]
+Annotation InlineAfterIndexReduction::
 +
 [source,modelica]
 ----
@@ -1815,12 +1814,12 @@ InlineAfterIndexReduction::
 Has only an effect within a function declaration.
 +
 If `true`, the model developer proposes to inline the function after the function is differentiated for index reduction, and before any other symbolic transformations are performed.
-The default is to not perform this specific inlining.
 +
+The default is to not perform this specific inlining.
 This annotation cannot be combined with annotations `Inline` and `LateInline`.
 
-[[generate-events]]
-GenerateEvents::
+[[annotation:generate-events,Annotation GenerateEvents]]
+Annotation GenerateEvents::
 +
 [source,modelica]
 ----
@@ -1834,9 +1833,11 @@ By specifying `GenerateEvents = true`, event-generating expressions in the funct
 Having `GenerateEvents = true` implies `Inline = true` unless overridden by specifying one of the inlining annotations with value `true` (in particular, `GenerateEvents = true` cannot be combined with `Inline = false`).
 +
 [NOTE]
+--
 In case a given inlining annotation proposes to inline at a stage when the tool cannot process `GenerateEvents = true`, it is recommended to give a diagnostic and instead perform inlining of the function at the nearest stage where `GenerateEvents = true` can still be respected.
-+
+
 If the function is called in a context where events will not be generated (e.g., inside another function without `GenerateEvents = true`) no special action is needed.
+--
 
 === External Function Interface
 
@@ -1845,15 +1846,22 @@ The Modelica external function call interface provides the following:
 
 * Support for external functions written in C (specifically C89) and FORTRAN 77.
   Other languages, e.g., C++ and Fortran 90, may be supported in the future, and provided the function is link-compatible with C89 or FORTRAN 77 it can be written in any language.
+
 * Mapping of argument types from Modelica to the target language and back.
+
 * Natural type conversion rules in the sense that there is a mapping from Modelica to standard libraries of the target language.
+
 * Handling arbitrary parameter order for the external function.
+
 * Passing arrays to and from external functions where the dimension sizes are passed as explicit integer parameters.
+
 * Handling of external function parameters which are used both for input and output, by passing an output that has a binding equation to the external function.
-  [NOTE]
-  Binding equations are executed prior to calling the external function.
++
+[NOTE]
+Binding equations are executed prior to calling the external function.
 
 The format of an external function declaration is as follows.
+
 [source,grammar]
 ----
 function IDENT description-string
@@ -1884,7 +1892,10 @@ The external function call mechanism for `"builtin"` functions is implementation
 Typically, for functions from the standard C library, the prototype of the function is provided but no `Library` annotation.
 Currently, there are no other builtin functions defined in Modelica.
 
-.Example
+[example]
+====
+Example:
+
 [source,modelica]
 ----
 package Modelica
@@ -1902,6 +1913,7 @@ model UserModel
   parameter Real p = Modelica.Math.sin(2);
 end UserModel;
 ----
+====
 
 The `external-function-call` specification allows functions whose prototypes do not match the default assumptions as defined below to be called.
 It also gives the name used to call the external function.
@@ -1939,7 +1951,9 @@ Strings are NUL-terminated (i.e., terminated by `'\0'`) and are encoded using UT
 The valid return values for an external function returning a `String` are:
 
 * A string given as `String` input to the external function.
+
 * A pointer to a C string literal.
+
 * A pointer returned by one of the string allocation functions in <<string-allocation-utility-functions>>.
 
 [NOTE]
@@ -1986,7 +2000,7 @@ The type `size_t` is a C unsigned integer type.
 Arrays are stored in row-major order when calling C functions and in column-major order when calling FORTRAN 77 functions.
 
 The table below shows the mapping of an array argument in the absence of an explicit external function call when calling a C function.
-The type `T` is allowed to be any of the simple types which can be passed to C as defined in <<simple-types>> or a record type as defined in <<records>> and it is mapped to the type T' as defined in these sections for input arguments.
+The type `T` is allowed to be any of the simple types which can be passed to C as defined in <<simple-types>> or a record type as defined in <<records>> and it is mapped to the type `T'` as defined in these sections for input arguments.
 Array inputs to C-functions are const-pointers, indicating that the arrays shall not be changed.
 
 [cols="a,a,a",options=autowidth]
@@ -2000,7 +2014,7 @@ Array inputs to C-functions are const-pointers, indicating that the arrays shall
 
 The method used to pass array arguments to FORTRAN 77 functions in the absence of an explicit external function call is similar to the one defined above for C: first the address of the array, then the dimension sizes as integers.
 See the table below.
-The type `T` is allowed to be any of the simple types which can be passed to FORTRAN 77 as defined in <<simple-types>> and it is mapped to the type T' as defined in that section.
+The type `T` is allowed to be any of the simple types which can be passed to FORTRAN 77 as defined in <<simple-types>> and it is mapped to the type `T'` as defined in that section.
 
 [cols="a,a",options=autowidth]
 |===
@@ -2011,8 +2025,9 @@ The type `T` is allowed to be any of the simple types which can be passed to FOR
 |`T[dim1, ..., dimn]` |`T', INTEGER dim1, ..., INTEGER dimn`
 |===
 
-.Example
-The following two examples illustrate the default mapping of array arguments to external C and FORTRAN 77 functions.
+[example]
+====
+Example: The following two examples illustrate the default mapping of array arguments to external C and FORTRAN 77 functions.
 
 [source,modelica]
 ----
@@ -2022,13 +2037,16 @@ function foo
   external;
 end foo;
 ----
+
 The corresponding C prototype is as follows:
+
 [source,c]
 ----
 double foo(const double *, size_t, size_t, size_t);
 ----
 
 If the external function is written in FORTRAN 77, i.e.:
+
 [source,modelica]
 ----
 function foo
@@ -2037,7 +2055,9 @@ function foo
 external "FORTRAN 77";
 end foo;
 ----
+
 the default assumptions correspond to a FORTRAN 77 function defined as follows:
+
 [source,fortran]
 ----
 FUNCTION foo(a, d1, d2, d3)
@@ -2049,11 +2069,13 @@ FUNCTION foo(a, d1, d2, d3)
   ...
 END
 ----
+====
 
 When an explicit call to the external function is present, the array and the sizes of its dimensions must be passed explicitly.
 
-.Example
-This example shows how arrays can be passed explicitly to an external FORTRAN 77 function when the default assumptions are unsuitable.
+[example]
+====
+Example: This example shows how arrays can be passed explicitly to an external FORTRAN 77 function when the default assumptions are unsuitable.
 
 [source,modelica]
 ----
@@ -2067,7 +2089,9 @@ external "FORTRAN 77"
   myfoo(x, y, size(x,1), size(y,2), u1, i, u2);
 end foo;
 ----
+
 The corresponding FORTRAN 77 subroutine would be declared as follows:
+
 [source,fortran]
 ----
 SUBROUTINE myfoo(x, y, n, m, u1, i, u2)
@@ -2081,6 +2105,7 @@ SUBROUTINE myfoo(x, y, n, m, u1, i, u2)
   ...
 END
 ----
+====
 
 ===== Records
 
@@ -2088,14 +2113,20 @@ Mapping of record types is only supported for C.
 A Modelica record class is mapped as follows:
 
 * The record class is represented by a struct in C.
+
 * Each component of the Modelica record is mapped to its corresponding C representation.
   A nested record component is mapped to a nested struct component.
+
 * The components of the Modelica record class are declared in the same order in the C struct.
+
 * Arrays cannot be mapped.
 
 Records are passed by reference (i.e., a pointer to the record is being passed).
 
-.Example
+[example]
+====
+Example:
+
 [source,modelica]
 ----
 record A
@@ -2107,7 +2138,9 @@ record R
   A a1, a2;
 end R;
 ----
+
 is mapped to:
+
 [source,c]
 ----
 struct A {
@@ -2119,6 +2152,7 @@ struct R {
   struct A a1, b2;
 };
 ----
+====
 
 ==== Return Type Mapping
 
@@ -2154,7 +2188,10 @@ The element type `T` of an array can be any simple type as defined in <<simple-t
 Any potential aliasing in the external function is the responsibility of the tool and not the user.
 An external function is not allowed to internally change the inputs (even if they are restored before the end of the function).
 
-.Example
+[example]
+====
+Example:
+
 [source,modelica]
 ----
 function foo
@@ -2218,6 +2255,7 @@ myfoo_(&a, &temp1, &b);
 ----
 
 The use of the function `foo` in Modelica is uninfluenced by these considerations.
+====
 
 ==== Annotations for External Functions
 
@@ -2225,54 +2263,63 @@ The following annotations are useful in the context of calling external function
 They can all specify either a scalar value or an array of values as indicated below for the `Library` annotation:
 
 * The `annotation(Library="libraryName")`, used by the linker to include the library file where the compiled external function is available.
+
 * The `annotation(Library={"libraryName1", "libraryName2"})`, used by the linker to include the library files where the compiled external function is available and additional libraries used to implement it.
-  For shared libraries it is recommended to include all non-system libraries in this list.
+For shared libraries it is recommended to include all non-system libraries in this list.
+
 * The `annotation(Include="insertedCode")`, used to insert function prototypes or definitions needed for calling the external function in the code generated by the Modelica compiler.
-  When generating a call to the external function, the `"insertedCode"` shall be present at the top level somewhere before the point of the call (similar to where include directives are typically placed).
-  The `Include` annotation shall be used in such a way that each external function can be handled in a separate translation unit.
-  In particular, different external functions must not have `Include` annotations providing exported definitions of the same function symbol to avoid linking errors.
+When generating a call to the external function, the `"insertedCode"` shall be present at the top level somewhere before the point of the call (similar to where include directives are typically placed).
+The `Include` annotation shall be used in such a way that each external function can be handled in a separate translation unit.
+In particular, different external functions must not have `Include` annotations providing exported definitions of the same function symbol to avoid linking errors.
++
+A deprecated feature is that if multiple `Include` annotations -- possibly coming from different external functions -- have identical content, the tool shall not include this content more than once in any translation unit.
+In case calls to several external functions are generated in the same translation unit, the `Include` annotations of the different functions must not define the same function -- except when relying on the deprecated behavior.
++
+The included code should be valid C89 code.
+If the `external-function-call` contains any `size`-expression, the tool is responsible for ensuring that a C-header defining `size_t` is included before the `"insertedCode"`.
+The `"insertedCode"`, conditionally preceded by a header for `size_t`, must be a valid translation unit.
++
+When an `Include` annotation is present, it shall provide a prototype for the external function, and hence the tool shall not produce an automatically generated prototype in the generated code in this case.
++
+Although all pointer types are const pointers in the type mapping for input arguments, it is a deprecated feature that the prototype in an `Include` annotation may use non-const pointers instead.
++
+[NOTE]
+--
+For an external function declaration calling the external function `myfoo`, examples of `"insertedCode"` include:
 
-  A deprecated feature is that if multiple `Include` annotations -- possibly coming from different external functions -- have identical content, the tool shall not include this content more than once in any translation unit.
-  In case calls to several external functions are generated in the same translation unit, the `Include` annotations of the different functions must not define the same function -- except when relying on the deprecated behavior.
+* An `#include` directive including a header file with a prototype for `myfoo`.
 
-  The included code should be valid C89 code.
-  If the `external-function-call` contains any `size`-expression, the tool is responsible for ensuring that a C-header defining `size_t` is included before the `"insertedCode"`.
-  The `"insertedCode"`, conditionally preceded by a header for `size_t`, must be a valid translation unit.
+* An `#include` directive including a source file with a `static` definition of `myfoo`.
+Include guards should be used (either in the `Include` annotation or in the source file) to avoid relying on the deprecated feature that tools shall include at most one copy in the same translation unit.
+(Having a `static` definition allows the same source file to be included by multiple `Include` annotations in different translation units.)
 
-  When an `Include` annotation is present, it shall provide a prototype for the external function, and hence the tool shall not produce an automatically generated prototype in the generated code in this case.
+* A prototype for `myfoo`.
+This may be useful when no header file is available and it is not desirable to rely on the automatic generation of a prototype.
 
-  Although all pointer types are const pointers in the type mapping for input arguments, it is a deprecated feature that the prototype in an `Include` annotation may use non-const pointers instead.
-
-  [NOTE]
-  For an external function declaration calling the external function `myfoo`, examples of `"insertedCode"` include:
-
-  * An `#include` directive including a header file with a prototype for `myfoo`.
-  * An `#include` directive including a source file with a `static` definition of `myfoo`.
-    Include guards should be used (either in the `Include` annotation or in the source file) to avoid relying on the deprecated feature that tools shall include at most one copy in the same translation unit.
-    (Having a `static` definition allows the same source file to be included by multiple `Include` annotations in different translation units.)
-  * A prototype for `myfoo`.
-    This may be useful when no header file is available and it is not desirable to rely on the automatic generation of a prototype.
-  * A piece of C code directly defining `myfoo`.
-    Since no other `Include` annotation is expected to contain a definition of `myfoo`, it is not necessary to make the definition `static`.
+* A piece of C code directly defining `myfoo`.
+Since no other `Include` annotation is expected to contain a definition of `myfoo`, it is not necessary to make the definition `static`.
+--
 
 * The `annotation(IncludeDirectory="modelica:/TopPackage/Resources/Include")`, used to specify a location for header files.
-  The preceding one is the default and need not be specified; but another location could be specified by using an URI name for the include directory, see <<external-resources>>.
-* The `annotation(LibraryDirectory="modelica:/TopPackage/Resources/Library")`, used to specify a location for library files.
-  The preceding one is the default and need not be specified; but another location could be specified by using an URI name for the library directory, see <<external-resources>>.
-  Different versions of one object library can be provided (e.g., for Windows and for Linux) by providing a *platform* directory below the `LibraryDirectory`.
-  If no platform directory is present, the object library must be present in the `LibraryDirectory`.
-  The following *platform* names are standardized:
+The preceding one is the default and need not be specified; but another location could be specified by using an URI name for the include directory, see <<external-resources>>.
 
-  * `"win32"` (Microsoft Windows 32 bit)
-  * `"win64"` (Microsoft Windows 64 bit)
-  * `"linux32"` (Linux Intel 32 bit)
-  * `"linux64"` (Linux Intel 64 bit)
+* The `annotation(LibraryDirectory="modelica:/TopPackage/Resources/Library")`, used to specify a location for library files.
+The preceding one is the default and need not be specified; but another location could be specified by using an URI name for the library directory, see <<external-resources>>.
+Different versions of one object library can be provided (e.g., for Windows and for Linux) by providing a _platform_ directory below the `LibraryDirectory`.
+If no platform directory is present, the object library must be present in the `LibraryDirectory`.
+The following _platform_ names are standardized:
+
+** `"win32"` (Microsoft Windows 32 bit)
+** `"win64"` (Microsoft Windows 64 bit)
+** `"linux32"` (Linux Intel 32 bit)
+** `"linux64"` (Linux Intel 64 bit)
 
 * The `annotation(SourceDirectory="modelica:/TopPackage/Resources/Source")`, gives the location for source files.
-  The preceding one is the default and need not be specified; but another location could be specified by using an URI name for the source directory, see <<external-resources>>.
-  It is not specified how they are built.
+The preceding one is the default and need not be specified; but another location could be specified by using an URI name for the source directory, see <<external-resources>>.
+It is not specified how they are built.
+
 * The `annotation(License="modelica:/TopPackage/Resources/Licenses/MyLicense.txt")`, gives the license text file for the function.
-  It is analogous to the `License` annotation for a top-level class, see <<license-texts>>.
+It is analogous to the `License` annotation for a top-level class, see <<license-texts>>.
 
 The `win32` or `win64` directories may contain `gcc47`, `vs2010`, `vs2012` for specific versions of these compilers and these are used instead of the general `win32` or `win64` directories, and similarly for other platforms.
 
@@ -2287,8 +2334,10 @@ The directories may use symbolic links or use a text-file as described below: e.
 
 The `TopPackage` used for `IncludeDirectory`, `LibraryDirectory`, and `SourceDirectory` indicates the top-level class where the annotation is found in the Modelica source code.
 
-.Example
-Use of external functions and of object libraries:
+[example]
+====
+Example: Use of external functions and of object libraries:
+
 [source,modelica]
 ----
 package ExternalFunctions
@@ -2337,7 +2386,9 @@ package MyExternalFunctions
   extends ExternalFunctions;
 end MyExternalFunctions;
 ----
+
 Directory structure:
+
 [listing]
 ----
 ExternalFunctions
@@ -2371,6 +2422,7 @@ That is not ideal for C-code, but it works for small functions.
 It is not specified how the C-sources in the specified `SourceDirectory` will be used to build the libraries.
 
 Header file for the function in the dynamic link / shared library ExternalLib2 so that the desired functions are defined to be exported for Microsoft VisualStudio and for GNU C compiler (note, for Linux it is recommended to use the compiler option `-fPIC` to build shared libraries or object libraries that are later transformed to a shared library):
+
 [source,c]
 ----
 /* File ExternalFunc2.h */
@@ -2400,6 +2452,7 @@ EXTLIB2_EXPORT double ExternalFunc2(double);
 #endif
 #endif
 ----
+====
 
 The `Library` name and the `LibraryDirectory` name in the function annotation are mapped to a linkage directive in a compiler-dependent way thereby selecting the object library suited for the respective computer platform.
 
@@ -2407,10 +2460,12 @@ The `Library` name and the `LibraryDirectory` name in the function annotation ar
 
 ===== Input Parameters, Function Value
 
-.Example
-Here all parameters to the external function are input parameters.
+[example]
+====
+Example: Here all parameters to the external function are input parameters.
 One function value is returned.
 If the external language is not specified, the default is `"C"`, as below.
+
 [source,modelica]
 ----
 function foo
@@ -2420,13 +2475,16 @@ function foo
   external;
 end foo;
 ----
+
 This corresponds to the following C prototype:
+
 [source,c]
 ----
 double foo(double, int);
 ----
 
 Example call in Modelica:
+
 [source,modelica]
 ----
 z = foo(2.4, 3);
@@ -2436,11 +2494,14 @@ Translated call in C:
 ----
 z = foo(2.4, 3);
 ----
+====
 
 ===== Arbitrary Placement of Output Parameters, No External Function Value
 
-.Example
-In the following example, the external function call is given explicitly which allows passing the arguments in a different order than in the Modelica version.
+[example]
+====
+Example: In the following example, the external function call is given explicitly which allows passing the arguments in a different order than in the Modelica version.
+
 [source,modelica]
 ----
 function foo
@@ -2452,13 +2513,16 @@ external "C"
   myfoo(x, u1, y, u2);
 end foo;
 ----
+
 This corresponds to the following C prototype:
+
 [source,c]
 ----
 void myfoo(double, double *, int, int *);
 ----
 
 Example call in Modelica:
+
 [source,modelica]
 ----
 (z1,i2) = foo(2.4, 3);
@@ -2468,12 +2532,15 @@ Translated call in C:
 ----
 myfoo(2.4, &z1, 3, &i2);
 ----
+====
 
 ===== Both Function Value and Output Variable
 
-.Example
-The following external function returns two results: one function value and one output parameter value.
+[example]
+====
+Example: The following external function returns two results: one function value and one output parameter value.
 Both are mapped to Modelica output parameters.
+
 [source,modelica]
 ----
 function foo
@@ -2485,39 +2552,49 @@ external "C"
   funcvalue = myfoo(x, y, out1);
 end foo;
 ----
+
 This corresponds to the following C prototype:
+
 [source,c]
 ----
 double myfoo(double, int, int *);
 ----
 
 Example call in Modelica:
+
 [source,modelica]
 ----
 (z1,i2) = foo(2.4, 3);
 ----
+
 Translated call in C:
+
 [source,c]
 ----
 z1 = myfoo(2.4, 3, &i2);
 ----
+====
 
 ==== Utility Functions
 
-This section describes the utility functions declared in ModelicaUtilities.h, which can be called in external Modelica functions written in C.
+This section describes the utility functions declared in `ModelicaUtilities.h`, which can be called in external Modelica functions written in C.
 
 The tool must ensure that the header is found by `#include "ModelicaUtilities.h"` within an `Include` annotation (see <<annotations-for-external-functions>>); no `IncludeDirectory` annotation is needed.
 
-.Example
-The following usage patterns are common:
+[example]
+====
+Example: The following usage patterns are common:
 
 * The `Include` annotation may first `#include "ModelicaUtilities.h"`, and then contain the external function definition where the utility functions may be used.
+
 * Like above, but moving the annotation content above to, say, myExtFun.c, and then just do `#include "myExtFun.c"` in the annotation.
-* After `#include "ModelicaUtilities.h"`, the `Include` annotation can also define a wrapper around a function in a linked library that does the real job, where the wrapper forwards the arguments as well as passes function pointers for a selection of functions from ModelicaUtilities.h.
+
+* After `#include "ModelicaUtilities.h"`, the `Include` annotation can also define a wrapper around a function in a linked library that does the real job, where the wrapper forwards the arguments as well as passes function pointers for a selection of functions from `ModelicaUtilities.h`.
+====
 
 [NOTE]
-When building external libraries independently of Modelica tools, it is not possible to rely on the tool mechanism that provides ModelicaUtilities.h for `Include` annotations.
-Instead, an external library project may contain its own instance of ModelicaUtilities.h, for example obtained by making a copy of the instance included within the Modelica Standard Library.
+When building external libraries independently of Modelica tools, it is not possible to rely on the tool mechanism that provides `ModelicaUtilities.h` for `Include` annotations.
+Instead, an external library project may contain its own instance of `ModelicaUtilities.h`, for example obtained by making a copy of the instance included within the Modelica Standard Library.
 
 ===== Error Reporting Utility Functions
 
@@ -2525,56 +2602,59 @@ The functions listed below produce a message in different ways.
 
 [cols="a,a,a",options=autowidth]
 |===
-|Expression                           |Description                           |Details
+|Expression                           |Description                                |Details
 
-|`ModelicaMessage(string)`            |Message with fixed string             |<<modelica:ModelicaMessage-et-al>>
-|`ModelicaWarning(string)`            |Warning with fixed string             |<<modelica:ModelicaMessage-et-al>>
-|`ModelicaError(string)`              |Error with fixed string               |<<modelica:ModelicaMessage-et-al>>
-|`ModelicaFormatMessage(format, ...)` |Message with printf style formatting  |<<modelica:ModelicaFormatMessage-et-al>>
-|`ModelicaFormatWarning(format, ...)` |Warning with printf style formatting  |<<modelica:ModelicaFormatMessage-et-al>>
-|`ModelicaFormatError(format, ...)`   |Error with printf style formatting    |<<modelica:ModelicaFormatMessage-et-al>>
-|`ModelicaVFormatMessage(format, ap)` |Message with vprintf style formatting |<<modelica:ModelicaVFormatMessage-et-al>>
-|`ModelicaVFormatWarning(format, ap)` |Warning with vprintf style formatting |<<modelica:ModelicaVFormatMessage-et-al>>
-|`ModelicaVFormatError(format, ap)`   |Error with vprintf style formatting   |<<modelica:ModelicaVFormatMessage-et-al>>
+|`ModelicaMessage(string)`            |Message with fixed string             .3+.^|<<function:ModelicaMessage-et-al>>
+|`ModelicaWarning(string)`            |Warning with fixed string
+|`ModelicaError(string)`              |Error with fixed string
+|`ModelicaFormatMessage(format, ...)` |Message with printf style formatting  .3+.^|<<function:ModelicaFormatMessage-et-al>>
+|`ModelicaFormatWarning(format, ...)` |Warning with printf style formatting  
+|`ModelicaFormatError(format, ...)`   |Error with printf style formatting
+|`ModelicaVFormatMessage(format, ap)` |Message with vprintf style formatting .3+.^|<<function:ModelicaVFormatMessage-et-al>>
+|`ModelicaVFormatWarning(format, ap)` |Warning with vprintf style formatting
+|`ModelicaVFormatError(format, ap)`   |Error with vprintf style formatting
 |===
 
-The *Message*-functions only produce the message, but the *Warning*- and *Error*-functions combine this with error handling as follows.
+The _Message_-functions only produce the message, but the _Warning_- and _Error_-functions combine this with error handling as follows.
 
-The *Warning*-functions view the message as a warning and can skip duplicated messages similarly as an `assert` with `level = AssertionLevel.Warning` in the Modelica code.
+The _Warning_-functions view the message as a warning and can skip duplicated messages similarly as an `assert` with `level = AssertionLevel.Warning` in the Modelica code.
 
-The *Error*-functions never return to the calling function, but handle the error similarly to an `assert` with `level = AssertionLevel.Error` in the Modelica code.
+The _Error_-functions never return to the calling function, but handle the error similarly to an `assert` with `level = AssertionLevel.Error` in the Modelica code.
 
-[[modelica:ModelicaMessage-et-al]]
-.Functions
+[[function:ModelicaMessage-et-al,Function ModelicaMessage et al.]]
+Function ModelicaMessage, ModelicaWarning, ModelicaError::
++
 [source,c]
 ----
 void ModelicaMessage(const char* string);
 void ModelicaWarning(const char* string);
 void ModelicaError(const char* string);
 ----
-
++
 Output the fixed message string (no format control).
 
-[[modelica:ModelicaFormatMessage-et-al]]
-.Functions
+[[function:ModelicaFormatMessage-et-al,Function ModelicaFormatMessage et al.]]
+Function ModelicaFormatMessage, ModelicaFormatWarning, ModelicaFormatError::
++
 [source,c]
 ----
 void ModelicaFormatMessage(const char* format, ...);
 void ModelicaFormatWarning(const char* format, ...);
 void ModelicaFormatError(const char* format, ...);
 ----
-
++
 Output the message under the same format control as the C function `printf`.
 
-[[modelica:ModelicaVFormatMessage-et-al]]
-.Functions
+[[function:ModelicaVFormatMessage-et-al,Function ModelicaVFormatMessage et al.]]
+Function ModelicaVFormatMessage, ModelicaVFormatWarning, ModelicaVFormatError::
++
 [source,c]
 ----
 void ModelicaVFormatMessage(const char* format, va_list ap);
 void ModelicaVFormatWarning(const char* format, va_list ap);
 void ModelicaVFormatError(const char* format, va_list ap);
 ----
-
++
 Output the message under the same format control as the C function `vprintf`.
 
 ===== String Allocation Utility Functions
@@ -2584,10 +2664,11 @@ The functions listed below are related to string allocation.
 [cols="a,a,a",options=autowidth]
 |===
 |Expression                                    |Description        |Details
-|`ModelicaAllocateString(len)`                 |Allocate or error  |<<modelica:ModelicaAllocateString>>
-|`ModelicaAllocateStringWithErrorReturn(len)`  |Allocate or null   |<<modelica:ModelicaAllocateStringWithErrorReturn>>
-|`ModelicaDuplicateString(str)`                |Duplicate or error |<<modelica:ModelicaDuplicateString>>
-|`ModelicaDuplicateStringWithErrorReturn(str)` |Duplicate or null  |<<modelica:ModelicaDuplicateStringWithErrorReturn>>
+
+|`ModelicaAllocateString(len)`                 |Allocate or error  |<<function:ModelicaAllocateString>>
+|`ModelicaAllocateStringWithErrorReturn(len)`  |Allocate or null   |<<function:ModelicaAllocateStringWithErrorReturn>>
+|`ModelicaDuplicateString(str)`                |Duplicate or error |<<function:ModelicaDuplicateString>>
+|`ModelicaDuplicateStringWithErrorReturn(str)` |Duplicate or null  |<<function:ModelicaDuplicateStringWithErrorReturn>>
 |===
 
 As described in <<simple-types>>, an external function wanting to return a newly constructed string must allocate this string with one of the string allocation functions in this section.
@@ -2598,44 +2679,48 @@ The string allocation functions can also be used to allocate temporary strings t
 [NOTE]
 Memory that is not passed to the Modelica simulation environment, such as memory that is freed before leaving the function, or in an `ExternalObject`, see <<external-objects>>, may be allocated with the standard C mechanisms, like `malloc`.
 
-[[modelica:ModelicaAllocateString]]
-.Function
+[[function:ModelicaAllocateString,Function ModelicaAllocateString]]
+Function ModelicaAllocateString::
++
 [source,c]
 ----
 char* ModelicaAllocateString(size_t len);
 ----
-
++
 Allocates len+1 characters, and sets the last one to NUL.
 If an error occurs, this function does not return, but calls `ModelicaError`.
 
-[[modelica:ModelicaAllocateStringWithErrorReturn]]
-.Function
+[[function:ModelicaAllocateStringWithErrorReturn,Function ModelicaAllocateStringWithErrorReturn]]
+Function ModelicaAllocateStringWithErrorReturn::
++
 [source,c]
 ----
 char* ModelicaAllocateStringWithErrorReturn(size_t len);
 ----
-
++
 Same as `ModelicaAllocateString`, except that in case of error, the function returns 0.
 This allows the external function to close files and free other open resources in case of error.
 After cleaning up resources, use `ModelicaError` or `ModelicaFormatError` to signal the error.
 
-[[modelica:ModelicaDuplicateString]]
-.Function
+[[function:ModelicaDuplicateString,Function ModelicaDuplicateString]]
+Function ModelicaDuplicateString::
++
 [source,c]
 ----
 char* ModelicaDuplicateString(const char* str);
 ----
-
++
 Returns a writeable duplicate of the NUL-terminated string str.
 If an error occurs, this function does not return, but calls `ModelicaError`.
 
-[[modelica:ModelicaDuplicateStringWithErrorReturn]]
-.Function
+[[function:ModelicaDuplicateStringWithErrorReturn,Function ModelicaDuplicateStringWithErrorReturn]]
+Function ModelicaDuplicateStringWithErrorReturn::
++
 [source,c]
 ----
 char* ModelicaDuplicateStringWithErrorReturn(const char* str);
 ----
-
++
 Same as `ModelicaDuplicateString`, except that in case of error, the function returns 0.
 This allows the external function to close files and free other open resources in case of error.
 After cleaning up resources, use `ModelicaError` or `ModelicaFormatError` to signal the error.
@@ -2646,41 +2731,55 @@ External functions may need to store their internal memory between function call
 Within Modelica this memory is defined as instance of the predefined class `ExternalObject` according to the following rules:
 
 * There is a predefined partial class `ExternalObject`.
-  [NOTE]
-  Since the class is partial, it is not possible to define an instance of this class.
++
+[NOTE]
+Since the class is partial, it is not possible to define an instance of this class.
+
 * An external object class shall be directly extended from `ExternalObject`, shall have exactly two function definitions, called `constructor` and `destructor`, may extend from empty classes (<<defintion:empty-class>>), but not contain any other elements.
-  The functions `constructor` and `destructor` shall not be replaceable.
-  It is not legal to call the `constructor` and `destructor` functions explicitly.
+The functions `constructor` and `destructor` shall not be replaceable.
+It is not legal to call the `constructor` and `destructor` functions explicitly.
+
 * The `constructor` function is called exactly once before the first use of the object.
-  The `constructor` shall have exactly one output argument in which the constructed instance derived from `ExternalObject` is returned.
-  The arguments to the constructor must not -- directly nor indirectly -- depend on the external object being constructed.
-  The constructor shall initialize the object, and must not require any other calls to be made for the initialization to be complete (e.g., from an initial algorithm or initial equation).
-  To indicate failure, the `constructor` may return a null pointer, to be treated in the same way as a failed `assert` in Modelica.
+The `constructor` shall have exactly one output argument in which the constructed instance derived from `ExternalObject` is returned.
+The arguments to the constructor must not -- directly nor indirectly -- depend on the external object being constructed.
+The constructor shall initialize the object, and must not require any other calls to be made for the initialization to be complete (e.g., from an initial algorithm or initial equation).
+To indicate failure, the `constructor` may return a null pointer, to be treated in the same way as a failed `assert` in Modelica.
++
+The constructor shall not assume that pointers sent to the external object will remain valid for the life-time of the external object.
+An exception is that if the pointer to another external object is given as argument to the constructor, that pointer will remain valid as long as the other external object lives.
 
-  The constructor shall not assume that pointers sent to the external object will remain valid for the life-time of the external object.
-  An exception is that if the pointer to another external object is given as argument to the constructor, that pointer will remain valid as long as the other external object lives.
 * For each completely constructed object, the `destructor` is called exactly once, after the last use of the object, even if an error occurs.
-  The `destructor` shall have no output arguments and the only input argument of the destructor shall be of the type derived from `ExternalObject`.
-  The destructor shall delete the object, and must not require any other calls to be made for the deletion to be complete (e.g., from a `when terminal()` clause).
-  [NOTE]
-  External objects may be a protected component (or part of one) in a function.
-  The constructor is in that case called at the start of the function call, and the destructor when the function returns, or when recovering from errors in the function.
-  [NOTE]
-  External objects may be an input (or part of an input) to a function, in that case the destructor is not called (since the external object is active before and after the function call).
-  Normally this is an external function, but it could be a non-external function as well (e.g., calling external functions one or more times).
-  The function input shall not have a default value using the constructor.
-* An external object class shall be of the specialized class `class`.
-  [NOTE]
-  Apart from empty classes (<<defintion:empty-class>>), this is the only use of `class`.
-* Classes derived from `ExternalObject` can neither be used in an `extends`-clause nor in a short class definition.
-* Only the constructor may return external objects and an external object can only be bound in component declarations and neither modified later nor assigned to.
-  [NOTE]
-  It follows that a function cannot return a component containing an external object, since only the constructor may return an external object and the constructor exactly returns the external object.
-* External functions may be defined which operate on the internal memory of an `ExternalObject`.
-  An `ExternalObject` used as input argument or return value of an external C function is mapped to the C type `void*`.
+The `destructor` shall have no output arguments and the only input argument of the destructor shall be of the type derived from `ExternalObject`.
+The destructor shall delete the object, and must not require any other calls to be made for the deletion to be complete (e.g., from a `when terminal()` clause).
++
+[NOTE]
+External objects may be a protected component (or part of one) in a function.
+The constructor is in that case called at the start of the function call, and the destructor when the function returns, or when recovering from errors in the function.
++
+[NOTE]
+External objects may be an input (or part of an input) to a function, in that case the destructor is not called (since the external object is active before and after the function call).
+Normally this is an external function, but it could be a non-external function as well (e.g., calling external functions one or more times).
+The function input shall not have a default value using the constructor.
 
-.Example
-A user-defined table may be defined in the following way as an `ExternalObject` (the table is read in a user-defined format from file and has memory for the last used table interval):
+* An external object class shall be of the specialized class `class`.
++
+[NOTE]
+Apart from empty classes (<<defintion:empty-class>>), this is the only use of `class`.
+
+* Classes derived from `ExternalObject` can neither be used in an `extends`-clause nor in a short class definition.
+
+* Only the constructor may return external objects and an external object can only be bound in component declarations and neither modified later nor assigned to.
++
+[NOTE]
+It follows that a function cannot return a component containing an external object, since only the constructor may return an external object and the constructor exactly returns the external object.
+
+* External functions may be defined which operate on the internal memory of an `ExternalObject`.
+An `ExternalObject` used as input argument or return value of an external C function is mapped to the C type `void*`.
+
+[example]
+====
+Example: A user-defined table may be defined in the following way as an `ExternalObject` (the table is read in a user-defined format from file and has memory for the last used table interval):
+
 [source,modelica]
 ----
 class MyTable
@@ -2713,6 +2812,7 @@ end test;
 ----
 
 This requires to provide the following Modelica function:
+
 [source,modelica]
 ----
 function interpolateMyTable "Interpolate in table"
@@ -2723,7 +2823,9 @@ external "C"
   y = interpolateMyTable(table, u);
 end interpolateTable;
 ----
+
 The external C functions may be defined in the following way:
+
 [source,c]
 ----
 typedef struct { /* User-defined datastructure of the table */
@@ -2755,3 +2857,4 @@ double interpolateMyTable(void* object, double u) {
   return y;
 }
 ----
+====

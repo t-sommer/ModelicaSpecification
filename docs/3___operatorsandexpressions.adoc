@@ -1416,7 +1416,7 @@ noEvent(expr)
 
 `Real` elementary relations within expr are taken literally, i.e., no state or time event is triggered.
 No zero crossing functions shall be used to monitor any of the normally event-generating subexpressions inside _expr_.
-Inside functions, `noEvent` only makes a difference in combination with the function annotation `GenerateEvents = true` (see <<generate-events>>).
+Inside functions, `noEvent` only makes a difference in combination with the function annotation `GenerateEvents = true` (see <<annotation:generate-events>>).
 See also <<operator:smooth>> and <<events-and-synchronization>>.
 --
 
