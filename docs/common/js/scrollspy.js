@@ -22,17 +22,17 @@ sections = [
 
 window.addEventListener('scroll', function () {
 
-    const currentPos = window.scrollY;
+    const currentPos = window.scrollY + 70;
 
     for (var i = 0; i < sections.length; i++) {
 
         const section = sections[i];
 
-        const sectionTop = section.offsetTop + section.offsetParent.offsetTop - 30;
+        const sectionTop = section.offsetTop + section.offsetParent.offsetTop;
         const sectionHeight = section.offsetHeight;
         const sectionId = section.getAttribute('id');
 
-        if (currentPos >= sectionTop && currentPos < sectionTop + sectionHeight + 30) {
+        if (currentPos >= sectionTop && currentPos < sectionTop + sectionHeight) {
 
             sectionLinkNodes.forEach(function (navbarLink) {
                 navbarLink.classList.remove('active');
