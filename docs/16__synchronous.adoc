@@ -10,22 +10,39 @@ The following small example shows the most important elements:
 .A continuous plant and a sampled data controller connected together with sample and (zero-order) hold elements.
 image::media/plantmodel.svg[]
 
-* A periodic clock is defined with `Clock(3)`. The argument of `Clock` defines the sampling interval (for details see <<clock-constructors>>).
-* Clocked variables (such as `yd`, `xd`, `ud`) are associated uniquely with a clock and can only be directly accessed when the associated clock is active. Since all variables in a clocked equation must belong to the same clock, clocking errors can be detected at compile time. If variables from different clocks shall be used in an equation, explicit cast operators must be used, such as `sample` to convert from continuous-time to clocked discrete-time or `hold` to convert from clocked discrete-time to continuous-time.
-* A continuous-time variable is sampled at a clock tick with `sample`. The operator returns the value of the continuous-time variable when the clock is active.
+* A periodic clock is defined with `Clock(3)`.
+The argument of `Clock` defines the sampling interval (for details see <<clock-constructors>>).
+
+* Clocked variables (such as `yd`, `xd`, `ud`) are associated uniquely with a clock and can only be directly accessed when the associated clock is active.
+Since all variables in a clocked equation must belong to the same clock, clocking errors can be detected at compile time.
+If variables from different clocks shall be used in an equation, explicit cast operators must be used, such as `sample` to convert from continuous-time to clocked discrete-time or `hold` to convert from clocked discrete-time to continuous-time.
+
+* A continuous-time variable is sampled at a clock tick with `sample`.
+The operator returns the value of the continuous-time variable when the clock is active.
+
 * When no argument is defined for `Clock`, the clock is deduced by clock inference.
+
 * For a `when`-clause with an associated clock, all equations inside the `when`-clause are clocked with the given clock. All equations on an associated clock are treated together and in the same way regardless of whether they are inside a `when`-clause or not. This means that automatic sampling and hold of variables inside the `when`-clause does not apply (explicit sampling and hold is required) and that general equations can be used in such `when`-clauses (this is not allowed for `when`-clauses with `Boolean` conditions, that require a variable reference on the left-hand side of an equation).
+
 * The `when`-clause in the controller could also be removed and the controller could just be defined by the equations:
++
 [source,modelica]
 ----
 /* Discrete controller */
 E * xd = A * previous(xd) + B * yd;
     ud = C * previous(xd) + D * yd;
 ----
+
 * `previous(xd)` returns the value of `xd` at the previous clock tick. At the first sample instant, the start value of `xd` is returned.
+
 * A discrete-time signal (such as `ud`) is converted to a continuous-time signal with `hold`.
-* If a variable belongs to a particular clock, then all other equations where this variable is used, with the exception of as argument to certain special operators, belong also to this clock, as well as all variables that are used in these equations. This property is used for clock inference and allows defining an associated clock only at a few places (above only in the sampler, whereas in the discrete controller and the hold the sampling period is inferred).
-* The approach in this chapter is based on the clock calculus and inference system proposed by Colaco & Pouzet (2003) and implemented in Lucid Synchrone version 2 and 3 (Pouzet 2006). However, the Modelica approach also uses multi-rate periodic clocks based on rational arithmetic introduced by Forget et al. (2008), as an extension of the Lucid Synchrone semantics. These approaches belong to the class of synchronous languages (Benveniste et al. 2003).
+
+* If a variable belongs to a particular clock, then all other equations where this variable is used, with the exception of as argument to certain special operators, belong also to this clock, as well as all variables that are used in these equations.
+This property is used for clock inference and allows defining an associated clock only at a few places (above only in the sampler, whereas in the discrete controller and the hold the sampling period is inferred).
+
+* The approach in this chapter is based on the clock calculus and inference system proposed by <<ColacoPouzet2003ClocksFirstClass>> and implemented in Lucid Synchrone version 2 and 3 (<<Pouzet2006LucidSynchrone30>>).
+However, the Modelica approach also uses multi-rate periodic clocks based on rational arithmetic introduced by <<ForgetEtAl2008MultiPeriodic>>, as an extension of the Lucid Synchrone semantics.
+These approaches belong to the class of synchronous languages (<<BenvenisteEtAl2003SynchronousTwelveYearsLater>>).
 
 === Rationale for Clocked Semantics
 
