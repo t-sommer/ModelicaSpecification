@@ -21,16 +21,24 @@ If at least one variable in a connector has the `stream` prefix, the connector i
 The following definitions hold:
 
 * The `stream` prefix can only be used in a connector declaration.
+
 * A stream connector must have exactly one variable with the `flow` prefix. That variable shall be a scalar that is a subtype of `Real`.
-  [NOTE]
-  The idea is that all stream variables of a connector are associated with this flow variable.
++
+[NOTE]
+The idea is that all stream variables of a connector are associated with this flow variable.
+
 * For every outside connector (see <<inside-and-outside-connectors>>), one equation is generated for every variable with the `stream` prefix (to describe the propagation of the stream variable along a model hierarchy). For the exact definition, see the end of <<instream-and-connection-equations>>.
+
 * For inside connectors (see <<inside-and-outside-connectors>>), variables with the `stream` prefix do not lead to connection equations.
+
 * Connection equations with stream variables are generated in a model when using `inStream` or `actualStream`, see <<instream-and-connection-equations>> and <<actualstream>>.
 
 The variable with `flow` prefix must exist at the same level of the connector as the variable with `stream` prefix; i.e., they can each be directly declared in the connector or be inherited, while a stream variable in a sub-connector would result in a separate stream sub-connector.
 
-.Example
+[example]
+====
+Example:
+
 [source,modelica]
 ----
 connector FluidPort
@@ -49,6 +57,7 @@ The Medium and the stream variables are transported with this flow variable.
 The stream variables `h_outflow` and `X_outflow` are the stream properties inside the component close to the boundary, when fluid flows out of the component into the connection point.
 The stream properties for the other flow direction can be inquired with the built-in `inStream`.
 The value of the stream variable corresponding to the actual flow direction can be inquired through the built-in `actualStream`, see <<actualstream>>.
+====
 
 === inStream and Connection Equations
 :id: stream-operator-instream-and-connection-equations
@@ -58,7 +67,7 @@ In combination with the stream variables of a connector, `inStream` is designed 
 `inStream(v)` is only allowed on stream variables `v` and is informally the value the stream variable has, assuming that the flow is from the connection point into the component.
 This value is computed from the _stream connection equations_ of the flow variables and of the stream variables.
 
-For the following definition it is assumed that $N$ inside connectors `$m_{j}$.c` ($j = 1, 2, ..., N$) and $M$ outside connectors `$c_{k}$` ($k = 1, 2, ..., M$) belonging to the same connection set (see definition in <<inside-and-outside-connectors>>) are connected together and a stream variable `h_outflow` is associated with a flow variable `m_flow` in connector `c`.
+For the following definition it is assumed that `N` inside connectors `m~j~.c(j = 1, 2, ..., N)` and `M` outside connectors `c~k~(k = 1, 2, ..., M)` belonging to the same connection set (see definition in <<inside-and-outside-connectors>>) are connected together and a stream variable `h_outflow` is associated with a flow variable `m_flow` in connector `c`.
 
 [source,modelica]
 ----
@@ -85,7 +94,7 @@ equation
 end FluidSystem;
 ----
 
-.Examplary FluidSystem with 𝑁 = 3 and 𝑀 = 2.
+.Examplary `FluidSystem` with 𝑁 = 3 and 𝑀 = 2.
 image::media/fluidsystem.svg[]
 
 [NOTE]
@@ -175,6 +184,7 @@ It is required that `inStream` is appropriately approximated when regularization
 . Every solution of the implicit equation system above must fulfill the equation system identically (up to the usual numerical accuracy), provided the absolute value of every flow variable in the connection set is greater than a small value (`abs(m_i.c.m_flow) > eps` for `1 ≤ i ≤ N` and `abs(c_i.m_flow) > eps` for `1 ≤ i ≤ M`).
 
 [NOTE]
+--
 Based on the above requirements, the following implementation is recommended:
 
 * N = 1, M = 0:
@@ -182,12 +192,14 @@ Based on the above requirements, the following implementation is recommended:
 ----
 inStream(m_1.c.h_outflow) = m_1.c.h_outflow;
 ----
+
 * N = 2, M = 0:
 [source,modelica]
 ----
 inStream(m_1.c.h_outflow) = m_2.c.h_outflow;
 inStream(m_2.c.h_outflow) = m_1.c.h_outflow;
 ----
+
 * N = 1, M = 1:
 [source,modelica]
 ----
@@ -195,6 +207,7 @@ inStream(m_1.c.h_outflow) = inStream(c_1.h_outflow);
 // Additional equation to be generated
 c_1.h_outflow = m_1.c.h_outflow;
 ----
+
 * N = 0, M = 2:
 [source,modelica]
 ----
@@ -202,6 +215,7 @@ c_1.h_outflow = m_1.c.h_outflow;
 c_1.h_outflow = inStream(c_2.h_outflow);
 c_2.h_outflow = inStream(c_1.h_outflow);
 ----
+
 * All other cases:
 [source,modelica]
 ----
@@ -240,9 +254,11 @@ end for;
 The operator `positiveMax(-m_j.c.m_flow, si)` should be such that:
 
 * `positiveMax(-m_j.c.m_flow, si) = -m_j.c.m_flow` if `-m_j.c.m_flow > eps1_j ≥ 0`, where `eps1_j` are small flows, compared to typical problem-specific values,
+
 * all denominators should be greater than `eps2 > 0`, where `eps2` is also a small flow, compared to typical problem-specific values.
 
 Trivial implementation of `positiveMax` guarantees continuity of `inStream`:
+
 [source,modelica]
 ----
 positiveMax(-m_j.c.m_flow, si) = max(-m_j.c.m_flow, eps1); // so si is not needed
@@ -269,16 +285,19 @@ Note that in the cases N = 1, M = 0 (unconnected port, physically corresponding 
 The following properties hold for this implementation:
 
 * `inStream` is continuous (and differentiable), provided that `m_j.c.h_outflow`, `m_j.c.m_flow`, `c_k.h_outflow`, and `c_k.m_flow` are continuous and differentiable.
+
 * A division by zero can no longer occur (since `sum(positiveMax(-m_j.c.m_flow, si)) ≥ eps2 > 0`), so the result is always well-defined.
+
 * The balance equations are exactly fulfilled if the denominator is not close to zero (since the exact formula is used, if `sum(positiveMax(-m_j.c.m_flow, si)) > eps`).
+
 * If all flows are zero, `inStream(m_i.c.h_outflow) = sum(m_j.c.h_outflow for j ≠ i and m_j.c.m_flow.min < 0) / N_p`, i.e., it is the mean value of all the N_p variables `m_j.c.h_outflow`, such that j ≠ i and `m_j.c.m_flow.min < 0`.
   This is a meaningful approximation, considering the physical diffusion effects that are relevant at small flow rates in a small connection volume (thermal conduction for enthalpy, mass diffusion for mass fractions).
 
 The value of `relativeTolerance` should be larger than the relative tolerance of the nonlinear solver used to solve the implicit algebraic equations.
 
-[NOTE]
 As a final remark, further symbolic simplifications could be carried out by taking into account equations that affect the flows in the connection set (i.e., equivalent to `m_j.c.m_flow = 0`, which then implies `m_j.c.m_flow.min ≥ 0`).
 This is interesting, e.g., in the case of a valve when the stem position is set identically to closed by its controller.
+--
 
 === actualStream
 :id: stream-operator-actualstream
@@ -295,12 +314,15 @@ actualStream(c.h_outflow) =
 ----
 
 [NOTE]
+--
 `actualStream` is typically used in two contexts:
+
 [source,modelica]
 ----
 der(U) = c.m_flow * actualStream(c.h_outflow);  // (1) energy balance equation
 h_c = actualStream(c.h);                        // (2) monitoring the enthalpy at port c
 ----
+
 In the case of equation (1), although `actualStream` is discontinuous, the product with the flow variable is not, because `actualStream` is discontinuous when the flow is zero by construction.
 Therefore, a tool might infer that the expression is `smooth(0, ...)` automatically, and decide whether or not to generate an event.
 If a user wants to avoid events entirely, he/she may enclose the right-hand side of (1) with `noEvent`.
@@ -310,3 +332,4 @@ In this case, the user will probably want to see the change due to flow reversal
 If the user doesn't bother, then he/she should enclose the right-hand side of (2) with `noEvent`.
 Since the output of `actualStream` will be discontinuous, it should not be used by itself to model physical behaviour (e.g., to compute densities used in momentum balances) -- `inStream` should be used for this purpose.
 `actualStream` should be used to model physical behaviour only when multiplied by the corresponding flow variable (like in the above energy balance equation), because this removes the discontinuity.
+--
