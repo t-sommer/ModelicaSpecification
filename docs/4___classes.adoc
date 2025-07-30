@@ -415,7 +415,7 @@ Adding the component and then removing it ensures that the component is valid.
 
 If a `connect`-equation defines the connection of a non-conditional component `c1` with a conditional component `c2` and `c2` is de-activated, then `c1` must still be a declared element.
 
-There are annotations to handle the case where the connector should be connected when activated, see <<modelica:mustBeConnected>>.
+There are annotations to handle the case where the connector should be connected when activated, see <<annotation:mustBeConnected>>.
 ====
 
 === Component Variability
@@ -589,7 +589,7 @@ parameter Real y = if b and p < 3 then 1 - y else 0;
 ====
 
 [NOTE]
-For a parameter in a valid model, presence of `Evaluate` makes it possible to tell immediately whether it is an evaluable or non-evaluable parameter, at least as long as the warning described in <<modelica:Evaluate>> isn't triggered.
+For a parameter in a valid model, presence of `Evaluate` makes it possible to tell immediately whether it is an evaluable or non-evaluable parameter, at least as long as the warning described in <<annotation:Evaluate>> isn't triggered.
 To see this, note that `Evaluate = false` makes it a non-evaluable parameter by definition, and that `Evaluate = true` would trigger the warning if the parameter is non-evaluable.
 
 [NOTE]

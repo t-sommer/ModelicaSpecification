@@ -25,17 +25,19 @@ As all annotations are optional, component declaration annotations will always h
 The default behavior is either the implicit absence of any of the effects for defined values of the annotation, or explicitly defined as corresponding to one of the valid values.
 
 When an annotation is defined with a component variability prefix (<<component-variability-prefixes>>), this restricts the allowed variability of corresponding annotation modifiers analogously to the rules in <<variability-of-expressions>>.
-If the annotation is declared as an `/*evaluable*/ parameter` the corresponding modifier is further restricted to be evaluable.
-If the annotation is declared as a `/*literal*/ constant` the corresponding modifier is further restricted to be a literal value.
+If the annotation is declared as an `+/*evaluable*/ parameter+` the corresponding modifier is further restricted to be evaluable.
+If the annotation is declared as a `+/*literal*/ constant+` the corresponding modifier is further restricted to be a literal value.
 
 [example]
 ====
-Since the semantics of an annotation comes from the interpretation as a modification, empty annotations have no impact at all.
+Example: Since the semantics of an annotation comes from the interpretation as a modification, empty annotations have no impact at all.
 For example, the following is allowed, but meaningless:
+
 [source,modelica]
 ----
 annotation(Dialog());
 ----
+
 An annotation such as `annotation(Dialog)` is also meaningless, but deprecated according to <<semantic-restrictions-of-annotation-syntax>>.
 ====
 
@@ -45,14 +47,19 @@ The syntactic form of annotations, `annotation-clause`, uses the generic `class-
 However, except where explicitly stated, the following constructs shall not be used in annotations:
 
 * `final`. For instance, neither `final experiment(StopTime = 2.0)` nor `experiment(final StopTime = 2.0)` may be used to prevent that an extending model overrides the `StopTime` setting.
+
 * `each`. When an annotation is given for an array component declaration, it applies to the array as a whole. Thus, neither should values be given in arrays matching the size of the declared component, nor should `each` be used express that a scalar value applies to each element of the array.
+
 * `element-redeclaration` in the grammar. In particular, the keyword `redeclare` cannot be used.
+
 * `element-replaceable` in the grammar. In particular the keywords `replaceable` and `constrainedby` cannot be used.
+
 * An `element-modification` without `modification` is deprecated without exceptions. The meaning of such annotations has never been defined.
 
 [example]
 ====
-The following annotations are not merely meaningless, but deprecated:
+Example: The following annotations are not merely meaningless, but deprecated:
+
 [source,modelica]
 ----
 annotation(
@@ -60,6 +67,7 @@ annotation(
   Dialog(colorSelector)
 );
 ----
+
 In particular, the effect of `colorSelector` is not the same as `colorSelector = true`, even though the latter is the only meaningful use of `colorSelector`.
 ====
 
@@ -75,7 +83,8 @@ Instead, they are only in scope where expressions inside annotations are evaluat
 
 [example]
 ====
-The `smooth` attribute of a `Polygon` can be controlled through a model parameter, but the parameter cannot use the `Smooth` type directly:
+Example: The `smooth` attribute of a `Polygon` can be controlled through a model parameter, but the parameter cannot use the `Smooth` type directly:
+
 [source,modelica]
 ----
 model BezierParameter
@@ -94,6 +103,7 @@ end BezierParameter;
 [NOTE]
 ====
 When evaluating the expression _expr_ in the model `M`, one can imagine it being done as in
+
 [source,modelica]
 ----
 model M_annotation
@@ -102,6 +112,7 @@ model M_annotation
   T result = expr;
 end M_annotation;
 ----
+
 where `AnnotationEnumerations` is a hidden package containing all enumeration types used in annotations, and _T_ is the expected type of the expression.
 ====
 
@@ -115,13 +126,17 @@ Double underscore concatenated with a vendor name as initial characters of the i
 
 [example]
 ====
+Example:
+
 [source,modelica]
 ----
 annotation(
   Icon(coordinateSystem(extent = {{-100, -100}, {100, 100}}),
        graphics = {__NameOfVendor(Circle(center = {0, 0}, radius = 10))}));
 ----
+
 This introduces a new graphical primitive `Circle` using the hierarchical variant of vendor-specific annotations.
+
 [source,modelica]
 ----
 annotation(
@@ -129,6 +144,7 @@ annotation(
        graphics = {Rectangle(extent = {{-5, -5}, {7, 7}},
                              __NameOfVendor_shadow = 2)}));
 ----
+
 This introduces a new attribute `__NameOfVendor_shadow` for the `Rectangle` primitive using the simple variant of vendor-specific annotations.
 ====
 
@@ -185,12 +201,12 @@ Specifying just a string for `styleSheets` has the same meaning as specifying a 
 
 [NOTE]
 ====
-It is recommended to use `class` and `id` selectors with a `$NameOfLibrary$-` prefix to avoid collisions when the content is included in a larger context.
+It is recommended to use `class` and `id` selectors with a `NameOfLibrary-` prefix to avoid collisions when the content is included in a larger context.
 ====
 
 The style sheet rules should not use type or universal selectors, due to possible interference with tool-specific styling.
 
-Vendors should use a `$NameOfVendor$-` prefix to style vendor generated HTML content surrounding the user provided documentation.
+Vendors should use a `NameOfVendor-` prefix to style vendor generated HTML content surrounding the user provided documentation.
 If tools want to give users (of that tool) the possibility to override the tool-specific CSS they can document that.
 The prefix is used to avoid this happening by accident.
 
@@ -324,13 +340,13 @@ end Log;
 
 The `base` of a `Log` scale determines preferred positions of major axis ticks.
 It is not required that the presentation of axis tick labels reflect the `base` setting.
-For example, when `base` is 10, major axis ticks should preferrably be placed at integer powers of 10, and natural alternatives that a tool may use for major axis tick labels could look like $0.001$ or $10^{-3}$.
+For example, when `base` is 10, major axis ticks should preferrably be placed at integer powers of 10, and natural alternatives that a tool may use for major axis tick labels could look like 0.001 or 10^-3^.
 Under some circumstances, such as when the axis range does not span even a single order of magnitude, a tool may disregard the preference in order to get useful axis ticks.
 
 [example]
 ====
 A _symmetric log_ axis scale is sometimes used for axes spanning across several orders of magnitude of both positive and negative values.
-Details vary, but the mapping from value to linear position along axis is some variation of $y \mapsto \operatorname{sign}(y)\, \operatorname{log}(1 + \frac{\abs{y}}{10^{\alpha}})$.
+Details vary, but the mapping from value to linear position along axis is some variation of latexmath:[y \mapsto \operatorname{sign}(y)\, \operatorname{log}(1 + \frac{\left| y \right|}{10^{\alpha}})].
 A tool may implement this as a vendor-specific axis scale:
 
 [source,modelica]
@@ -399,7 +415,7 @@ With the percent character being encoded as `%%`, the behavior of `%` appearing 
 
 ===== Vendor-Specific Markup
 
-Vendor-specific markup takes the form `__$nameOfVendor_{1}($data_{1}$)...__$nameOfVendor_{n}($data_{n}$)`, where n ≥ 1.
+Vendor-specific markup takes the form `__nameOfVendor~1~(data~1~)...__nameOfVendor~n~(data~n~)`, where _n_ ≥ 1.
 It is only allowed as part of constructs described in <<variable-replacements>> and <<text-markup-in-captions>>, where it will be denoted by vendorSpecificMarkup.
 The nameOfVendor consists of only digits and letters, and shall only convey the name of the vendor defining the meaning of the associated data.
 Text markup escape sequences don't apply inside the data, implying that it cannot contain the closing parenthesis, `)`.
@@ -415,6 +431,7 @@ This is similar to the `Text` graphical primitive in <<text>>.
 [cols="a,a",options=autowidth]
 |===
 |Attribute |Annotation
+
 |`title`   |`Figure` and `Plot`
 |`caption` |`Figure`
 |`legend`  |`Curve`
@@ -426,12 +443,12 @@ This means that a complete `result-reference` shall be scanned before looking fo
 
 [example]
 ====
-The variable replacement `%{'%%'}` references the variable `'%%'`, not the variable `'%'`.
+Example: The variable replacement `%{'%%'}` references the variable `'%%'`, not the variable `'%'`.
 ====
 
 [example]
 ====
-The variable replacement `%{foo . '}bar{'}` makes a valid reference to the variable `foo.'}bar{'`.
+Example: The variable replacement `%{foo . '}bar{'}` makes a valid reference to the variable `foo.'}bar{'`.
 ====
 
 Note that expansion to the final value means that expansion is not restricted to parameters and constants, so that values to be shown in a caption can be determined during simulation.
@@ -447,7 +464,7 @@ The vendor-specific markup must not fundamentally alter the meaning of the varia
 
 [example]
 ====
-One application of vendor-specific markup for variable replacement is to prototype a feature that can later be turned into standardized format control.
+Example: One application of vendor-specific markup for variable replacement is to prototype a feature that can later be turned into standardized format control.
 For example, the replaced variable may have an automatically inferred unit, but no `displayUnit`-attribute.
 The tool vendor AVendor could then describe a selection of display unit with `%__AVendor(?displayUnit=mm){integrator1.y}`.
 Later, if this would become supported by standard variable replacement, it might take the form of something like `%{integrator1.y?displayUnit=mm}` instead.
@@ -460,9 +477,12 @@ Note that the text markup escape sequences described in <<escape-sequences>> gen
 
 Links take the form `%[text](link)`, where the `[text]` part is optional, and text markup escape sequences don't apply inside the link.
 The link can be in either of the following forms, where the interpretation is given by the first matching form:
+
 * A `variable:id`, where id is a component reference in the form of `result-reference` in the grammar, such as `inertia1.w`.
+
 * A `plot:id`, where id is the identifier of a `Plot` in the current `Figure`.
-* A URI. Well established schemes such as `https://github.com/modelica` or `modelica:/Modelica`, as well as lesser known schemes may be used.
+
+* A URI. Well established schemes such as `+https://github.com/modelica+` or `modelica:/Modelica`, as well as lesser known schemes may be used.
   (A tool that has no special recognition of a scheme can try sending the URI to the operating system for interpretation.)
 
 When `[text]` is omitted, a Modelica tool is free to derive a default based on the link.
@@ -472,12 +492,15 @@ When `[text]` is omitted, a Modelica tool is free to derive a default based on t
 Note that for the character `]` to appear in text, it needs to be encoded as the escape sequence `%]`, or it would be interpreted as the terminating delimiter of the `[text]`.
 
 Similarly, the closing parenthesis `)` must be handled with care in link in order to not be interpreted as the terminating delimiter of the `(link)`.
+
 * For a `variable:`, no special treatment is needed, as the component reference syntax of the id allows parentheses to appear without risk of misinterpretation inside a quoted identifier.
   For example, `%(variable:'try)me!')` has a parenthesis in `'try)me!'` that must not be mistaken for the end of the `(link)`.
+
 * For a `plot:`, there is currently no way to reference a plot with `)` in its `identifier`.
+
 * For a URI, a closing parenthesis must be URL encoded in order to not be interpreted as the end of the `(link)`.
-  For example, the URL in `%(http://example.org/(tryme))` is just `http://example.org/(tryme`, and the entire link is followed by a stray closing parenthesis.
-  To make it work, one has to use URL encoding: `%(http://example.org/%28tryme%29)` (using URL encoding of the opening parenthesis just for symmetry, and note that the `%` of the percent-encoded sequences are not subject to text markup escape sequences).
+  For example, the URL in `+%(http://example.org/(tryme))+` is just `+http://example.org/(tryme+`, and the entire link is followed by a stray closing parenthesis.
+  To make it work, one has to use URL encoding: `+%(http://example.org/%28tryme%29)+` (using URL encoding of the opening parenthesis just for symmetry, and note that the `%` of the percent-encoded sequences are not subject to text markup escape sequences).
 ====
 
 The styling of the link text, as well as the link action, is left for each Modelica tool to decide.
@@ -500,7 +523,7 @@ The vendor-specific markup must not fundamentally alter the appearance of the li
 
 [example]
 ====
-The HTML `<a>` tag has several attributes with potential application to links, such as `target`.
+Example: The HTML `<a>` tag has several attributes with potential application to links, such as `target`.
 This attribute serves a natural purpose if the display of figures is integrated with the display of documentation.
 The tool vendor AVendor could map the HTML feature to Modelica in the form `%__AVendor(?target=_blank)(modelica:/Modelica#info)`.
 ====
@@ -513,7 +536,7 @@ The vendor-specific markup must not fundamentally alter the appearance of the te
 
 [example]
 ====
-One application of vendor-specific alternative content is to prototype a feature that can later be turned into standardized markup.
+Example: One application of vendor-specific alternative content is to prototype a feature that can later be turned into standardized markup.
 For example, say that the tool AVendor wants to generalize the variable replacements such that the duration of a simulation can be substituted into a caption.
 During the development, this could be represented as the vendor-specific markup `%__AVendor(?duration)[10 s]`, if the simulation has a duration of 10 seconds at the time of writing the caption.
 When AVendor renders this, it ignores the text `10 s` and just displays the actual duration instead.
@@ -532,44 +555,44 @@ The annotation listed below, in addition to annotations described in <<derivativ
 |===
 |Annotation |Description                                 |Details
 
-|`Evaluate` |Use parameter value for symbolic processing |<<modelica:Evaluate>>
+|`Evaluate` |Use parameter value for symbolic processing |<<annotation:Evaluate>>
 |===
 
-[#modelica:Evaluate]
-.Evaluate
-====
-*Synopsis*
+[[annotation:Evaluate,Annotation Evaluate]]
+Annotation Evaluate::
++
 [source,modelica]
 ----
 /*literal*/ constant Boolean Evaluate;
 ----
-
-*Semantics*
-
++
 The annotation `Evaluate` can occur in the component declaration, its type declaration, or a base class of the type-declaration.
 In the case of multiple conflicting annotations it is handled similarly to modifiers (e.g., an `Evaluate` annotation on the component declaration takes precedence).
 In the case of hierarchical components it is applied to all components, overriding any `Evaluate`-setting for specific components.
 The annotation `Evaluate` is only allowed for parameters and constants.
-
++
 Setting `Evaluate = true` for an evaluable parameter, means that it must be an evaluated parameter (i.e., its value must be determined during translation, similar to a constant).
 For a non-evaluable parameter, it has no impact and it is recommended to issue a warning in most cases.
 The exception for recommending this warning is when the parameter is non-evaluable due to dependency on a parameter with `Evaluate = false`, as this could be a sign of intentional overriding of `Evaluate = true`, see example below.
 For both evaluable parameters and constants, the model developer further proposes to utilize the value for symbolic processing.
 A constant can never be changed after translation, and it is normal for its value to be used for symbolic processing even without `Evaluate = true`.
-
++
 For a parameter, `Evaluate = false` ensures that the parameter is a non-evaluable parameter according to <<component-variability>> (meaning it is not allowed to be used where an evaluable expression (<<evaluable-expressions>>) is expected).
 For both parameters and constants -- even when the value can be determined during translation -- the model developer further proposes to not utilize the value for symbolic processing.
-
++
 If the annotation is missing for a parameter or constant the evaluation of the component is tool-dependent.
-
++
 [NOTE]
-====
+--
 `Evaluate = true` is for example used for axis of rotation parameters in the `Modelica.Mechanics.MultiBody` library in order to improve the efficiency of the generated code.
 
 Conversely, a possible use of `Evaluate = false` is to ensure that a parameter can be changed after translation, even when a tool might be tempted to evaluate it to improve the efficiency of the generated code.
+--
++
+[example]
 ====
+Example: When a parameter has `Evaluate = true` for optimization reasons (not because it needs to be evaluable), it is possible to prevent the value from being determined during translation without modifying the original model:
 
-.Example
 [source,modelica]
 ----
 model M_evaluable
@@ -602,17 +625,16 @@ The annotations listed below define how models can be checked, translated, and s
 
 [cols="a,a,a",options=autowidth]
 |===
-|Annotation   |Description |Details
+|Annotation   |Description                              |Details
 
-|`experiment` |Simulation experiment settings           |<<modelica:experiment>>
-|`HideResult` |Don't show component's simulation result |<<modelica:HideResult>>
-|`TestCase`   |Information for model used as test case  |<<modelica:TestCase>>
+|`experiment` |Simulation experiment settings           |<<annotation:experiment>>
+|`HideResult` |Don't show component's simulation result |<<annotation:HideResult>>
+|`TestCase`   |Information for model used as test case  |<<annotation:TestCase>>
 |===
 
-[[modelica:experiment]]
-.experiment
-====
-*Synopsis*
+[[annotation:experiment,Annotation experiment]]
+Annotation experiment::
++
 [source,modelica]
 ----
 record experiment
@@ -622,74 +644,59 @@ record experiment
   /*literal*/ constant Real Tolerance(unit = "1");
 end experiment;
 ----
-
-*Semantics*
-
++
 The `experiment` annotation defines the start time (`StartTime`) in [s], the stop time (`StopTime`) in [s], the suitable time resolution for the result grid (`Interval`) in [s], and the relative integration tolerance (`Tolerance`) for simulation experiments to be carried out with the model or block at hand.
 When `Interval` or `Tolerance` is not provided, the tool is responsible for applying appropriate defaults.
-
++
 The experiment options are inherited, and the derived class may override individual inherited options.
-
++
 [NOTE]
-====
 The inheritance makes it useful to have an `experiment` annotation also in partial models, e.g., a template for a number of similar test cases.
-====
-
++
 If `StopTime` is set in a non-partial model, it is required to be a simulation model.
 Tools can allow users to override these settings without modifying the model.
-====
 
-[[modelica:HideResult]]
-.HideResult
-====
-*Synopsis*
+[[annotation:HideResult,Annotation HideResult]]
+Annotation HideResult::
++
 [source,modelica]
 ----
 /*literal*/ constant Boolean HideResult;
 ----
-
-*Semantics*
-
++
 `HideResult = true` defines that the model developer proposes to not show the simulation results of the corresponding component.
-
++
 `HideResult = false` defines that the developer proposes to show the corresponding component.
-
++
 [NOTE]
-====
+--
 For example, a tool is not expected to provide means to plot a variable with `HideResult = true`.
 If a variable is declared in a protected section, a tool might not include it in a simulation result.
 By setting `HideResult = false`, the modeler would like to have the variable in the simulation result, even if in the protected section.
 
 `HideResult` is for example used in the connectors of the `Modelica.StateGraph` library to not show variables to the modeler that are of no interest to him and would confuse him.
-====
-====
+--
 
-[[modelica:TestCase]]
-.TestCase
-====
-*Synopsis*
+[[annotation:TestCase,Annotation TestCase]]
+Annotation TestCase::
++
 [source,modelica]
 ----
 record TestCase
   /*literal*/ constant Boolean shouldPass;
 end TestCase;
 ----
-
-*Semantics*
-
++
 If `shouldPass` is `false` it indicates that the translation or the simulation of the model should fail.
 If a tools checks a package where classes have `shouldPass = false` they should not generate errors, and checking may even be skipped.
 On the other hand, models with `shouldPass = false` may be useful for creation of negative tests in tool-specific ways.
 Similarly as a class with `obsolete` annotation, a class with `TestCase` annotation (regardless of the value of `shouldPass`) shall not be used in other models, unless those models also have a `TestCase` annotation.
-
++
 If the `TestCase` annotation is missing it is a normal model -- there are thus no restrictions on the use of the model, and the model shall not contain errors.
-
++
 [NOTE]
-====
 The intent of the test-case can be included in the documentation of the class.
 This annotation can both be used for models intended as test-cases for implementations, and for models explaining detectable errors.
-====
-====
 
 === Usage Restrictions
 :id: usage-restrictions
@@ -700,55 +707,48 @@ The annotations listed below are used to restrict the ways in which classes and 
 |===
 |Annotation           |Description                               |Details
 
-|`singleInstance`     |Allow at most one instance                |<<modelica:singleInstance>>
-|`mustBeConnected`    |Connector must be connected at least once |<<modelica:mustBeConnected>>
-|`mayOnlyConnectOnce` |Connector may at most be connected once   |<<modelica:mayOnlyConnectOnce>>
+|`singleInstance`     |Allow at most one instance                |<<annotation:singleInstance>>
+|`mustBeConnected`    |Connector must be connected at least once |<<annotation:mustBeConnected>>
+|`mayOnlyConnectOnce` |Connector may at most be connected once   |<<annotation:mayOnlyConnectOnce>>
 |===
 
-[[modelica:singleInstance]]
-.singleInstance
-====
-*Synopsis*
+[[annotation:singleInstance,Annotation singleInstance]]
+Annotation singleInstance::
++
 [source,modelica]
 ----
 /*literal*/ constant Boolean singleInstance;
 ----
-
-*Semantics*
-
++
 Allowed for class annotations.
 Only has effect when `true`, meaning that there should only be one component instance of the class, and it should be in the same scope as the class is defined.
 The intent is to remove the class when the component is removed and to prevent duplication of the component.
-
++
 [NOTE]
-====
 This is useful for the local classes of state machines.
-====
-====
 
-[[modelica:mustBeConnected]]
-.mustBeConnected
-====
-*Synopsis*
+[[annotation:mustBeConnected,Annotation mustBeConnected]]
+Annotation mustBeConnected::
++
 [source,modelica]
 ----
 /*literal*/ constant String mustBeConnected;
 ----
-
-*Semantics*
-
++
 Allowed for connector component declarations.
 If specified, it makes it an error if the connector does not appear as an inside connector in any connect-equation (for a conditional connector this check is only active if the connector is enabled).
 The string value must be non-empty and provide the reason why it must be connected.
 For an array of connectors it applies separately to each element.
-
++
 [NOTE]
-====
 This annotation is intended for non-causal connectors, see <<restrictions-of-connections-and-connectors>>.
 It is particularly suited for stream connectors, see <<stream-connectors>>.
-====
 
-.Example
++
+[example]
+====
+Example: This can be used for some optional connectors that should be connected when conditionally enabled.
+
 [source,modelica]
 ----
 partial model PartialWithSupport
@@ -763,35 +763,36 @@ end PartialWithSupport;
 The protected components and connections needed to internally handle the support-connector is omitted.
 ====
 
-[[modelica:mayOnlyConnectOnce]]
-.mayOnlyConnectOnce
-====
-*Synopsis*
+[[annotation:mayOnlyConnectOnce,Annotation mayOnlyConnectOnce]]
+Annotation mayOnlyConnectOnce::
++
 [source,modelica]
 ----
 /*literal*/ constant String mayOnlyConnectOnce;
 ----
-
-*Semantics*
-
++
 Allowed for connector component declarations.
 If specified, it makes it an error if the connector is connected as an inside connector in a connect-equation and thus appears in a connection set if:
-
++
 * For non-stream connectors the connection set has more than two elements.
++
 * For stream connectors (see <<stream-connectors>>), the connection set has more than two elements whose flow variable may be negative (based on evaluation of the `min`-attribute).
-
++
 For an array of connectors it applies separately to each element.
 The string value must be non-empty and provide the reason why it may only be connected once.
-
++
 [NOTE]
-====
+--
 This annotation is intended for non-causal connectors, see <<restrictions-of-connections-and-connectors>>.
 The connection handling operates on connection sets, and thus this restriction should also operate on those sets.
 The set handling avoids the case where only one of two equivalent models generate diagnostics.
 The stream connector part is primarily intended to exclude sensor-variables, see <<zero-mass-flow-rateconnection-of-3-stream-connectors>>, but also excludes non-reversible outgoing flows.
+--
++
+[example]
 ====
+Example: This can be used for components that implement mixing of fluids where it is not desired to combine that with the normal stream-connector mixing.
 
-.Example
 [source,modelica]
 ----
 partial model MultiPort
@@ -832,7 +833,10 @@ diagram-layer :
   "Diagram" "(" [ coordsys-specification "," ] graphics ")"
 ----
 
-.Example
+[example]
+====
+Example:
+
 [source,modelica]
 ----
 annotation(
@@ -841,14 +845,13 @@ annotation(
                     Text(extent = {{-100, -100}, {100, 100}},
                          textString = "Icon")}));
 ----
+====
 
 The graphics is specified as an ordered sequence of graphical primitives described below.
 Base class contents are drawn behind the graphical primitives of the current class, with base classes ordered from back to front according to the order of the `extends`-clauses, and graphical primitives according to order of appearance in the annotation.
 
 [NOTE]
-====
 Note that the ordered sequence is syntactically a valid Modelica annotation, although there is no mechanism for defining an array of heterogeneous objects in Modelica.
-====
 
 These `Icon`, `Diagram`, and `Documentation` annotations are only allowed directly in classes (e.g., not on components or connections).
 The allowed annotations for a short class definition is the union of the allowed annotations in classes and on `extends`-clauses.
@@ -909,8 +912,9 @@ record CoordinateSystem
 end CoordinateSystem;
 ----
 
-.Example
-A coordinate system for an icon could for example be defined as:
+[example]
+====
+Example: A coordinate system for an icon could for example be defined as:
 
 [source,modelica]
 ----
@@ -918,6 +922,7 @@ CoordinateSystem(extent = {{-10, -10}, {10, 10}});
 ----
 
 i.e., a coordinate system with width 20 units and height 20 units.
+====
 
 The coordinate systems for the icon and diagram layers are by default defined as follows; where the array of `GraphicItem` represents an ordered list of graphical primitives.
 
@@ -968,14 +973,14 @@ The gradient goes from line color to fill color.
 
 The border pattern attributes `Raised`, `Sunken` and `Engraved` represent frames which are rendered in a tool-dependent way --- inside the extent of the filled shape.
 
-.Line with `smooth = Bezier`. The four line points P₁, …, P₄ result in two quadratic splines and two straight line segments.
+.Line with `smooth = Bezier`. The four line points P₁, ..., P₄ result in two quadratic splines and two straight line segments.
 image::media/bezierpoints.svg[]
 
 The `smooth` attribute specifies that a line can be drawn as straight line segments (`None`) or using a spline (`Bezier`), where the line's points specify control points of a quadratic Bezier curve, see figure above.
 
 For lines with only two points, the `smooth` attribute has no effect.
 
-For lines with three or more points (P₁, P₂, …, Pₙ), the middle point of each line segment (P₁₂, P₂₃, …, P₍ₙ₋₁₎ₙ) becomes the starting point and ending points of each quadratic Bezier curve.
+For lines with three or more points (P₁, P₂, ..., Pₙ), the middle point of each line segment (P₁₂, P₂₃, ..., P₍ₙ₋₁₎ₙ) becomes the starting point and ending points of each quadratic Bezier curve.
 For each quadratic Bezier curve, the common point of the two line segment becomes the control point.
 For instance, point P₂ becomes the control point for the Bezier curve starting at P₁₂ and ending at P₂₃.
 A straight line is drawn between the starting point of the line and the starting point of the first quadratic Bezier curve, as well as between the ending point of the line and the ending point of the last quadratic Bezier curve.
@@ -1046,13 +1051,11 @@ If no `iconTransformation` is given the `transformation` is also used for placem
 If no `iconVisible` is given for a public connector the `visible` is also used for visibility in the icon layer.
 
 [NOTE]
-====
 A connector can be shown in both an icon layer and a diagram layer of a class.
 Since the coordinate systems typically are different, placement information needs to be given using two different coordinate systems.
 More flexibility than just using scaling and translation is needed since the abstraction views might need different visual placement of the connectors.
 The attribute `transformation` gives the placement in the diagram layer and `iconTransformation` gives the placement in the icon layer.
 When a connector is shown in a diagram layer, its diagram layer is shown to facilitate opening up a hierarchical connector to allow connections to its internal subconnectors.
-====
 
 For connectors, the icon layer is used to represent a connector when it is shown in the icon layer of the enclosing model.
 The diagram layer of the connector is used to represent it when shown in the diagram layer of the enclosing model.
@@ -1064,10 +1067,10 @@ Non-connector components are only shown in the diagram layer.
 ===== Default Outline for Missing Graphics
 
 If the icon of a component placed in a diagram layer does not contain any graphical primitives (including
-inherited ones, and regardless of visible-attributes; but excluding connectors), tools shall show a tooldependent rudimentary outline of the component’s transformed extent.
-[The reason for making the tool-dependent outline rudimentary is to encourage the model developer to
-provide a proper icon. That visible-attributes are not regarded makes it possible to obtain an icon which
-only shows connectors by adding a dummy primitive with visible = false.]
+inherited ones, and regardless of `visible`-attributes; but excluding connectors), tools shall show a tooldependent rudimentary outline of the component’s transformed `extent`.
+
+[NOTE]
+The reason for making the tool-dependent outline rudimentary is to encourage the model developer to provide a proper icon. That `visible`-attributes are not regarded makes it possible to obtain an icon which only shows connectors by adding a dummy primitive with `visible = false`.
 
 ==== Extends-Clause
 :id: extends-clause
@@ -1095,14 +1098,17 @@ If the `primitivesVisible` attribute is false, components and connections are vi
 The base class coordinate system (and `preserveAspectRatio`) is not inherited.
 
 [NOTE]
-====
+--
 A zero area `extent` other than `{{0, 0}, {0, 0}}` will result in none of the base class contents being visible.
 By affecting components and connections as well as graphical primitives, this is different from setting `primitivesVisible = false`.
 
 Reversed corners of the `extent` will result in mirrored (rotated if reversed in both direction) base class contents.
-====
+--
 
-.Example
+[example]
+====
+Example:
+
 [source,modelica]
 ----
 model A
@@ -1114,23 +1120,28 @@ end A;
 
 model B
   extends C annotation(DiagramMap(primitivesVisible = false));
-  …
+  ...
 end B;
 ----
 
 In this example the diagram of `A` contains the graphical primitives from `A` and `B` (but not from `C` since they were hidden in `B`) -- the ones from `B` are rescaled, and the icon of `A` contains the graphical primitives from `A` (but neither from `B` nor from `C`).
+====
 
 ==== Connections
 :id: connections1
 
 A connection is specified with an annotation containing a `Line` primitive and optionally a `Text` primitive, as specified below.
 
-.Example
+[example]
+====
+Example:
+
 [source,modelica]
 ----
 connect(a.x, b.x)
   annotation(Line(points = {{-25, 30}, {10, 30}, {10, -20}, {40, -20}}));
 ----
+====
 
 The optional `Text` primitive defines a text that will be written on the connection line.
 It has the following definition (it is not equal to the `Text` primitive as part of graphics -- the differences are marked after _Note_ in the description-strings):
@@ -1151,7 +1162,7 @@ record Text
 end Text;
 ----
 
-The `index` is one of the points of Line (numbered 1, 2, 3, … where negative numbers count from the end, thus -1 indicate the last one).
+The `index` is one of the points of Line (numbered 1, 2, 3, ... where negative numbers count from the end, thus -1 indicate the last one).
 The `string` may use the special symbols `"%first"` and `"%second"` to indicate the connectors in the `connect`-equation.
 
 The `extent` and `rotation` are relative to the `origin` (default `{0, 0}`) and the `origin` is relative to the point on the `Line`.
@@ -1161,7 +1172,10 @@ The text is drawn with transparent background and no border around the text (and
 The default value for `horizontalAlignment` is deprecated.
 Having a zero size for the `extent` is deprecated and is handled as if upper part is moved up an appropriate amount.
 
-.Example
+[example]
+====
+Example:
+
 [source,modelica]
 ----
 connect(controlBus.axisControlBus1, axis1.axisControlBus)
@@ -1173,6 +1187,7 @@ connect(controlBus.axisControlBus1, axis1.axisControlBus)
 
 Draws a connection line and adds the text _axisControlBus1_ ending at (-6, 3) + (58, 50) and 4 vertical units of space for the text.
 Using a height of zero, such as `extent = [-6, 3; -6, 3]` is deprecated, but gives similar result.
+====
 
 ==== Graphical Primitives
 :id: graphical-primitives
@@ -1301,10 +1316,10 @@ The text is drawn with transparent background and no border around the text (and
 
 There are a number of common macros that can be used in the text, and they should be replaced when displaying the text as follows (in order such that the earliest ones have precedence, and using the longest sequence of identifier characters -- alphanumeric and underscore):
 
-* %% replaced by %
-* %name replaced by the name of the component (i.e., the identifier for it in the enclosing class).
-* %class replaced by the name of the class (only the last part of the hierarchical name).
-* %_par_ and %{_par_} replaced by the value of the parameter `par`.
+* `%%` replaced by `%`
+* `%name` replaced by the name of the component (i.e., the identifier for it in the enclosing class).
+* `%class` replaced by the name of the class (only the last part of the hierarchical name).
+* `%_par_` and `%{_par_}` replaced by the value of the parameter `par`.
 If the value is numeric, tools shall display the value with `displayUnit`, formatted according to the BIPM specification.
 E.g., for
 +
@@ -1313,16 +1328,18 @@ E.g., for
 parameter Real t(unit = "s", displayUnit = "ms") = 0.1
 ----
 +
-tools shall display _100 ms_.
-The intent is that the text is easily readable, thus if `par` is of an enumeration type, replace %_par_ by the item name, not by the full name.
+tools shall display `_100 ms_`.
+The intent is that the text is easily readable, thus if `par` is of an enumeration type, replace `%_par_` by the item name, not by the full name.
 +
-.Example
-If `par = "Modelica.Blocks.Types.Enumeration.Periodic"`, then %_par_ should be displayed as _Periodic_.
+[example]
+====
+Example: If `par = "Modelica.Blocks.Types.Enumeration.Periodic"`, then `%_par_` should be displayed as _Periodic_.
+====
 +
-When quoted identifiers (e.g., `'quoted ident'` or `'}'`) or composite names (i.e., not simple identifiers) are involved, the form %{_par_} must be used.
-Here, _par_ is a general `component-reference`, and `%{a.p}` gives the value of the parameter `p` in the component `a`.
+When quoted identifiers (e.g., `'quoted ident'` or `'}'`) or composite names (i.e., not simple identifiers) are involved, the form `%{_par_}` must be used.
+Here, `_par_` is a general `component-reference`, and `%{a.p}` gives the value of the parameter `p` in the component `a`.
 The macro can be directly followed by a letter.
-Thus `%{w}x%{h}` gives the value of `w` directly followed by _x_ and the value of `h`, while `%wxh` gives the value of the parameter `wxh`.
+Thus `%{w}x%{h}` gives the value of `w` directly followed by `_x_` and the value of `h`, while `%wxh` gives the value of the parameter `wxh`.
 If the parameter does not exist it is an error.
 
 The style attribute `fontSize` specifies the font size.
@@ -1333,9 +1350,7 @@ The text is vertically centered in the extent.
 If the `extent` specifies a box with zero width and positive height the height is used as height for the text (unless `fontSize` attribute is non-zero -- which specifies the absolute size), and the text is not truncated (the `horizontalAlignment` is still used in this case).
 
 [NOTE]
-====
 A zero-width `extent` is convenient for handling texts where the width is unknown.
-====
 
 If the string `fontName` is empty, the tool may choose a font.
 The font names `"serif"`, `"sans-serif"`, and `"monospace"` shall be recognized.
@@ -1361,7 +1376,7 @@ end Bitmap;
 The `Bitmap` primitive renders a graphical bitmap image.
 The data of the image can either be stored on an external file or in the annotation itself.
 The image is scaled to fit the extent.
-Given an extent `{{x₁, y₁}, {x₂, y₂}}`, x₂ < x₁ defines horizontal flipping and y₂ < y₁ defines vertical flipping around the center of the object.
+Given an extent `{{x₁, y₁}, {x₂, y₂}}`, `x₂ < x₁` defines horizontal flipping and `y₂ < y₁` defines vertical flipping around the center of the object.
 
 The graphical operations are applied in the order: scaling, flipping and rotation.
 
@@ -1384,8 +1399,9 @@ Any value in graphical annotations can be dependent on evaluable parameters exce
 The first argument follows the same rules as when not using `DynamicSelect`.
 The second argument may contain references to variables of a higher variability to enable displaying dynamic behavior of a simulation.
 
-.Example
-The level of a tank could be animated by a rectangle expanding in vertical direction and its color depending on a variable overflow:
+[example]
+====
+Example: The level of a tank could be animated by a rectangle expanding in vertical direction and its color depending on a variable overflow:
 
 [source,modelica]
 ----
@@ -1399,6 +1415,7 @@ annotation(Icon(graphics = {
                     if overflow then {255, 0, 0} else {0, 0, 255})
   )}));
 ----
+====
 
 ==== User Input
 :id: user-input
@@ -1422,8 +1439,9 @@ record OnMouseDownSetBoolean
 end OnMouseDownSetBoolean;
 ----
 
-.Example
-A button can be represented by a rectangle changing color depending on a `Boolean` variable `on` and toggles the variable when the rectangle is clicked on:
+[example]
+====
+Example: A button can be represented by a rectangle changing color depending on a `Boolean` variable `on` and toggles the variable when the rectangle is clicked on:
 
 [source,modelica]
 ----
@@ -1433,6 +1451,7 @@ annotation(Icon(
               fillColor = if on then {255, 0, 0} else {0, 0, 255})},
   interaction = {OnMouseDownSetBoolean(on, not on)}));
 ----
+====
 
 In a similar way, a variable can be changed when the mouse button is _released_:
 
@@ -1446,12 +1465,16 @@ end OnMouseUpSetBoolean;
 
 Note that several interaction objects can be associated with the same graphical item or component.
 
-.Example
+[example]
+====
+Example:
+
 [source,modelica]
 ----
 interaction = {OnMouseDownSetBoolean(on, true),
                OnMouseUpSetBoolean(on, false)}
 ----
+====
 
 The `OnMouseMoveXSetReal` interaction object sets the variable to the position of the cursor in X direction in the local coordinate system mapped to the interval defined by the `minValue` and `maxValue` attributes.
 
@@ -1518,232 +1541,194 @@ The annotations listed below define properties for use in graphical user interfa
 |===
 |Annotation                                  |Description                              |Details
 
-|`preferredView`                             |Default view when opening class          |<<modelica:preferredView>>
-|`DocumentationClass`                        |Purpose of class is documentation        |<<modelica:DocumentationClass>>
-|`defaultComponentName`                      |Default name for new components          |<<modelica:defaultComponentName>>
-|`defaultComponentPrefixes`                  |Default type prefixes for new components |<<modelica:defaultComponentPrefixes>>
-|`missingInnerMessage`                       |Message for unresolved `outer`           |<<modelica:missingInnerMessage>>
-|`absoluteValue`                             |Quantity is absolute                     |<<modelica:absoluteValue>>
-|`defaultConnectionStructurallyInconsistent` |Suppress certain verification errors     |<<modelica:defaultConnectionStructurallyInconsistent>>
-|`obsolete`                                  |Message when using obsolete class        |<<modelica:obsolete>>
-|`unassignedMessage`                         |Hint for unmatched variable              |<<modelica:unassignedMessage>>
-|`Dialog`                                    |Setup for modifications                  |<<modelica:Dialog>>
+|`preferredView`                             |Default view when opening class          |<<annotation:preferredView>>
+|`DocumentationClass`                        |Purpose of class is documentation        |<<annotation:DocumentationClass>>
+|`defaultComponentName`                      |Default name for new components          |<<annotation:defaultComponentName>>
+|`defaultComponentPrefixes`                  |Default type prefixes for new components |<<annotation:defaultComponentPrefixes>>
+|`missingInnerMessage`                       |Message for unresolved `outer`           |<<annotation:missingInnerMessage>>
+|`absoluteValue`                             |Quantity is absolute                     |<<annotation:absoluteValue>>
+|`defaultConnectionStructurallyInconsistent` |Suppress certain verification errors     |<<annotation:defaultConnectionStructurallyInconsistent>>
+|`obsolete`                                  |Message when using obsolete class        |<<annotation:obsolete>>
+|`unassignedMessage`                         |Hint for unmatched variable              |<<annotation:unassignedMessage>>
+|`Dialog`                                    |Setup for modifications                  |<<annotation:Dialog>>
 |===
 
-[[modelica:preferredView]]
-.preferredView
-====
-*Synopsis*
+[[annotation:preferredView,Annotation preferredView]]
+Annotation preferredView::
++
 [source,modelica]
 ----
 /*literal*/ constant String preferredView;
 ----
-
-*Semantics*
-
++
 The `preferredView` annotation defines the default view when selecting the class.
 The value `"info"` means class documentation ("information"), `"diagram"` means diagram view, `"icon"` means icon view, and `"text"` means Modelica source code ("text").
 If not specified the default view is tool-specific.
-====
 
-[[modelica:DocumentationClass]]
-.DocumentationClass
-====
-*Synopsis*
+[[annotation:DocumentationClass,Annotation DocumentationClass]]
+Annotation DocumentationClass::
++
 [source,modelica]
 ----
 /*literal*/ constant Boolean DocumentationClass;
 ----
-
-*Semantics*
-
++
 Only allowed as class annotation on any kind of class and only having effect when `true`, meaning that this class and all classes within it are treated as having the annotation `preferredView = "info"`.
 If the annotation `preferredView` is explicitly set for a class, it has precedence over a `DocumentationClass` annotation.
-
++
 [NOTE]
-====
 A tool may display such classes in special ways.
 For example, the description texts of the classes might be displayed instead of the class names, and if no icon is defined, a special information default icon may be displayed in the package browser.
-====
-====
 
-[[modelica:defaultComponentName]]
-.defaultComponentName
-====
-*Synopsis*
+[[annotation:defaultComponentName,Annotation defaultComponentName]]
+Annotation defaultComponentName::
++
 [source,modelica]
 ----
 /*literal*/ constant String defaultComponentName;
 ----
-
-*Semantics*
-
++
 The class annotation `defaultComponentName` gives the recommended component name to use when creating a component of the class.
 If the default name cannot be used (e.g., since it is already in use), another name based on `defaultComponentName` shall be derived automatically, except as described under `defaultComponentPrefixes`.
 It is an error if the string is not a valid identifier.
 When automatically deriving a name, any trailing '`1`' in the `defaultComponentName` shall be disregarded.
 If not specified, the names of new components are tool-specific.
-====
 
-[[modelica:defaultComponentPrefixes]]
-.defaultComponentPrefixes
-====
-*Synopsis*
+[[annotation:defaultComponentPrefixes,Annotation defaultComponentPrefixes]]
+Annotation defaultComponentPrefixes::
++
 [source,modelica]
 ----
 /*literal*/ constant String defaultComponentPrefixes;
 ----
-
-*Semantics*
-
++
 The class annotation `defaultComponentPrefixes` gives a whitespace separated list of recommended type prefixes to include in the `type-prefix` part of a `component-clause1` generated when creating a component of the class:
-
++
 [source,grammar]
 ----
 type-prefix type-specifier component-declaration
 ----
-
++
 The following prefixes may be included in the `defaultComponentPrefixes` string: `inner`, `outer`, `replaceable`, `constant`, `parameter`, `discrete`.
 The default is an empty string.
-
++
 [NOTE]
-====
 By using `defaultComponentPrefixes` in combination with `defaultComponentName`, it becomes easy for users to create `inner` components matching the `outer` declarations; see also example below.
 If the type prefixes contain `inner` or `outer` and the default name cannot be used (e.g., since it is already in use) it is recommended to give a diagnostic.
-====
-====
 
-[[modelica:missingInnerMessage]]
-.missingInnerMessage
-====
-*Synopsis*
+[[annotation:missingInnerMessage,Annotation missingInnerMessage]]
+Annotation missingInnerMessage::
++
 [source,modelica]
 ----
 /*literal*/ constant String missingInnerMessage;
 ----
-
-*Semantics*
-
++
 Only has an effect if specified, and the string must then be non-empty.
 When specified and an `outer` component of the class does not have a corresponding `inner` component, the string message may be used as part of a diagnostic message (together with appropriate context), see <<inner-declarations-instance-hierarchy-name-lookup>>.
 The default is a tool-specific diagnostic message.
++
+[example]
+====
+Example:
 
-.Example
 [source,modelica]
 ----
 model World
-  …
+  ...
   annotation(defaultComponentName = "world",
   defaultComponentPrefixes = "inner replaceable",
   missingInnerMessage = "The World object is missing");
 end World;
 ----
-
+====
++
 When an instance of model `World` is dragged in to the diagram layer, the following declaration is generated:
-
++
 [source,modelica]
 ----
 inner replaceable World world;
 ----
-====
 
-[[modelica:absoluteValue]]
-.absoluteValue
-====
-*Synopsis*
+[[annotation:absoluteValue,Annotation absoluteValue]]
+Annotation absoluteValue::
++
 [source,modelica]
 ----
 /*literal*/ constant Boolean absoluteValue;
 ----
-
-*Semantics*
-
++
 Allowed for simple types and components of a simple types.
 If `false`, then the component defines a relative quantity, and if `true` an absolute quantity.
 When converting between units (e.g., in plots and where parameters are edited), the unit offset must be ignored for relative quantities.
 The annotation is inherited in the sense that when `absoluteValue` is defined for a simple type, it also applies derived classes.
 When `absoluteValue` is defined for a simple type, it also applies to components declared with the type.
-
++
 When `absoluteValue` of a component is not determined by an annotation (possibly through inheritance), the `absoluteValue` status may be inferred by the tool.
 If the `absoluteValue` of a component is neither determined by annotation nor inference, unit conversions that would differ depending on `absoluteValue` cannot be performed.
-
++
 [NOTE]
-====
 For most quantities there are no units with offset, and the annotation is not needed.
 For a component where unit conversions involving offsets could be of interest (mainly temperatures), ensuring that `absoluteValue` is determined by an annotation (typically by means of using a type where it has been specified) may reduce impact of quality-of-implementation in tool ability to infer `absoluteValue`.
 Example applications of this annotation can be found among the type definitions in the `Modelica.Units` package of the Modelica Standard Library, such as `TemperatureDifference`.
-====
-====
 
-[[modelica:defaultConnectionStructurallyInconsistent]]
-.defaultConnectionStructurallyInconsistent
-====
-*Synopsis*
+[[annotation:defaultConnectionStructurallyInconsistent,Annotation defaultConnectionStructurallyInconsistent]]
+Annotation defaultConnectionStructurallyInconsistent::
++
 [source,modelica]
 ----
 /*literal*/ constant Boolean defaultConnectionStructurallyInconsistent;
 ----
-
-*Semantics*
-
++
 Allowed for model and block class definitions.
 Only has an effect if `true`, when it is stated that a _default connection_ will result in a structurally inconsistent model or blockfootnote:[For the precise definition of _structurally inconsistent_, see Pantelides1988ConsistentInitialization.].
 Here, the _default connection_ is constructed by instantiating the respective `model` or `block` and for every input `u` providing an equation `0 = f(u)`, and for every (potential, flow) pair of the form `(v, i)`, providing an equation of the form `0 = f(v, i)`.
-
++
 [NOTE]
-====
 It is useful to check all models/blocks of a Modelica package in a simple way.
 One check is to default connect every model/block and to check whether the resulting class is structurally consistent (which is a stronger requirement than being balanced).
 It is rarely needed; but is for example used in `Modelica.Blocks.Math.InverseBlockConstraints`, in order to prevent a wrong error message.
 Additionally, when a user defined model is structurally inconsistent, a tool should try to pinpoint in which class the error is present.
 This annotation avoids then to show a wrong error message.
-====
-====
 
-[[modelica:obsolete]]
-.obsolete
-====
-*Synopsis*
+[[annotation:obsolete,Annotation obsolete]]
+Annotation obsolete::
++
 [source,modelica]
 ----
 /*literal*/ constant String obsolete;
 ----
-
-*Semantics*
-
++
 Allowed for class annotations.
 Only has an effect if specified, and the string must then be non-empty.
 It indicates that the class ideally should not be used anymore and gives a message indicating the recommended action.
 This annotation is not inherited, the assumption is that if a class uses an obsolete class (as a base class or as the class of one of the components) that shall be updated -- ideally without impacting users of the class.
 If that is not possible the current class can have also have an `obsolete` annotation.
-====
 
-[[modelica:unassignedMessage]]
-.unassignedMessage
-====
-*Synopsis*
+[[annotation:unassignedMessage,Annotation unassignedMessage]]
+Annotation unassignedMessage::
++
 [source,modelica]
 ----
 /*literal*/ constant String unassignedMessage;
 ----
-
-*Semantics*
-
++
 Allowed for component declarations.
 Only has an effect if specified, and the string must then be non-empty.
 When the variable to which this annotation is attached in the declaration cannot be computed due to the structure of the equations, the string can be used as a diagnostic message.
-
++
 [NOTE]
-====
 When using BLT partitioning, this means if a variable `a` or one of its aliases `b = a` or `b = -a` cannot be assigned, the message is displayed.
 This annotation is used to provide library specific error messages.
++
+[example]
 ====
+Example:
 
-.Example
 [source,modelica]
 ----
 connector Frame "Frame of a mechanical system"
-  …
+  ...
   flow Modelica.Units.SI.Force f[3]
   annotation(unassignedMessage =
       "All Forces cannot be uniquely calculated. The reason could be that the
@@ -1755,10 +1740,9 @@ end Frame;
 ----
 ====
 
-[[modelica:Dialog]]
-.Dialog
-====
-*Synopsis*
+[[annotation:Dialog,Annotation Dialog]]
+Annotation Dialog::
++
 [source,modelica]
 ----
 record Dialog
@@ -1779,55 +1763,57 @@ record Selector
   /*literal*/ constant String caption = "";
 end Selector;
 ----
-
-*Semantics*
-
++
 Allowed for component declarations and short replaceable class definitions.
 For a short replaceable class definition only the fields `tab`, `group`, `enable` and `groupImage` are allowed.
-
++
 In the organization of a tool's user interface, the `tab` shall correspond to a major divisioning of "tabs", and `group` correspond to sub-divisioning of "groups" within each tab.
 An empty `group` (the default) means tool-specific choice of group.
 The order of components (and class definitions) within each group and the order of the groups and tabs are according to the declaration order, where inherited elements are added at the place of the extends.
-
++
 A component shall have at most one of `showStartAttribute=true`, `colorSelector=true`, `loadSelector`, `saveSelector`, `directorySelector`, or `connectorSizing=true`.
-
++
 Modifiable parameters (except for `connectorSizing = true`), non-connector inputs, and short replaceable class definitions should normally be shown in the dialog even without this annotation.
-
-.Example
-When `group` is empty, a tool may place parameters in the group "Parameters", and place variables with `showStartAttribute = true` in the group "Start Attributes".
-
++
+[example]
+====
+Example: When `group` is empty, a tool may place parameters in the group "Parameters", and place variables with `showStartAttribute = true` in the group "Start Attributes".
+====
++
 If `enable = false`, the input field may be disabled and no input can be given.
-
++
 If `showStartAttribute = true` the dialog should allow the user to set the `start`- and `fixed`-attributes for the variable instead of the value of the variable.
-
++
 [NOTE]
-====
 The `showStartAttribute = true` is primarily intended for non-parameter values and avoids introducing a separate parameter for the `start`-attribute of the variable.
-====
 
++
 If a non-parameter declaration has a modifier for the `start`-attribute and does not have `showStartAttribute = false`, the `start`- and `fixed`-attributes may also be shown.
-
++
 If `colorSelector = true`, it suggests the use of a color selector to pick an RGB color as a vector of three values in the range 0..255 (the color selector should be useable both for vectors of `Integer` and `Real`).
-
++
 The presence of `loadSelector` or `saveSelector` specifying `Selector` suggests the use of a file dialog to select a file.
 Setting `filter` will in the dialog only show files that fulfill the given pattern.
 Setting `text1 (*.ext1);;text2 (*.ext2)` will only show files with file extensions `ext1` or `ext2` with the corresponding description texts `text1` and `text2`, respectively.
 `caption` is a caption for display in the file dialog.
 `loadSelector` is used to select an existing file for reading, whereas `saveSelector` is used to define a file for writing.
-
++
 The presence of `directorySelector` specifying `Selector` suggests the use of a dialog to select an existing directory.
 The selected directory does not need to exist at the time of opening the dialog; it is allowed to let the dialog be used to create directory before selecting it.
 The `filter` may not be used.
 The `caption` is a caption for display in the file dialog.
-
++
 The `groupImage` references an image using an URI (see <<external-resources>>), and the image is intended to be shown together with the entire group (only one image per group is supported).
 Disabling the input field will not disable the image.
 The background of the `groupImage` and any image used in HTML-documentation is recommended to be transparent (intended to be a light color) or white.
-
++
 The `connectorSizing` is described separately in <<connector-sizing>>.
 A dialog annotation only containing `showStartAttribute = false` and/or `connectorSizing = true` does not indicate that the variable shall be shown.
++
+[example]
+====
+Example:
 
-.Example
 [source,modelica]
 ----
 model DialogDemo
@@ -1841,7 +1827,7 @@ model DialogDemo
      annotation(Dialog(tab = "Tab 1"));
   parameter Real r4 "Real parameter in Tab 1 and Group 2"
      annotation(Dialog(tab = "Tab 1", group = "Group 2"));
-  …
+  ...
 end DialogDemo;
 ----
 
@@ -1894,7 +1880,7 @@ block Step
   // nIn cannot be set through the dialog (but maybe shown)
   parameter Integer nIn=0 annotation(Dialog(connectorSizing=true));
   Step_in inPorts[nIn];
-  …
+  ...
 end Step;
 ----
 
@@ -1925,7 +1911,7 @@ equation
 
 . [[connectorSizing:deleteVector]]
 If a connection line is deleted between one outside and one inside vector of connectors both dimensioned with (`connectorSizing`) parameters, the `connect`-equation is removed and the (`connectorSizing`) parameter of the component is set to zero or the modifier is removed.
-_Example:_ Assume the connection line in the resulting example in case <<connectorSizing:addVector>> is removed.
+_Example:_ Assume the connection line in the resulting example in case 1 is removed.
 This results in:
 +
 [source,modelica]
@@ -1936,7 +1922,7 @@ Step step1; // modifier nIn=nIn is removed
 ----
 
 . [[connectorSizing:addScalar]]
-If a new connection line is drawn to an inside connector with `connectorSizing` and case <<connectorSizing:addVector>> does not apply then, the parameter is incremented by one and the connection is performed for the new highest index.
+If a new connection line is drawn to an inside connector with `connectorSizing` and case 1 does not apply then, the parameter is incremented by one and the connection is performed for the new highest index.
 _Example:_ Assume that 3 connections are present and a new connection is performed.
 The result is:
 +
@@ -1944,7 +1930,7 @@ The result is:
 ----
   Step step1(nIn=4); // index changed from nIn=3 to nIn=4
 equation
-  connect(…, step1.inPorts[4]); // new connect-equation
+  connect(..., step1.inPorts[4]); // new connect-equation
 ----
 +
 In some applications, like state machines, the vector index is used as a priority, e.g., to define which transition is firing if several transitions become active at the same time instant.
@@ -1952,8 +1938,8 @@ It is then not sufficient to only provide a mechanism to always connect to the l
 Instead, some mechanism to select an index conveniently should be provided.
 
 . [[connectorSizing:deleteScalar]]
-If a connection line is deleted to an inside connector with `connectorSizing` and case <<connectorSizing:deleteVector>> does not apply then, then the (`connectorSizing`) parameter is decremented by one and all connections with index above the deleted connection index are also decremented by one.
-_Example:_Assume there are 4 connections:
+If a connection line is deleted to an inside connector with `connectorSizing` and case 2 does not apply then, then the (`connectorSizing`) parameter is decremented by one and all connections with index above the deleted connection index are also decremented by one.
+Example: Assume there are 4 connections:
 +
 [source,modelica]
 ----
@@ -1987,7 +1973,7 @@ The result is:
 ----
   extends MyCompositeStep(step1(nIn=4)); // new modifier nIn=4
 equation
-  connect(…, step1.inPorts[4]);  // new connect-equation
+  connect(..., step1.inPorts[4]);  // new connect-equation
 ----
 ====
 
@@ -2002,11 +1988,13 @@ This can be used by a tool to guarantee that consistent versions are used, and i
 
 Version numbers are of the forms:
 
-* Main release versions: `""" UNSIGNED-INTEGER { "." UNSIGNED-INTEGER } """`
+* Main release versions: `""" UNSIGNED-INTEGER { "." UNSIGNED-INTEGER } """` +
 Example: `"2.1"`
-* Pre-release versions: `""" UNSIGNED-INTEGER { "." UNSIGNED-INTEGER } " " {S-CHAR} """`
+
+* Pre-release versions: `""" UNSIGNED-INTEGER { "." UNSIGNED-INTEGER } " " {S-CHAR} """` +
 Example: `"2.1 Beta 1"`
-* Un-ordered versions: `""" NON-DIGIT {S-CHAR} """`
+
+* Un-ordered versions: `""" NON-DIGIT {S-CHAR} """` +
 Example: `"Test 1"`
 
 The main release versions are ordered using the hierarchical numerical names, and follow the corresponding pre-release versions.
@@ -2023,7 +2011,7 @@ All classes within this top-level class have this version number.
 * `conversion(noneFromVersion = VERSION-NUMBER)`
 Defines that user models using the `VERSION-NUMBER` can be upgraded to the `CURRENT-VERSION-NUMBER` of the current class without any changes.
 * `conversion(from(version = Versions, [to=VERSION-NUMBER,] Convert))`
-where _Versions_ is `VERSION-NUMBER` | `{VERSION-NUMBER, VERSION-NUMBER, …}` and _Convert_ is `script="…"` | `change={conversionRule(), …, conversionRule()}`
+where _Versions_ is `VERSION-NUMBER` | `{VERSION-NUMBER, VERSION-NUMBER, ...}` and _Convert_ is `script="..."` | `change={conversionRule(), ..., conversionRule()}`
 Defines that user models using the `VERSION-NUMBER` or any of the given `VERSION-NUMBER` can be upgraded to the given `VERSION-NUMBER` (if the to-tag is missing this is the `CURRENT-VERSION-NUMBER`) of the current class by applying the given conversion rules.
 The script consists of an unordered sequence of `conversionRule();` (and optionally Modelica comments).
 The `conversionRule` functions are defined in <<conversion-rules>>.
@@ -2041,7 +2029,7 @@ The annotations `uses` and `conversion` may contain several different sub-entrie
 [source,modelica]
 ----
 package Modelica
-  …
+  ...
   annotation(
     version = "3.1",
     conversion(
@@ -2054,14 +2042,14 @@ package Modelica
 end Modelica;
 
 model A
-  …
+  ...
   annotation(
     version = "1.0",
     uses(Modelica(version = "1.5")));
 end A;
 
 model B
-  …
+  ...
   annotation(
     uses(Modelica(version = "3.1 Beta 1")));
 end B;
@@ -2171,13 +2159,13 @@ convertModifiers::
 [source,modelica]
 ----
 convertModifiers("OldClass",
-  {"OldModifier1=default1", "OldModifier2=default2", …},
-  {"NewModifier1=…%OldModifier2%…", "NewModifier2=…", …}
+  {"OldModifier1=default1", "OldModifier2=default2", ...},
+  {"NewModifier1=...%OldModifier2%...", "NewModifier2=...", ...}
   [, simplify=true]);
 ----
 +
 Normal case; if any modifier among `OldModifier` exist then replace all of them with the list of `NewModifiers`.
-The `…%OldModifier2%…` indicate an expression that may involve the values of the old modifiers (tools are responsible for adding parentheses if needed).
+The `...%OldModifier2%...` indicate an expression that may involve the values of the old modifiers (tools are responsible for adding parentheses if needed).
 The lists of old and new modifiers can have different lengths.
 The defaults (if present) are used if there are multiple `OldModifier` and not all are set in the component instance.
 The defaults are optional if there is at most one `OldModifier` element, and should otherwise be provided.
@@ -2350,7 +2338,7 @@ Besides version information, a top-level class can have additionally the followi
 [source,modelica]
 ----
 package Modelica
-  …
+  ...
   annotation(
     version = "3.0.1",
     versionDate = "2008-04-10",
@@ -2450,7 +2438,7 @@ Protection and licensing are both defined inside the `Protection` annotation:
 
 [source,modelica]
 ----
-annotation(Protection(…));
+annotation(Protection(...));
 ----
 
 ==== Protection of Classes
@@ -2462,7 +2450,7 @@ A class may have the following annotations to define what parts of a class are v
 ----
 record Protection
   /*literal*/ constant Access access;
-  …
+  ...
 end Protection;
 type Access = enumeration(hide, icon, documentation, diagram,
               nonPackageText, nonPackageDuplicate,
@@ -2701,7 +2689,7 @@ Note, it is not useful to store this information in the annotation, because only
 // File MyLibrary\package.mo
 package MyLibrary
   annotation(Protection(License(libraryKey="15783-A39323-498222-444ckk4ll",
-  licenseFile="MyLibraryAuthorization_Tool.mo_lic"), …));
+  licenseFile="MyLibraryAuthorization_Tool.mo_lic"), ...));
 end MyLibrary;
 
 // File MyLibrary\MyLibraryAuthorization_Tool.mo\
