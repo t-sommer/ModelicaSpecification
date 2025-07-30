@@ -1192,7 +1192,7 @@ It is required that accumulated sub- and supersampling factors in the range of 1
 ====
 The goal is that every continuous-time Modelica model can be utilized in a sampled data control system.
 This is achieved by solving the continuous-time equations with a defined integration method between clock ticks.
-With this feature, it is for example possible to invert the nonlinear dynamic model of a plant, see ThummelEtAl2005InverseModels, and use it in a feedforward path of an advanced control system that is associated with a clock.
+With this feature, it is for example possible to invert the nonlinear dynamic model of a plant, see <<ThummelEtAl2005InverseModels>>, and use it in a feedforward path of an advanced control system that is associated with a clock.
 
 This feature also allows defining multi-rate systems: Different parts of the continuous-time model are associated to different clocks and are solved with different integration methods between clock ticks, e.g., a very fast sub-system with an implicit solver with a small step-size and a slow sub-system with an explicit solver with a large step-size.
 ====
