@@ -2,12 +2,12 @@
 :id: state-machines
 
 This chapter defines language elements to define clocked state machines.
-These state machines have a similar modeling power as Statecharts [Harel1987Statecharts] and have the important feature that at one clock tick, there is only one assignment to every variable (for example, it is an error if state machines are executed in parallel and they assign to the same variable at the same clock tick; such errors are detected during translation).
+These state machines have a similar modeling power as Statecharts (<<Harel1987Statecharts>>) and have the important feature that at one clock tick, there is only one assignment to every variable (for example, it is an error if state machines are executed in parallel and they assign to the same variable at the same clock tick; such errors are detected during translation).
 Furthermore, it is possible to activate and deactivate clocked equations and blocks at a clock tick.
 An efficient implementation will only evaluate the equations and blocks that are active at the current clock tick.
 With other Modelica language elements, this important feature cannot be defined.
 
-The semantics of the state machines defined in this chapter is inspired by mode automata and is basically the one from Lucid Synchrone 3.0 [Pouzet2006LucidSynchrone30].
+The semantics of the state machines defined in this chapter is inspired by mode automata and is basically the one from Lucid Synchrone 3.0 (<<Pouzet2006LucidSynchrone30>>).
 Note, safety critical control software in aircrafts is often defined with such kind of state machines.
 The following properties are different to Lucid Synchrone 3.0:
 
@@ -39,8 +39,8 @@ The special kinds of connect-like equations listed below are used to define a st
 |===
 |Expression                             |Description                             |Details
 
-|`transition(from, to, condition, ...)` |State machine transition between states |<<transition>>
-|`initialState(state)`                  |State machine initial state             |<<initialState>>
+|`transition(from, to, condition, ...)` |State machine transition between states |<<operator:transition>>
+|`initialState(state)`                  |State machine initial state             |<<operator:initialState>>
 |===
 
 The `transition` and `initialState` equations can only be used in equations, and cannot be used inside `if`-equations with conditions that are not parameter expressions, or in `when`-equations.
@@ -51,13 +51,13 @@ The operators listed below are used to query the status of the state machine.
 |===
 |Expression           |Description                |Details
 
-|`activeState(state)` |Predicate for active state |<<activeState>>
-|`ticksInState()`     |Ticks since activation     |<<ticksInState>>
-|`timeInState()`      |Time since activation      |<<timeInState>>
+|`activeState(state)` |Predicate for active state |<<operator:activeState>>
+|`ticksInState()`     |Ticks since activation     |<<operator:ticksInState>>
+|`timeInState()`      |Time since activation      |<<operator:timeInState>>
 |===
 
-[[transition]]
-transition::
+[[operator:transition,Operator transition]]
+Operator transition::
 +
 [source,modelica]
 ----
@@ -67,7 +67,7 @@ transition(from, to, condition,
 +
 Arguments `from` and `to` are block instances, and `condition` is a `Boolean` argument.
 The optional arguments `immediate`, `reset`, and `synchronize` are of type `Boolean`, have parameter variability and default to `true`, `true`, and `false` respectively.
-The optional argument `priority` is of type `Integer`, has parameter variability and defaults to 1.
+The optional argument `priority` is of type `Integer`, has parameter variability and a default of 1.
 +
 This operator defines a transition from instance `from` to instance `to`.
 The `from` and `to` instances become states of a state machine.
@@ -79,8 +79,8 @@ If `reset = true`, the states of the target state are reinitialized, i.e., state
 If `synch = true`, any transition is disabled until all state machines of the from-state have reached final states, i.e., states without outgoing transitions.
 For the precise details about firing a transition, see <<state-machine-semantics>>.
 
-[[initialState]]
-initialState::
+[[operator:initialState,Operator initialState]]
+Operator initialState::
 +
 [source,modelica]
 ----
@@ -90,8 +90,8 @@ initialState(state)
 Argument `state` is the block instance that is defined to be the initial state of a state machine.
 At the first clock tick of the state machine, this state becomes active.
 
-[[activeState]]
-activeState::
+[[operator:activeState,Operator activeState]]
+Operator activeState::
 +
 [source,modelica]
 ----
@@ -104,8 +104,8 @@ If it is not active, the operator returns `false`.
 +
 It is an error if the instance is not a state of a state machine.
 
-[[ticksInState]]
-ticksInState::
+[[operator:ticksInState,Operator ticksInState]]
+Operator ticksInState::
 +
 [source,modelica]
 ----
@@ -117,8 +117,8 @@ In the case of a self-transition to the currently active state or to an active e
 +
 This function can only be used in state machines.
 
-[[timeInState]]
-timeInState::
+[[operator:timeInState,Operator timeInState]]
+Operator timeInState::
 +
 [source,modelica]
 ----
@@ -130,8 +130,9 @@ In the case of a self-transition to the currently active state or to an active e
 +
 This function can only be used in state machines.
 
-.Example
-If there is a transition with `immediate = false` from state `A1` to `A2` and the condition is `ticksInState() >= 5`, and `A1` became active at 10ms, and the clock period is 1ms, then `A1` will be active at 10ms, 11ms, 12ms, 13ms, 14ms, and will be not active at 15ms.
+[example]
+====
+Example: If there is a transition with `immediate = false` from state `A1` to `A2` and the condition is `ticksInState() >= 5`, and `A1` became active at 10ms, and the clock period is 1ms, then `A1` will be active at 10ms, 11ms, 12ms, 13ms, 14ms, and will be not active at 15ms.
 
 [source,modelica]
 ----
@@ -144,19 +145,23 @@ equation
   transition(A0, A1, sample(time, Clock(1, 1000)) > 0.0095);
   transition(A1, A2, ticksInState() >= 5, immediate = false);
 ----
+====
 
 === State Machine Graphics
 
 [NOTE]
 <<fig-state-machine-layout>> shows the recommended layout of a state machine.
 
-.Recommended layout of a simple state machine. For the 5 transitions, the settings are as follows, from left to right: immediate = true, false, true, false, true; reset = true, true, false, false, true; synchronize = false, false, false, false, true; priority = 1, 2, 3, 4, 5.
+.Recommended layout of a simple state machine. For the 5 transitions, the settings are as follows, from left to right: `immediate = true, false, true, false, true`; `reset = true, true, false, false, true`; `synchronize = false, false, false, false, true`; `priority = 1, 2, 3, 4, 5`.
 [[fig-state-machine-layout]]
 image::media/statemachine.svg[]
 
-The annotation for graphics of `transition` has the following structure: `annotation(Line(...), Text(...))`; and for `initialState()`: graphical-primitives`(Line(...))`; with `Line` and `Text` annotations defined in <<annotations>>.
+The annotation for graphics of `transition` has the following structure: `annotation(Line(...), Text(...))`; and for `initialState()`: `graphical-primitives(Line(...))`; with `Line` and `Text` annotations defined in <<annotations>>.
 
-.Example
+[example]
+====
+Example:
+
 [source,modelica]
 ----
 transition(state2, state1, x < 10,
@@ -176,6 +181,7 @@ transition(state2, state1, x < 10,
       horizontalAlignment = TextAlignment.Left),
   );
 ----
+====
 
 The `Text` annotation representing the transition condition can use the notation `%condition` to refer to the condition expression.
 
@@ -448,11 +454,11 @@ u2 = v
 
 .Example of a hierarchical state machine.
 [[fig-hierarchical-statemachine]]
-image::media/hierarchical-statemachine.svg[]
+image::media/hierarchical-statemachine.svg[width=80%]
 
-.Example
-
-Consider the hierarchical state machine in <<fig-hierarchical-statemachine>>.
+[example]
+====
+Example: Consider the hierarchical state machine in <<fig-hierarchical-statemachine>>.
 The model demonstrates the following properties:
 
 * `state1` is a meta state with two parallel state machines in it.
@@ -553,7 +559,8 @@ public
 end HierarchicalAndParallelStateMachine;
 ----
 
-image::media/statemachineplot.svg[caption="State machine behavior, as reflected by the variable v."]
+.State machine behavior, as reflected by the variable v.
+image::media/statemachineplot.svg[width=50%]
 
 The transition from `state1` to `state2` could have been done with a `synchronize` transition with `condition=true` instead.
 The semantically equivalent model is shown below:
@@ -672,3 +679,4 @@ equation
   end if;
 end HierarchcialAndParallelStateMachine;
 ----
+====
