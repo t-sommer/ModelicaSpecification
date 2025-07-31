@@ -348,20 +348,40 @@ function toggleTheme() {
 <script src="common/js/color-theme.js" defer></script>
 <script src="common/js/scrollspy.js" defer></script>
 
+<style>
+.nav-yy svg {
+    width: 22px;
+    height: 22px;
+    vertical-align: middle;
+}
+</style>
+
 <div class="ma-header" style="display: flex; padding: 0 5px; align-items: center;">
   <a href="https://modelica.org/"><img src="images/m-ball.svg" style="padding: 10px; height: 50px; align-self: flex-start;"/></a>
   <span style="flex-grow: 1;"></span>
+
   <a href="#" onclick="toggleTOC()" class="nav-button" style="padding: 5px;">
     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-list-columns-reverse" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M0 .5A.5.5 0 0 1 .5 0h2a.5.5 0 0 1 0 1h-2A.5.5 0 0 1 0 .5m4 0a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1h-10A.5.5 0 0 1 4 .5m-4 2A.5.5 0 0 1 .5 2h2a.5.5 0 0 1 0 1h-2a.5.5 0 0 1-.5-.5m4 0a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5m-4 2A.5.5 0 0 1 .5 4h2a.5.5 0 0 1 0 1h-2a.5.5 0 0 1-.5-.5m4 0a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5m-4 2A.5.5 0 0 1 .5 6h2a.5.5 0 0 1 0 1h-2a.5.5 0 0 1-.5-.5m4 0a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 0 1h-8a.5.5 0 0 1-.5-.5m-4 2A.5.5 0 0 1 .5 8h2a.5.5 0 0 1 0 1h-2a.5.5 0 0 1-.5-.5m4 0a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 0 1h-8a.5.5 0 0 1-.5-.5m-4 2a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 0 1h-2a.5.5 0 0 1-.5-.5m4 0a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1h-10a.5.5 0 0 1-.5-.5m-4 2a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 0 1h-2a.5.5 0 0 1-.5-.5m4 0a.5.5 0 0 1 .5-.5h6a.5.5 0 0 1 0 1h-6a.5.5 0 0 1-.5-.5m-4 2a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 0 1h-2a.5.5 0 0 1-.5-.5m4 0a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5"/></svg>
   </a>
 
-  <a onclick="toggleTheme()" class="nav-button" style="padding: 5px;">
+  <a onclick="toggleTheme()" class="nav-button" style="padding: 5px; margin-left: 10px;">
       <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-circle-half" viewBox="0 0 16 16"><path d="M8 15A7 7 0 1 0 8 1zm0 1A8 8 0 1 1 8 0a8 8 0 0 1 0 16"/></svg>
   </a>
-  <!--
-  <a href="#" class="nav-button"><img src="images/circle-half.svg" class="e"/></a>
-  <a href="#" class="nav-button"><img src="images/tag.svg" class="e"/> 3.7-dev</a>
-  -->
+
+  <div style="height: 30px; color: white; margin: 5px 10px 0 15px">
+    <div style="display: inline-block; vertical-align: top; margin-top: 2px" class="nav-yy">
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-git" viewBox="0 0 16 16">
+        <path d="M15.698 7.287 8.712.302a1.03 1.03 0 0 0-1.457 0l-1.45 1.45 1.84 1.84a1.223 1.223 0 0 1 1.55 1.56l1.773 1.774a1.224 1.224 0 0 1 1.267 2.025 1.226 1.226 0 0 1-2.002-1.334L8.58 5.963v4.353a1.226 1.226 0 1 1-1.008-.036V5.887a1.226 1.226 0 0 1-.666-1.608L5.093 2.465l-4.79 4.79a1.03 1.03 0 0 0 0 1.457l6.986 6.986a1.03 1.03 0 0 0 1.457 0l6.953-6.953a1.03 1.03 0 0 0 0-1.457"/>
+      </svg>
+    </div>
+    <div style="display: inline-block; font-size: 15px; margin-left: 8px">
+      Modelica Language Specification
+      <div style="font-size: 0.7rem">
+        3.7-dev
+      </div>
+    </div>
+  </div>
+
 </div>
 
 <div style="text-align: center">
