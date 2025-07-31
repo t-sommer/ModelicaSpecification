@@ -2025,7 +2025,10 @@ Defines that classes within this top-level class use version `VERSION-NUMBER` of
 
 The annotations `uses` and `conversion` may contain several different sub-entries.
 
-.Example
+[example]
+====
+Example:
+
 [source,modelica]
 ----
 package Modelica
@@ -2056,6 +2059,7 @@ end B;
 ----
 
 In this example the model `A` uses an older version of the Modelica library and can be upgraded using the given script, and model `B` uses an older version of the Modelica library but no changes are required when upgrading.
+====
 
 ===== Conversion Rules
 :id: conversion-rules
@@ -2094,16 +2098,18 @@ Convert class `OldClass` to `NewClass`.
 Match longer path first, so if converting both `A` to `C` and `A.B` to `D` then `A.F` is converted to `C.F` and `A.B.E` to `D.E`.
 This is considered before `convertMessage` for the same `OldClass`.
 +
-.Example
-Consider the following as part of a conversion script:
-+
+[example]
+====
+Example: Consider the following as part of a conversion script:
+
 [source,modelica]
 ----
 convertClass("Modelica.SIunits", "Modelica.Units.SI");
 convertClass("Modelica.SIunits.Icons", "Modelica.Units.Icons");
 ----
-+
+
 This ensures that for example `Modelica.SIunits.Length` is converted to `Modelica.Units.SI.Length` and `Modelica.SIunits.Icons` is converted to `Modelica.Units.Icons`.
+====
 
 convertClassIf("OldClass", "oldElement", "whenValue", "NewClass")::
 +
@@ -2116,46 +2122,49 @@ For string elements the value argument to `convertClassIf` shall be up-quoted, e
 
 convertElement("OldClass", "OldName", "NewName")::
 +
+--
 In `OldClass`, convert element `OldName` to `NewName`.
 Both `OldName` and `NewName` normally refer to components, but they may also refer to class-parameters, or hierarchical names.
 For hierarchical names, the longest match is used first.
-+
+
 For replaceable classes in packages (and replaceable classes in other classes) `convertElement` shall be used if the class is renamed within the package (or class), whereas `convertClass` shall only be used if the class is placed outside of the package (or class).
-+
+
 [NOTE]
-====
 The latter case indicates a problem with overuse of replaceable classes in the previous design of the library.
+
+[example]
 ====
-+
-.Example
-Consider the following as part of a conversion script:
-+
+Example: Consider the following as part of a conversion script:
+
 [source,modelica]
 ----
 convertElement({"Modelica.Mechanics.MultiBody.World",
                 "Modelica.Mechanics.MultiBody.World.gravityAcceleration"},
                 "mue", "mu");
 ----
-+
+
 This implies that
-+
+
 [source,modelica]
 ----
 Modelica.Mechanics.MultiBody.World world(mue=2);
 function f=Modelica.Mechanics.MultiBody.World.gravityAcceleration(mue=4);
 ----
-+
+
 is converted to:
-+
+
 [source,modelica]
 ----
 Modelica.Mechanics.MultiBody.World world(mu=2);
 function f=Modelica.Mechanics.MultiBody.World.gravityAcceleration(mu=4);
 ----
+====
+--
 
 [[convertModifiers]]
 convertModifiers::
 +
+--
 [source,modelica]
 ----
 convertModifiers("OldClass",
@@ -2163,54 +2172,54 @@ convertModifiers("OldClass",
   {"NewModifier1=...%OldModifier2%...", "NewModifier2=...", ...}
   [, simplify=true]);
 ----
-+
+
 Normal case; if any modifier among `OldModifier` exist then replace all of them with the list of `NewModifiers`.
 The `...%OldModifier2%...` indicate an expression that may involve the values of the old modifiers (tools are responsible for adding parentheses if needed).
 The lists of old and new modifiers can have different lengths.
 The defaults (if present) are used if there are multiple `OldModifier` and not all are set in the component instance.
 The defaults are optional if there is at most one `OldModifier` element, and should otherwise be provided.
-+
+
 If `simplify` is specified and true then perform obvious simplifications to clean up the new modifier; otherwise leave as is.
-+
+
 The old and new modifiers shall be component references, except for the `cardinality` cases listed below.
-+
+
 [NOTE]
-====
 Note: `simplify` is primarily intended for converting enumerations and emulated enumerations that naturally lead to large nested `if`-expressions.
 The simplifications may also simplify parts of the original expression.
-====
-+
+
 If the modifiers contain literal string values they must be quoted.
-+
+
 Behaviour in unusual cases:
-+
+
 * If `NewModifier` list is empty then the modifier is just removed.
+
 * If `OldModifer` list is empty it is added for all uses of the class.
+
 * If `OldModifierᵢ` is `cardinality(a) = 0` the conversion will only be applied for a component comp if there are no inside connections to `comp.a`.
 This can be combined with other modifiers that are handled in the usual way.
+
 * If `OldModifierᵢ` is `cardinality(a) = 1` the conversion will only be applied for a component comp if there are any inside connections to `comp.a`.
-+
+
 The converted modifiers and existing modifiers are merged such that the existing modifiers take precedence over the result of `convertModifiers`.
 A diagnostic is recommended if this merging removes some modifiers unless those modifiers are identical or it is the special case of an empty `OldModifier` list.
-+
+
 [NOTE]
-====
 This can be used to handle the case where the default value was changed.
-====
-+
+
 Converting modifiers with cardinality is used to remove the deprecated operator `cardinality` from model libraries, and replace tests on cardinality in models by parameters explicitly enabling the different cases.
 The case where the old class is used as a base class, and there exist outside connections to `a`, and there is `convertModifiers` involving the cardinality of `a` is not handled.
-+
+
 [NOTE]
 ====
 Having a parameter for explicitly enabling the different cases means that instead of model `A` internally testing if its connector `B` is connected, there will be a parameter for enabling connector `B`, and the conversion ensures that each component of model `A` will have this parameter set accordingly.
 
 In case a parameter is simply renamed it is preferable to use `convertElement`, since that also handles, e.g., binding equations using the parameter.
 ====
-+
-.Example
-The conversion
-+
+
+[example]
+====
+Example: The conversion
+
 [source,modelica]
 ----
 convertClass("Modelica.Thermal.FluidHeatFlow.Components.IsolatedPipe",
@@ -2236,9 +2245,9 @@ convertElement("My.Library.BadPackage.PartialBase",
 convertElement("My.Library.BadPackage.ActualClass",
                "bad", "correct");
 ----
-+
+
 converts
-+
+
 [source,modelica]
 ----
 Modelica.Thermal.FluidHeatFlow.Components.IsolatedPipe pipe1;
@@ -2254,9 +2263,9 @@ model B
   Boolean b = bad;
 end B;
 ----
-+
+
 to
-+
+
 [source,modelica]
 ----
 Modelica.Thermal.FluidHeatFlow.Components.Pipe pipe1(useHeatPort = false);
@@ -2272,10 +2281,12 @@ model B
   Boolean b = correct;
 end B;
 ----
-+
+
 The `convertElement` call for `ActualClass` is needed to avoid relying on base classes in the original library where `ActualClass` inherits from `PartialBase`.
 However, the inheritance among the models to convert (in this case `B` inherits from `A`) should be handled.
 Note that conversion works regardless of the import of `My.Library`.
+====
+--
 
 convertMessage("OldClass", "Failed Message")::
 +
@@ -2294,7 +2305,7 @@ For any use of `oldElement` in `OldClass` report that conversion could not be ap
 [NOTE]
 ====
 This is useful if there is no possibility to convert a specific parameter (or other element), especially if it rarely modified.
-If the parameter had no impact on the model it can be removed using `convertModifiers`, see <<convertModifiers>>.
+If the parameter had no impact on the model it can be removed using `convertModifiers`, see <<conversion-rules>>.
 ====
 
 ==== Versions in the File System
@@ -2302,13 +2313,16 @@ If the parameter had no impact on the model it can be removed using `convertModi
 
 A top-level class, `IDENT`, with version `VERSION-NUMBER` can be stored in one of the following ways in a directory given in the `MODELICAPATH`:
 
-* The file `IDENT ".mo"`
+* The file `IDENT ".mo"` +
 Example: `Modelica.mo`
-* The file `IDENT " " VERSION-NUMBER ".mo"`
+
+* The file `IDENT " " VERSION-NUMBER ".mo"` +
 Example: `Modelica 2.1.mo`
-* The directory `IDENT` with the file `package.mo` directly inside it
+
+* The directory `IDENT` with the file `package.mo` directly inside it +
 Example: `Modelica/package.mo`
-* The directory `IDENT " " VERSION-NUMBER` with the file `package.mo` directly inside it
+
+* The directory `IDENT " " VERSION-NUMBER` with the file `package.mo` directly inside it +
 Example: `Modelica 2.1/package.mo`
 
 This allows a tool to access multiple versions of the same package.
@@ -2334,7 +2348,10 @@ Besides version information, a top-level class can have additionally the followi
     change to any file belonging to the package";
 ----
 
-.Example
+[example]
+====
+Example:
+
 [source,modelica]
 ----
 package Modelica
@@ -2357,12 +2374,15 @@ model M2
     uses(Modelica(version = "3.0.1", versionBuild = 4)));
 end M2
 ----
+====
 
 The meanings of these annotations are:
 
 * `version` is the version number of the released library, see <<version-handling>>.
+
 * `versionDate` is the date in UTC format (according to ISO 8601) when the library was released.
 This string is updated by the library author to correspond with the version number.
+
 * `versionBuild` is the optional build number of the library.
 When a new version is released `versionBuild` should be omitted or `versionBuild = 1`.
 There might be bug fixes to the library that do not justify a new library version.
@@ -2410,26 +2430,18 @@ The intent of this section is to enable a library vendor to maintain one source 
 
 The following definitions relate to access control.
 
-.Protection
-====
+Defintion Protection::
 Define what parts of a class are visible.
-====
 
-.Obfuscation
-====
+Defintion Obfuscation::
 Changing a Modelica class or generated code so that it is difficult to inspect by a user (e.g., by automatically renaming variables to non-meaningful names).
-====
 
-.Encryption
-====
+Defintion Encryption::
 Encoding of a model or a package in a form so that the modeler cannot inspect any content of a class without an appropriate key.
 An encrypted package that has the `Protection` annotation is read-only; the way to modify it is to generate a new encrypted version.
-====
 
-.Licensing
-====
+Defintion Licensing::
 Restrict the use of an encrypted package for particular users for a specified period of time.
-====
 
 In this section annotations are defined for protection and licensing.
 Obfuscation and encryption are not standardized.
@@ -2461,37 +2473,47 @@ The other members of this record are given in <<licensing>>.
 
 The items of the `Access` enumeration have the following meanings:
 
-. `Access.hide`
+. `Access.hide` +
 Do not show the class anywhere (it is not possible to inspect any part of the class).
-. `Access.icon`
+
+. `Access.icon` +
 The class can be instantiated and public parameter, constant, input, output variables as well as public connectors can be accessed, as well as the `Icon` annotation, as defined in <<graphical-objects>> (the declared information of these elements can be shown).
 Additionally, the class name and its description text can be accessed.
-. `Access.documentation`
+
+. `Access.documentation` +
 Same as `Access.icon` and additionally the `Documentation` annotation (as defined in <<documentation>>) can be accessed.
 HTML-generation in the `Documentation` annotation is normally performed before encryption, but the generated HTML is intended to be used with the encrypted package.
 Thus the HTML-generation should use the same access as the encrypted version -- even before encryption.
-. `Access.diagram`
+
+. `Access.diagram` +
 Same as `Access.documentation` and additionally, the `Diagram` annotation, and all components and `connect`-equations that have a graphical annotation can be accessed.
-. `Access.nonPackageText`
+
+. `Access.nonPackageText` +
 Same as `Access.diagram` and additionally if it is not a package: the whole class definition can be accessed (but that text cannot be copied, i.e., you can see but not copy the source code).
-. `Access.nonPackageDuplicate`
+
+. `Access.nonPackageDuplicate` +
 Same as `Access.nonPackageText` and additionally if it is not a package: the class, or part of the class, can be copied.
-. `Access.packageText`
+
+. `Access.packageText` +
 Same as `Access.diagram` (note: _not_ including all rights of `Access.nonPackageDuplicate`) and additionally the whole class definition can be accessed (but that text cannot be copied, i.e., you can see but not copy the source code).
-. `Access.packageDuplicate`
+
+. `Access.packageDuplicate` +
 Same as `Access.packageText` and additionally the class, or part of the class, can be copied.
 
 The `access` annotation holds for the respective class and all classes that are hierarchically on a lower level, unless overridden by a `Protection` annotation with `access`.
 Overriding `access=Access.hide` or `access=Access.packageDuplicate` has no effect.
 
-.Example
-If the annotation is given on the top level of a package and at no other class in this package, then the `access` annotation holds for all classes in this package.
+[example]
+====
+Example: If the annotation is given on the top level of a package and at no other class in this package, then the `access` annotation holds for all classes in this package.
+====
 
 Classes should not use other classes in ways that contradict this protection.
 Tools must ensure that protected contents are not shown, even if classes do not meet this requirement.
 
-.Example
-For instance a class with `Access.hide` should not be used in the diagram layer of a class with `Access.diagram`, and there should not be hyperlinks to classes with `Access.icon` (from classes with visible documentation).
+[example]
+====
+Example: For instance a class with `Access.hide` should not be used in the diagram layer of a class with `Access.diagram`, and there should not be hyperlinks to classes with `Access.icon` (from classes with visible documentation).
 
 Consider the following invalid use of a class with `Access.hide`:
 
@@ -2531,9 +2553,11 @@ When simulating `P.M`, the tool must not store `mySecret.y`.
 
 It is not specified whether a tool hides the entire text of `P.M2`, hides just the declaration, or shows the entire text of the `P.M2`.
 In order to support development of valid protected packages, it is of course OK and expected that a tool will report the invalid use of `P.MySecret` in `P.M` and `P.M2` (revealing its existence in a diagnostic) during development of the package.
+====
 
-.Example
-With the same package `P` as in the previous example, consider the following invalid use outside of `P`:
+[example]
+====
+Example: With the same package `P` as in the previous example, consider the following invalid use outside of `P`:
 
 [source,modelica]
 ----
@@ -2549,6 +2573,7 @@ Regardless of the protection of `My`, a tool must act as if `P.MySecret` did not
 For example, translation of `My` must fail with a standard error message about reference to the non-existing class `P.MySecret`.
 Further, just like when being misused inside the package `P`, the tool must not reveal that it knows about the icon of `P.MySecret`.
 With such precautions taken, showing the text or diagram of `My` is permitted as it doesn't reveal the actual existence of `P.MySecret`.
+====
 
 [NOTE]
 ====
@@ -2557,6 +2582,7 @@ It seems natural to not introduce new flags for this, but reuse the `Access.XXX`
 For instance:
 
 * For `Access.icon` only the variables can be stored in a result file that can also be inspected in the class.
+
 * For `Access.nonPackageText` all public and protected variables can be stored in a result file, because all variables can be inspected in the class.
 
 [source,modelica]
@@ -2622,7 +2648,10 @@ If the features vector in the library is empty or not provided there is no need 
 As with the other annotations, the `features` annotation holds for the respective class and for all classes that are hierarchically on a lower level, unless further restricted by a corresponding annotation.
 If no license according to the `features` annotation is provided in the authorization file, the corresponding classes are not visible and cannot be used, not even internally in the package.
 
-.Example
+[example]
+====
+Example:
+
 [source,modelica]
 ----
 // Requires license feature "LicenseOption"
@@ -2634,6 +2663,7 @@ annotation(Protection(features={"LicenseOption1", "LicenseOption2"}));
 // Requires license features ("LicenseOption1" and "LicenseOption2") or "LicenseOption3"
 annotation(Protection(features={"LicenseOption1 LicenseOption2", "LicenseOption3"}));
 ----
+====
 
 In order that the protected class can be used either a tool specific license manager, or an authorization file (called `licenseFile`) must be present.
 The authorization file is standardized.
@@ -2681,8 +2711,9 @@ It is useful to include the name of the tool in the authorization file name with
 Note, it is not useful to store this information in the annotation, because only the tool that encrypted the `Authorization` package can also decrypt it.
 ====
 
-.Example
-(Before encryption:)
+[example]
+====
+Example: (Before encryption:)
 
 [source,modelica]
 ----
@@ -2709,6 +2740,7 @@ package MyLibraryAuthorization_Tool
   }));
 end MyLibraryAuthorization_Tool;
 ----
+====
 
 === License Texts
 :id: license-texts
