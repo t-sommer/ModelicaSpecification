@@ -7,8 +7,8 @@ This appendix contains a derivation of the equation for stream connectors from <
 === Mixing Enthalpy
 :id: mixing-enthalpy
 
-Consider a connection set with _n_ connectors, and denote the mass flow rates `m_flow` by $\tilde{m}$.
-The mixing enthalpy is defined by the mass balance (the general mass-balance for a component has $\dot{m}=\sum\tilde{m}$ which simplifies for the mixing enthalpy where $m=0$ and thus $\dot{m}=0$):
+Consider a connection set with _n_ connectors, and denote the mass flow rates `m_flow` by latexmath:[\tilde{m}].
+The mixing enthalpy is defined by the mass balance (the general mass-balance for a component has latexmath:[\dot{m}=\sum\tilde{m}] which simplifies for the mixing enthalpy where latexmath:[m=0] and thus latexmath:[\dot{m}=0]):
 
 [latexmath]
 ++++
@@ -50,7 +50,8 @@ While these equations are suitable for device-oriented modeling, the straightfor
 This is the reason why the actual mixing enthalpy is not modelled directly in the model equations.
 The stream connectors provide a suitable alternative.
 
-image::media/fluidmix.svg[caption="Exemplary connection set with three connected components and a common mixing enthalpy."]
+.Exemplary connection set with three connected components and a common mixing enthalpy.
+image::media/fluidmix.svg[]
 
 === Rationale for inStream
 :id: rationale-for-instream
@@ -58,12 +59,13 @@ image::media/fluidmix.svg[caption="Exemplary connection set with three connected
 For simplicity, the derivation of `inStream` is shown for 3 model components that are connected together.
 The case for _N_ connections follows correspondingly.
 
+[[eq:D1,C.1]]
 The energy and mass balance equations for the connection set for 3 components are (see above):
 
+[[eq:D1a,C.1a]]
+.C.1a
 [latexmath]
 ++++
-\begin{subequations}
-\label{eq:D1}
 \begin{equation}
 \begin{split}
 0 = & \tilde{m}_1 \cdot
@@ -83,18 +85,24 @@ h_{\mathrm{outflow},3} & \text{if } \tilde{m}_3 \leq 0
 \end{cases}
 \end{split}
 \end{equation}
+++++
+
+[[eq:D1b,C.1b]]
+.C.1b
+[latexmath]
+++++
 \begin{equation}
 0 = \tilde{m}_1 + \tilde{m}_2 + \tilde{m}_3
 \end{equation}
-\end{subequations}
 ++++
 
-The balance equations are implemented using a $\operatorname{max}$ operator in place of the piecewise expressions, taking care of the different flow directions:
+[[eq:D2,C.2]]
+The balance equations are implemented using a latexmath:[\operatorname{max}] operator in place of the piecewise expressions, taking care of the different flow directions:
 
+[[eq:D2a,C.2a]]
+.C.2a
 [latexmath]
 ++++
-\begin{subequations}
-\label{eq:D2}
 \begin{equation}
 \begin{split}
 0 = & \operatorname{max}(\tilde{m}_1,0) h_{\mathrm{mix}} - \operatorname{max}(-\tilde{m}_1,0) h_{\mathrm{outflow},1} \\
@@ -102,7 +110,12 @@ The balance equations are implemented using a $\operatorname{max}$ operator in p
 + & \operatorname{max}(\tilde{m}_3,0) h_{\mathrm{mix}} - \operatorname{max}(-\tilde{m}_3,0) h_{\mathrm{outflow},3}
 \end{split}
 \end{equation}
+++++
 
+[[eq:D2b,C.2b]]
+.C.2b
+[latexmath]
+++++
 \begin{equation}
 \begin{split}
 0 = & \operatorname{max}(\tilde{m}_1,0) - \operatorname{max}(-\tilde{m}_1,0) \\
@@ -110,10 +123,9 @@ The balance equations are implemented using a $\operatorname{max}$ operator in p
 + & \operatorname{max}(\tilde{m}_3,0) - \operatorname{max}(-\tilde{m}_3,0)
 \end{split}
 \end{equation}
-\end{subequations}
 ++++
 
-Equation (eq:D2a) is solved for $h_{\mathrm{mix}}$:
+Equation (<<eq:D2a>>) is solved for latexmath:[h_{\mathrm{mix}}]:
 
 [latexmath]
 ++++
@@ -128,7 +140,7 @@ h_{\mathrm{mix}} = \frac{
 }
 ++++
 
-Using (eq:D2b), the denominator can be changed to:
+Using (<<eq:D2b>>), the denominator can be changed to:
 
 [latexmath]
 ++++
@@ -150,8 +162,8 @@ Consequently, separate energy balances are the result; each valid for specific f
 In a model, governing equations have to establish the specific enthalpy of fluid leaving the model based on the specific enthalpy of fluid flowing into it.
 Whenever the mixing enthalpy is _used_ in a model it is therefore the mixing enthalpy under the assumption of fluid flowing into said model.
 
-We establish this quantity using a dedicated operator `inStream(h_outflow,i) = h_mix` assuming that $\tilde{m}_i \geq 0$.
-This leads to different incarnations of $h_{\mathrm{mix}}$, three in this case and $n$ in the general case.
+We establish this quantity using a dedicated operator `inStream(h_outflow,i) = h_mix` assuming that latexmath:[\tilde{m}_i \geq 0].
+This leads to different incarnations of latexmath:[h_{\mathrm{mix}}], three in this case and latexmath:[n] in the general case.
 This is illustrated in the figure below.
 For the present example of three components in a connection set, this means the following:
 
@@ -164,7 +176,8 @@ For the present example of three components in a connection set, this means the 
 \end{align*}
 ++++
 
-image::media/fluidmix3.svg[caption="Exemplary connection set with three connected components."]
+.Exemplary connection set with three connected components.
+image::media/fluidmix3.svg[]
 
 In the general case of a connection set with _n_ components, similar considerations lead to the following:
 
@@ -193,17 +206,17 @@ Therefore, it is set to the outflow value.
 \end{align*}
 ++++
 
-In this case, `inStream` is continuous (contrary to $h_{\mathrm{mix}}$) and does not depend on flow rates.
-The latter result means that this transformation may remove nonlinear systems of equations, which requires that either simplifications of the form $a * b / a = b$ must be provided, or that this case is treated directly.
+In this case, `inStream` is continuous (contrary to latexmath:[h_{\mathrm{mix}}]) and does not depend on flow rates.
+The latter result means that this transformation may remove nonlinear systems of equations, which requires that either simplifications of the form latexmath:[a * b / a = b] must be provided, or that this case is treated directly.
 
 ==== Zero Mass Flow Rate -- Connection of 3 Stream Connectors
 :id: zero-mass-flow-rate-connection-of-3-stream-connectors
 
-The case where $N=3$ and $\tilde{m}_3=0$ occurs when a one-port sensor (like a temperature sensor) is connected to two other components.
+The case where latexmath:[N=3] and latexmath:[\tilde{m}_3=0] occurs when a one-port sensor (like a temperature sensor) is connected to two other components.
 For the sensor, the `min` attribute of the mass flow rate should be set to zero (no fluid exiting the component via this connector).
 This simplification (and similar ones) can also be used if a tool determines that a mass flow rate is zero or non-negative.
 It is also possible to generalize this to the case where more than one sensor is connected.
-The suggested implementation results in the following equations, and as indicated the last formula can be simplified further by using $\tilde{m}_3=0$:
+The suggested implementation results in the following equations, and as indicated the last formula can be simplified further by using latexmath:[\tilde{m}_3=0]:
 
 [latexmath]
 ++++
@@ -219,7 +232,8 @@ h_{\mathrm{outflow},1} & \text{if } \tilde{m}_1 < 0 \text{ and } \tilde{m}_3 = 0
 \end{align*}
 ++++
 
-image::media/fluidmix4.svg[caption="Example series connection of multiple models with stream connectors."]
+.Example series connection of multiple models with stream connectors.
+image::media/fluidmix4.svg[]
 
 For the two components with finite mass flow rates (not the sensor), the properties discussed for two connected components still hold.
 The connection set equations reflect that the sensor does not have any influence by discarding the flow rate of the latter.
@@ -241,7 +255,7 @@ model m2
 end m2;
 ----
 
-Consider the case of $\tilde{m}_{1} < 0$ and all other mass flow rates positive (with the `min` attribute set accordingly).
+Consider the case of latexmath:[\tilde{m}_{1} < 0] and all other mass flow rates positive (with the `min` attribute set accordingly).
 Connecting `m1.c` with `m2.c` and `m3.c`, such that
 
 [source,modelica]
@@ -280,9 +294,9 @@ For the remaining connectors, `inStream` reduces to a simple result.
 Again, the previous non-linear algebraic system of equations is removed.
 This means that utilizing the information about uni-directional flow is very important.
 
-To summarize, if all mass flow rates are zero, the balance equations for stream variables (eq:D1) and for flows (eq:D2) are identically fulfilled.
-In such a case, any value of $h_{\mathrm{mix}}$ fulfills (eq:D1), i.e., a unique mathematical solution does not exist.
+To summarize, if all mass flow rates are zero, the balance equations for stream variables (<<eq:D1>>) and for flows (<<eq:D2>>) are identically fulfilled.
+In such a case, any value of latexmath:[h_{\mathrm{mix}}] fulfills (<<eq:D1>>), i.e., a unique mathematical solution does not exist.
 This specification only requires that a solution fulfills the balance equations.
 Additionally, a recommendation is given to compute all unknowns in a unique way, by providing an explicit formula for `inStream`.
-Due to the definition, that only flows where the corresponding `min` attribute is neither zero nor positive enter this formula, a meaningful physical result is always obtained, even in case of zero mass flow rate.
-As a side effect, non-linear equation systems are automatically removed in special cases, like sensors or uni-directional flow, without any symbolic transformations (no need to analyze any equation; only the `min` attributes of the corresponding flow variables).
+Due to the definition, that only flows where the corresponding `min`-attribute is neither zero nor positive enter this formula, a meaningful physical result is always obtained, even in case of zero mass flow rate.
+As a side effect, non-linear equation systems are automatically removed in special cases, like sensors or uni-directional flow, without any symbolic transformations (no need to analyze any equation; only the `min`-attributes of the corresponding flow variables).
