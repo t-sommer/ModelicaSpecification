@@ -100,11 +100,13 @@ Exponents such as `"m2"` may be presented as m².
 Degrees may be presented as °, both for `"deg"` on its own (for angles) and for temperatures -- e.g., `"degC"` can be presented as °C.
 Note that BIPM have specific recommendations for formatting using these symbols.
 
-.Example
-The unit expression `"m"` means meter and not milli (10⁻³), since prefixes cannot be used in isolation.
+[example]
+====
+Example: The unit expression `"m"` means meter and not milli (10⁻³), since prefixes cannot be used in isolation.
 For millimeter use `"mm"` and for square meter, m², write `"m2"`.
 
 The expression `"mm2"` means (10⁻³m)² = 10⁻⁶m².
 Note that exponentiation includes the prefix.
 
 The unit expression `"T"` means tesla, but note that the letter `T` is also the symbol for the prefix tera which has a multiplier value of 10¹².
+====
