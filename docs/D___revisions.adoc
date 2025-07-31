@@ -8,15 +8,6 @@ The current version, as well as all previous versions of this document, and the 
 
 The members of the Modelica Association project _Modelica Language_ (MAP-Lang) contributed to the Modelica specification.
 
-[NOTE]
-====
-Alternatives:
-* Keep short list all revisions as on specification.modelica.org
-* Only (major revisions, 1.0, 2.0, 3.0)
-* keep nothing
-* or just start.
-====
-
 Keeping just the start to have a historic perspective:
 
 Modelica 1, the first version of Modelica, was released in September 1997, and had the language specification as a short appendix to the rationale.

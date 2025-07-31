@@ -2,7 +2,7 @@
 == Bibliography
 
 [[BenvenisteEtAl2003SynchronousTwelveYearsLater,Benveniste, Caspi, Edwards, Halbwachs, Le Guernic, and Simone 2003]]
-Benveniste, Albert; Caspi, Paul; Edwards, Stephen A.; Halbwachs, Nicolas; Le Guernic, Paul; Simone, Robert de (2003). "The Synchronous Languages Twelve Years Later." _Proceedings of the IEEE_, 91(1). https://doi.org/10.1109/JPROC.2002.805826
+Benveniste, Albert; Caspi, Paul; Edwards, Stephen A.; Halbwachs, Nicolas; Le Guernic, Paul; Simone, Robert de (2003). "The Synchronous Languages Twelve Years Later." In: _Proceedings of the IEEE_, 91(1). https://doi.org/10.1109/JPROC.2002.805826 (cit. on p. 240).
 
 [[Buerger2019SelectiveModel,Bürger 2019]]
 Bürger, Christoff (2019). "Modelica language extensions for practical non-monotonic modelling: on the need for _selective_ model extension." In: _Proceedings of the 13th International Modelica Conference_, Regensburg, Germany, Mar 4-6, pp. 277-288. https://doi.org/10.3384/ecp19157277
